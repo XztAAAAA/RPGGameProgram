@@ -37,3 +37,9 @@ Thumbs.db
 .vs/
 *.apk
 *.unitypackage
+
+# Unity generated solution files
+*.slnx
+
+# VS Code local configuration
+**/.vscode/
