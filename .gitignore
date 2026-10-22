@@ -43,6 +43,3 @@ Thumbs.db
 
 # VS Code local configuration
 **/.vscode/
-
-# Luban temporary generated output
-/LubanConfig/output/
