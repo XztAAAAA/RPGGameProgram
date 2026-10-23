@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 488954153443935020}
   - component: {fileID: 4764204147305279310}
   - component: {fileID: 6051819097544338199}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Walls_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -124,7 +124,7 @@ GameObject:
   - component: {fileID: 9203031661741500282}
   - component: {fileID: 2824519638814745935}
   - component: {fileID: 5096758283384586429}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Walls_4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -275,7 +275,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 60, y: 1, z: 60}
+  m_Size: {x: 90, y: 1, z: 90}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &6336763163574967638
 GameObject:
@@ -289,7 +289,7 @@ GameObject:
   - component: {fileID: 4669047450304097417}
   - component: {fileID: 8648969920399131770}
   - component: {fileID: 2087349488964699070}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Walls_3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -401,8 +401,8 @@ GameObject:
   - component: {fileID: 4509190749822169870}
   - component: {fileID: 9171378625083421729}
   - component: {fileID: 6408161793393339874}
-  m_Layer: 0
-  m_Name: Plane
+  m_Layer: 6
+  m_Name: Ground
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -519,7 +519,7 @@ GameObject:
   - component: {fileID: 7741788487145716001}
   - component: {fileID: 7363334640939516062}
   - component: {fileID: 739236618980386257}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Walls_2
   m_TagString: Untagged
   m_Icon: {fileID: 0}

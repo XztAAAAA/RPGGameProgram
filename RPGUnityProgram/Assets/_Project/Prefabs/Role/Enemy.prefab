@@ -16,6 +16,9 @@ GameObject:
   - component: {fileID: -892380222198881406}
   - component: {fileID: -8059028474362254246}
   - component: {fileID: -4189563823993112271}
+  - component: {fileID: -1807723872940192073}
+  - component: {fileID: 2000836984309619972}
+  - component: {fileID: -1211602176487040322}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Untagged
@@ -177,3 +180,75 @@ MonoBehaviour:
   destroyOnDeath: 1
   destroyDelay: 0.25
   behavioursToDisable: []
+--- !u!195 &-1807723872940192073
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6226038009422841868}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.5
+  m_Speed: 1
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 720
+  m_StoppingDistance: 1.2
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 1
+  m_BaseOffset: 0.5
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
+--- !u!114 &2000836984309619972
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6226038009422841868}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f0038c16c34866b4f9e25c9c0dc0f7e6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Behavior::Unity.Behavior.BehaviorGraphAgent
+  m_Graph: {fileID: 9167170967213167455, guid: f04dd4a0c6c3bda479ab47d5a2559ed1, type: 2}
+  m_BlackboardVariableOverridesList:
+  - rid: 342646837785395351
+  - rid: 342646837785395352
+  m_OriginalGraph: {fileID: 9167170967213167455, guid: f04dd4a0c6c3bda479ab47d5a2559ed1, type: 2}
+  m_IsInitialised: 0
+  m_IsStarted: 0
+  references:
+    version: 2
+    RefIds:
+    - rid: 342646837785395351
+      type: {class: 'BlackboardVariable`1[[UnityEngine.GameObject, UnityEngine.CoreModule]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 1
+          m_Value1: 0
+        Name: Self
+        m_Value: {fileID: 6226038009422841868}
+    - rid: 342646837785395352
+      type: {class: 'BlackboardVariable`1[[UnityEngine.GameObject, UnityEngine.CoreModule]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 13421359722850089604
+          m_Value1: 2006983701942819498
+        Name: Target
+        m_Value: {fileID: 0}
+--- !u!114 &-1211602176487040322
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6226038009422841868}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a77860040ceea4741946c56b1df30495, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyTargetSetup
