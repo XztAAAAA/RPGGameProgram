@@ -12,9 +12,12 @@ public class PlayerMovement : MonoBehaviour
 
     private CharacterController controller;
 
+    private Health health;
+
     private void Awake()
     {
         controller = GetComponent<CharacterController>();
+        health = GetComponent<Health>();
 
         // 自动获取主相机
         if (cameraTransform == null && Camera.main != null)
@@ -25,6 +28,14 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
+        // 玩家死亡后不再执行移动
+        if (health != null && health.IsDead)
+            return;
+
+        // 防止 CharacterController 已被禁用后仍然调用 Move
+        if (controller == null || !controller.enabled)
+            return;
+
         if (Keyboard.current == null)
             return;
 

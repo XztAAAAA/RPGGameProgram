@@ -34,7 +34,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 138172803367824895}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 9.9, y: 1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -158,7 +158,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f14db6e6d84bed7418a581bbb87b0a27, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
-  moveSpeed: 4
+  moveSpeed: 10
   cameraTransform: {fileID: 0}
 --- !u!114 &532661577789766890
 MonoBehaviour:
@@ -198,10 +198,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb22a97fe59e38846834e646855edccd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Attack
-  damage: 20
+  damage: 50
   attackCooldown: 0.45
-  attackRadius: 0.9
-  attackForwardOffset: 1
+  attackRadius: 2
+  attackForwardOffset: 1.5
   attackHeight: 0.1
   hitLayers:
     serializedVersion: 2

@@ -823,8 +823,20 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 554719385814117188, guid: 309260475a932f644baa11e9254670f4, type: 3}
+      propertyPath: damage
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 554719385814117188, guid: 309260475a932f644baa11e9254670f4, type: 3}
       propertyPath: m_Enabled
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 554719385814117188, guid: 309260475a932f644baa11e9254670f4, type: 3}
+      propertyPath: attackRadius
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 554719385814117188, guid: 309260475a932f644baa11e9254670f4, type: 3}
+      propertyPath: attackForwardOffset
+      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 3274863457598240695, guid: 309260475a932f644baa11e9254670f4, type: 3}
       propertyPath: m_LocalPosition.x
