@@ -150,7 +150,7 @@ public partial class CombatTargetAction : Action
 
     protected override void OnEnd()
     {
-        if (agent != null)
+        if (agent != null && agent.isActiveAndEnabled)
             agent.isStopped = true;
     }
 }

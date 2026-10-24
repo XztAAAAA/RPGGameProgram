@@ -199,7 +199,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Attack
   damage: 50
-  attackCooldown: 0.45
+  attackCooldown: 0.25
   attackRadius: 2
   attackForwardOffset: 1.5
   attackHeight: 0.1
