@@ -12,7 +12,9 @@ public partial class CombatTargetAction : Action
     [SerializeReference] public BlackboardVariable<GameObject> Self;
     [SerializeReference] public BlackboardVariable<GameObject> Target;
 
+    //敌人和玩家的水平距离小于等于 1.7 个 Unity 单位时，就开始尝试攻击。
     private const float AttackRange = 1.7f;
+    //敌人转向速度
     private const float TurnSpeed = 720f;
 
     private NavMeshAgent agent;
