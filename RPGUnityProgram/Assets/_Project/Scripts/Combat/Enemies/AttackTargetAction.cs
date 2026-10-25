@@ -55,7 +55,7 @@ public partial class AttackTargetAction : Action
 
         float range = AttackRange != null
             ? Mathf.Max(0f, AttackRange.Value)
-            : 1.7f;
+            : 0f;
 
         Vector3 direction = target.transform.position
             - self.transform.position;

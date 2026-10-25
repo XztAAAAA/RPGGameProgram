@@ -19,6 +19,7 @@ GameObject:
   - component: {fileID: 554719385814117188}
   - component: {fileID: 2296885714713628031}
   - component: {fileID: 3696376280748043258}
+  - component: {fileID: 6628730890488640694}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -185,7 +186,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 75917f6e2e099444ca4c9d6c926b3087, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Health
-  maxHealth: 100
+  maxHealth: 1000
 --- !u!114 &554719385814117188
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -233,3 +234,23 @@ MonoBehaviour:
   destroyOnDeath: 0
   destroyDelay: 0.25
   behavioursToDisable: []
+--- !u!114 &6628730890488640694
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 138172803367824895}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f0038c16c34866b4f9e25c9c0dc0f7e6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Behavior::Unity.Behavior.BehaviorGraphAgent
+  m_Graph: {fileID: 0}
+  m_BlackboardVariableOverridesList: []
+  m_OriginalGraph: {fileID: 0}
+  m_IsInitialised: 0
+  m_IsStarted: 0
+  references:
+    version: 2
+    RefIds: []
