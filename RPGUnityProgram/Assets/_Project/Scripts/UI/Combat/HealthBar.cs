@@ -20,6 +20,17 @@ public class HealthBar : MonoBehaviour
         Subscribe();
     }
 
+    private void Start()
+    {
+        if (targetHealth != null)
+        {
+            Refresh(
+                targetHealth.CurrentHealth,
+                targetHealth.MaxHealth
+            );
+        }
+    }
+
     private void OnDisable()
     {
         Unsubscribe();

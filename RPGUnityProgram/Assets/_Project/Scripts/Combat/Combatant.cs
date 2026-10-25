@@ -45,7 +45,7 @@ public class Combatant : MonoBehaviour
 
         // 将玩家动态赋值给行为树黑板中的 Target
         bool success =
-            behaviorAgent.SetVariableValue<GameObject>(
+            behaviorAgent.SetVariableValue(
                 "Target",
                 player
             );

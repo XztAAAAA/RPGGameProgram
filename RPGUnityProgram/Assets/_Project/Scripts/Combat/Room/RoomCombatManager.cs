@@ -1,24 +1,115 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
+public enum RoomState
+{
+    Ready,       // 房间已准备，尚未开始
+    InProgress,  // 战斗进行中
+    Cleared,     // 房间已清空
+    Failed       // 玩家死亡，战斗失败
+}
+
 public class RoomCombatManager : MonoBehaviour
 {
-    [Header("房间状态")]
-    [SerializeField] private UnityEvent onRoomCleared;
+    [Header("房间设置")]
+    [SerializeField] private Transform enemyRoot;
 
-    private readonly HashSet<Health> enemies = new();
-    private readonly Dictionary<Health, Action> deathHandlers = new();
+    [SerializeField] private bool startAutomatically = true;
 
-    public int RemainingEnemies => enemies.Count;
-    public bool IsRoomCleared { get; private set; }
+    [SerializeField, Min(0f)]
+    private float startDelay = 0.5f;
+
+    [Header("房间事件")]
+    [SerializeField]
+    private UnityEvent onRoomStarted =
+        new UnityEvent();
+
+    [SerializeField]
+    private UnityEvent onRoomCleared =
+        new UnityEvent();
+
+    [SerializeField]
+    private UnityEvent onRoomFailed =
+        new UnityEvent();
+
+    private readonly HashSet<Health> aliveEnemies =
+        new HashSet<Health>();
+
+    private readonly Dictionary<Health, Action> enemyDeathHandlers =
+        new Dictionary<Health, Action>();
+
+    private Health playerHealth;
+    private Action playerDeathHandler;
+
+    public RoomState State { get; private set; } = RoomState.Ready;
+
+    public int RemainingEnemies => aliveEnemies.Count;
+
+    private void Awake()
+    {
+        if (enemyRoot == null)
+        {
+            Debug.LogError(
+                "RoomCombatManager：请指定 Enemy Root。",
+                this
+            );
+
+            enabled = false;
+            return;
+        }
+
+        // 玩家保持激活，因此可以在这里初始化玩家引用
+        FindPlayerHealth();
+
+        // 不要在这里调用 CollectEnemies()
+        // 也不要在这里通过 SetActive(false) 关闭 EnemyRoot
+    }
 
     private void Start()
     {
-        // 自动查找当前场景中所有启用的 Combatant
+        if (startAutomatically)
+        {
+            StartCoroutine(StartRoomAfterDelay());
+        }
+    }
+
+    private void FindPlayerHealth()
+    {
+        GameObject player = CombatTool.GetPlayer();
+
+        if (player == null)
+        {
+            Debug.LogError(
+                $"RoomCombatManager：没有找到 Tag 为 {player} 的玩家。",
+                this
+            );
+            return;
+        }
+
+        playerHealth = player.GetComponent<Health>();
+
+        if (playerHealth == null)
+        {
+            Debug.LogError(
+                "RoomCombatManager：玩家没有 Health 组件。",
+                player
+            );
+            return;
+        }
+
+        playerDeathHandler = HandlePlayerDied;
+        playerHealth.Died += playerDeathHandler;
+    }
+
+    private void CollectEnemies()
+    {
+        aliveEnemies.Clear();
+
         Combatant[] combatants =
-            FindObjectsByType<Combatant>();
+            enemyRoot.GetComponentsInChildren<Combatant>(true);
 
         foreach (Combatant combatant in combatants)
         {
@@ -31,28 +122,78 @@ public class RoomCombatManager : MonoBehaviour
             RegisterEnemy(combatant);
         }
 
-        if (enemies.Count == 0)
+        Debug.Log(
+            $"房间初始化完成，登记敌人数量：{aliveEnemies.Count}",
+            this
+        );
+    }
+
+    private IEnumerator StartRoomAfterDelay()
+    {
+        if (startDelay > 0f)
         {
-            Debug.LogWarning(
-                "RoomCombatManager：没有找到有效的敌人，请检查 Combatant 和阵营设置。",
+            yield return new WaitForSecondsRealtime(startDelay);
+        }
+
+        StartRoom();
+    }
+
+    public void StartRoom()
+    {
+        if (State != RoomState.Ready)
+            return;
+
+        if (playerHealth == null)
+            FindPlayerHealth();
+
+        if (playerHealth == null)
+            return;
+
+        if (playerHealth.IsDead)
+        {
+            FailRoom();
+            return;
+        }
+
+        // 先激活敌人，让其 Awake 和 OnEnable 执行
+        enemyRoot.gameObject.SetActive(true);
+
+        // 再初始化敌人登记和死亡事件
+        CollectEnemies();
+
+        if (RemainingEnemies == 0)
+        {
+            Debug.LogError(
+                "房间没有找到有效敌人，请检查 EnemyRoot 和 Combatant 阵营。",
                 this
             );
+
+            enemyRoot.gameObject.SetActive(false);
+            return;
         }
-        else
-        {
-            Debug.Log(
-                $"房间战斗开始，敌人数量：{enemies.Count}",
-                this
-            );
-        }
+
+        // 只有准备完成后，才正式开始战斗
+        State = RoomState.InProgress;
+
+        Debug.Log(
+            $"房间战斗开始，敌人数量：{RemainingEnemies}",
+            this
+        );
+
+        onRoomStarted?.Invoke();
     }
 
     /// <summary>
-    /// 注册一个敌人。
-    /// 以后动态生成敌人时也可以调用此方法。
+    /// 注册敌人。未来动态生成敌人时可以复用。
     /// </summary>
     public void RegisterEnemy(Combatant combatant)
     {
+        if (State == RoomState.Cleared ||
+            State == RoomState.Failed)
+        {
+            return;
+        }
+
         if (combatant == null ||
             combatant.Faction != CombatFaction.Enemy)
         {
@@ -61,69 +202,113 @@ public class RoomCombatManager : MonoBehaviour
 
         Health health = combatant.GetComponent<Health>();
 
-        if (health == null || health.IsDead)
+        if (health == null)
         {
-            Debug.LogWarning(
-                $"{combatant.name} 缺少 Health 或已经死亡。",
+            Debug.LogError(
+                $"{combatant.name} 缺少 Health 组件。",
                 combatant
             );
             return;
         }
 
-        // 防止重复注册
-        if (!enemies.Add(health))
+        if (health.IsDead || !aliveEnemies.Add(health))
             return;
 
         Action handler = () => HandleEnemyDied(health);
 
-        deathHandlers[health] = handler;
+        enemyDeathHandlers.Add(health, handler);
         health.Died += handler;
     }
 
     private void HandleEnemyDied(Health health)
     {
-        if (!enemies.Remove(health))
+        // 只有正在战斗且登记过的敌人才能参与结算
+        if (State != RoomState.InProgress)
             return;
 
-        // 解除事件订阅
-        if (deathHandlers.TryGetValue(health, out Action handler))
+        if (!aliveEnemies.Remove(health))
+            return;
+
+        if (enemyDeathHandlers.TryGetValue(
+            health, out Action handler))
         {
             health.Died -= handler;
-            deathHandlers.Remove(health);
+            enemyDeathHandlers.Remove(health);
         }
 
         Debug.Log(
-            $"敌人被击败，剩余敌人：{enemies.Count}",
+            $"敌人被击败，剩余数量：{RemainingEnemies}",
             this
         );
 
-        if (enemies.Count == 0 && !IsRoomCleared)
+        if (RemainingEnemies == 0)
         {
             ClearRoom();
         }
     }
 
+    private void HandlePlayerDied()
+    {
+        if (State != RoomState.Ready &&
+            State != RoomState.InProgress)
+        {
+            return;
+        }
+
+        FailRoom();
+    }
+
     private void ClearRoom()
     {
-        IsRoomCleared = true;
+        // 防止重复结算，或胜利和失败同时触发
+        if (State != RoomState.InProgress)
+            return;
+
+        State = RoomState.Cleared;
 
         Debug.Log("房间已清空！", this);
 
-        // 通知其他系统：本房间战斗结束
         onRoomCleared?.Invoke();
+    }
+
+    private void FailRoom()
+    {
+        if (State != RoomState.Ready &&
+            State != RoomState.InProgress)
+        {
+            return;
+        }
+
+        State = RoomState.Failed;
+
+        Debug.Log("玩家死亡，房间战斗失败！", this);
+
+        // 停止当前房间的敌人行为
+        if (enemyRoot != null)
+        {
+            enemyRoot.gameObject.SetActive(false);
+        }
+
+        onRoomFailed?.Invoke();
     }
 
     private void OnDestroy()
     {
-        foreach (var pair in deathHandlers)
+        if (playerHealth != null &&
+            playerDeathHandler != null)
         {
-            if (pair.Key != null)
+            playerHealth.Died -= playerDeathHandler;
+        }
+
+        foreach (var pair in enemyDeathHandlers)
+        {
+            if (pair.Key != null && pair.Value != null)
             {
                 pair.Key.Died -= pair.Value;
             }
         }
 
-        deathHandlers.Clear();
-        enemies.Clear();
+        enemyDeathHandlers.Clear();
+        aliveEnemies.Clear();
     }
 }
