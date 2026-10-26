@@ -26,8 +26,7 @@ public class CombatPanel : MonoBehaviour
     {
         if (roomManager == null)
         {
-            roomManager =
-                FindAnyObjectByType<RoomCombatManager>();
+            roomManager = FindAnyObjectByType<RoomCombatManager>();
         }
 
         if (healthBar == null)
@@ -55,6 +54,9 @@ public class CombatPanel : MonoBehaviour
         clearPanel.SetActive(false);
         failedPanel = LoadPanel(failedPanelPath, canvas.transform);
         failedPanel.SetActive(false);
+
+        roomManager.onRoomCleared.AddListener(() => clearPanel.SetActive(roomManager.State == RoomState.Cleared));
+        roomManager.onRoomFailed.AddListener(() => failedPanel.SetActive(roomManager.State == RoomState.Failed));
     }
 
     private GameObject LoadPanel(string path, Transform parent)
@@ -159,12 +161,6 @@ public class CombatPanel : MonoBehaviour
 
     private void UpdateRoomStateUI(RoomState state)
     {
-        if (clearPanel != null)
-            clearPanel.SetActive(state == RoomState.Cleared);
-
-        if (failedPanel != null)
-            failedPanel.SetActive(state == RoomState.Failed);
-
         if (statusText == null)
             return;
 

@@ -70,6 +70,9 @@ public class DeathHandler : MonoBehaviour
 
         // 敌人通常销毁；玩家通常保留并进入失败流程
         if (destroyOnDeath)
+        {
+            gameObject.SetActive(false);
             Destroy(gameObject, destroyDelay);
+        }
     }
 }

@@ -28,11 +28,11 @@ public class RoomCombatManager : MonoBehaviour
         new UnityEvent();
 
     [SerializeField]
-    private UnityEvent onRoomCleared =
+    public UnityEvent onRoomCleared =
         new UnityEvent();
 
     [SerializeField]
-    private UnityEvent onRoomFailed =
+    public UnityEvent onRoomFailed =
         new UnityEvent();
 
     private readonly HashSet<Health> aliveEnemies =
@@ -43,6 +43,9 @@ public class RoomCombatManager : MonoBehaviour
 
     private Health playerHealth;
     private Action playerDeathHandler;
+
+    private PlayerMovement playerMovement;
+    private PlayerAttackInput playerAttackInput;
 
     public RoomState State { get; private set; } = RoomState.Ready;
 
@@ -90,6 +93,8 @@ public class RoomCombatManager : MonoBehaviour
         }
 
         playerHealth = player.GetComponent<Health>();
+        playerMovement = player.GetComponent<PlayerMovement>();
+        playerAttackInput = player.GetComponent<PlayerAttackInput>();
 
         if (playerHealth == null)
         {
@@ -260,7 +265,7 @@ public class RoomCombatManager : MonoBehaviour
 
     private void ClearRoom()
     {
-        // 防止重复结算，或胜利和失败同时触发
+        // 防止重复结算
         if (State != RoomState.InProgress)
             return;
 
@@ -268,11 +273,19 @@ public class RoomCombatManager : MonoBehaviour
 
         Debug.Log("房间已清空！", this);
 
+        // 停止玩家移动和攻击
+        StopPlayerControls();
+
+        // 暂停游戏，但保留 UI 的运行与交互
+        PauseGameplay();
+
+        // 通知 CombatPanel 等监听者
         onRoomCleared?.Invoke();
     }
 
     private void FailRoom()
     {
+        // 只允许从 Ready 或 InProgress 进入失败状态
         if (State != RoomState.Ready &&
             State != RoomState.InProgress)
         {
@@ -283,13 +296,38 @@ public class RoomCombatManager : MonoBehaviour
 
         Debug.Log("玩家死亡，房间战斗失败！", this);
 
-        // 停止当前房间的敌人行为
-        if (enemyRoot != null)
-        {
-            enemyRoot.gameObject.SetActive(false);
-        }
+        // 停止玩家移动和攻击
+        StopPlayerControls();
 
+        // 停止敌人 AI 和移动
+        if (enemyRoot != null)
+            enemyRoot.gameObject.SetActive(false);
+
+        // 暂停游戏
+        PauseGameplay();
+
+        // 显示失败面板
         onRoomFailed?.Invoke();
+    }
+
+    /// <summary>
+    /// 房间结束后停止玩家移动和攻击输入。
+    /// </summary>
+    private void StopPlayerControls()
+    {
+        if (playerMovement != null)
+            playerMovement.enabled = false;
+
+        if (playerAttackInput != null)
+            playerAttackInput.enabled = false;
+    }
+
+    /// <summary>
+    /// 暂停游戏时间，保留 UI 交互。
+    /// </summary>
+    private void PauseGameplay()
+    {
+        Time.timeScale = 0f;
     }
 
     private void OnDestroy()
