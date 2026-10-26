@@ -14,12 +14,13 @@ public class CombatPanel : MonoBehaviour
     [SerializeField] private TMP_Text statusText;
 
     [Header("动态面板资源路径")]
-    [SerializeField] private string clearPanelPath = "UI/RoomClearPanel";
+    [SerializeField] private string clearPanelPath = "UI/RoomWinPanel";
     [SerializeField] private string failedPanelPath = "UI/RoomFailedPanel";
 
     private GameObject clearPanel;
     private GameObject failedPanel;
     private Button retryButton;
+    private Button continueButton;
 
     private RoomState lastState = (RoomState)(-1);
 
@@ -53,15 +54,17 @@ public class CombatPanel : MonoBehaviour
 
         // 动态加载并创建两个面板
         clearPanel = LoadPanel(clearPanelPath, canvas.transform);
+        clearPanel.SetActive(false);
         failedPanel = LoadPanel(failedPanelPath, canvas.transform);
+        failedPanel.SetActive(false);
 
         // 自动寻找失败面板中的重试按钮
         if (failedPanel != null)
         {
-            Button[] buttons =
+            Button[] failedButtons =
                 failedPanel.GetComponentsInChildren<Button>(true);
 
-            foreach (Button button in buttons)
+            foreach (Button button in failedButtons)
             {
                 if (button.name == "RetryButton")
                 {
@@ -71,8 +74,24 @@ public class CombatPanel : MonoBehaviour
             }
 
             // 如果面板中只有一个按钮，也允许直接使用它
-            if (retryButton == null && buttons.Length == 1)
-                retryButton = buttons[0];
+            if (retryButton == null && failedButtons.Length == 1)
+                retryButton = failedButtons[0];
+        }
+
+        // 自动寻找胜利面板中的继续按钮
+        if (clearPanel != null)
+        {
+            Button[] clearButtons =
+                clearPanel.GetComponentsInChildren<Button>(true);
+
+            foreach (Button button in clearButtons)
+            {
+                if (button.name == "ContinueButton")
+                {
+                    continueButton = button;
+                    break;
+                }
+            }
         }
     }
 
@@ -101,6 +120,9 @@ public class CombatPanel : MonoBehaviour
     {
         if (retryButton != null)
             retryButton.onClick.AddListener(RestartCurrentScene);
+
+        if (continueButton != null)
+            continueButton.onClick.AddListener(HideClearPanel);
     }
 
     private void Start()
@@ -232,9 +254,19 @@ public class CombatPanel : MonoBehaviour
         SceneManager.LoadSceneAsync(scene.path);
     }
 
+    private void HideClearPanel()
+    {
+        if (clearPanel != null)
+            clearPanel.SetActive(false);
+    }
+
+
     private void OnDisable()
     {
         if (retryButton != null)
             retryButton.onClick.RemoveListener(RestartCurrentScene);
+
+        if (continueButton != null)
+            continueButton.onClick.RemoveListener(HideClearPanel);
     }
 }
