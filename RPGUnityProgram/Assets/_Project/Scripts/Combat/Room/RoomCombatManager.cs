@@ -159,7 +159,7 @@ public class RoomCombatManager : MonoBehaviour
             FailRoom();
             return;
         }
-        Time.timeScale = 1f;
+        CommonTool.SetTimeScale(1f);
 
         // 先激活敌人，让其 Awake 和 OnEnable 执行
         enemyRoot.gameObject.SetActive(true);
@@ -328,7 +328,7 @@ public class RoomCombatManager : MonoBehaviour
     /// </summary>
     private void PauseGameplay()
     {
-        Time.timeScale = 0f;
+        CommonTool.SetTimeScale(0f);
     }
 
     private void OnDestroy()
