@@ -13,8 +13,6 @@ public class RoomFailedPanel : MonoBehaviour
 
     public void RestartCurrentScene()
     {
-        Time.timeScale = 1f;
-
         Scene scene = SceneManager.GetActiveScene();
 
         if (string.IsNullOrEmpty(scene.path))
