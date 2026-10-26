@@ -19,8 +19,6 @@ public class CombatPanel : MonoBehaviour
 
     private GameObject clearPanel;
     private GameObject failedPanel;
-    private Button retryButton;
-    private Button continueButton;
 
     private RoomState lastState = (RoomState)(-1);
 
@@ -57,42 +55,6 @@ public class CombatPanel : MonoBehaviour
         clearPanel.SetActive(false);
         failedPanel = LoadPanel(failedPanelPath, canvas.transform);
         failedPanel.SetActive(false);
-
-        // 自动寻找失败面板中的重试按钮
-        if (failedPanel != null)
-        {
-            Button[] failedButtons =
-                failedPanel.GetComponentsInChildren<Button>(true);
-
-            foreach (Button button in failedButtons)
-            {
-                if (button.name == "RetryButton")
-                {
-                    retryButton = button;
-                    break;
-                }
-            }
-
-            // 如果面板中只有一个按钮，也允许直接使用它
-            if (retryButton == null && failedButtons.Length == 1)
-                retryButton = failedButtons[0];
-        }
-
-        // 自动寻找胜利面板中的继续按钮
-        if (clearPanel != null)
-        {
-            Button[] clearButtons =
-                clearPanel.GetComponentsInChildren<Button>(true);
-
-            foreach (Button button in clearButtons)
-            {
-                if (button.name == "ContinueButton")
-                {
-                    continueButton = button;
-                    break;
-                }
-            }
-        }
     }
 
     private GameObject LoadPanel(string path, Transform parent)
@@ -114,15 +76,6 @@ public class CombatPanel : MonoBehaviour
         Debug.Log($"CombatPanel：已动态创建面板 {instance.name}");
 
         return instance;
-    }
-
-    private void OnEnable()
-    {
-        if (retryButton != null)
-            retryButton.onClick.AddListener(RestartCurrentScene);
-
-        if (continueButton != null)
-            continueButton.onClick.AddListener(HideClearPanel);
     }
 
     private void Start()
@@ -234,39 +187,5 @@ public class CombatPanel : MonoBehaviour
                 statusText.text = "挑战失败";
                 break;
         }
-    }
-
-    public void RestartCurrentScene()
-    {
-        Time.timeScale = 1f;
-
-        Scene scene = SceneManager.GetActiveScene();
-
-        if (string.IsNullOrEmpty(scene.path))
-        {
-            Debug.LogError(
-                "CombatPanel：当前场景没有有效路径。",
-                this
-            );
-            return;
-        }
-
-        SceneManager.LoadSceneAsync(scene.path);
-    }
-
-    private void HideClearPanel()
-    {
-        if (clearPanel != null)
-            clearPanel.SetActive(false);
-    }
-
-
-    private void OnDisable()
-    {
-        if (retryButton != null)
-            retryButton.onClick.RemoveListener(RestartCurrentScene);
-
-        if (continueButton != null)
-            continueButton.onClick.RemoveListener(HideClearPanel);
     }
 }

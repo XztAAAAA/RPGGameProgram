@@ -481,6 +481,7 @@ GameObject:
   - component: {fileID: 2045720675781013536}
   - component: {fileID: 5722583360593795471}
   - component: {fileID: 4017395717935912630}
+  - component: {fileID: 8735201603449831452}
   m_Layer: 5
   m_Name: RoomFailedPanel
   m_TagString: Untagged
@@ -529,6 +530,19 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
+--- !u!114 &8735201603449831452
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3957150506563930671}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e1dd3825127bcd41ae5a36bbe2d036e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RoomFailedPanel
+  retryButton: {fileID: 717276255061428639}
 --- !u!1 &4750478716409533151
 GameObject:
   m_ObjectHideFlags: 0

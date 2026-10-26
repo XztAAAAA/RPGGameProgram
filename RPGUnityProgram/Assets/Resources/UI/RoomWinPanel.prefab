@@ -725,7 +725,7 @@ MonoBehaviour:
   m_text: "\u672C\u623F\u95F4\u5DF2\u6E05\u7A7A\uFF0C\u7EE7\u7EED\u524D\u8FDB\uFF01"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: e4164d6fc30f7a14888a9820426110c5, type: 2}
-  m_sharedMaterial: {fileID: 0}
+  m_sharedMaterial: {fileID: -3155477582524537593, guid: e4164d6fc30f7a14888a9820426110c5, type: 2}
   m_fontSharedMaterials:
   - {fileID: 0}
   - {fileID: 0}
@@ -1062,7 +1062,7 @@ MonoBehaviour:
   m_text: ROOM CLEARED
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 114ca6dca8b714b4a81229e269475db2, type: 2}
-  m_sharedMaterial: {fileID: 0}
+  m_sharedMaterial: {fileID: -8444926416709569892, guid: 114ca6dca8b714b4a81229e269475db2, type: 2}
   m_fontSharedMaterials:
   - {fileID: 0}
   m_fontMaterial: {fileID: 0}
@@ -1144,6 +1144,7 @@ GameObject:
   - component: {fileID: 7012857120487864290}
   - component: {fileID: 8251715661658365075}
   - component: {fileID: 3776604085141491823}
+  - component: {fileID: 4841824613745064862}
   m_Layer: 5
   m_Name: RoomWinPanel
   m_TagString: Untagged
@@ -1192,3 +1193,16 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
+--- !u!114 &4841824613745064862
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6657203547328560139}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2c7a597c2b8d25843a09882cb86d3b5c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RoomWinPanel
+  continueButton: {fileID: 7141430776661601513}
