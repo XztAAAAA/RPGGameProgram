@@ -2,7 +2,7 @@
   {
     "id": 1,
     "spawn_group_id": 1001,
-    "enemy_key": "BasicEnemy ",
+    "enemy_key": "Enemy",
     "count": 3,
     "max_health": 50,
     "attack_damage": 10,
@@ -12,7 +12,7 @@
   {
     "id": 2,
     "spawn_group_id": 1002,
-    "enemy_key": "BasicEnemy ",
+    "enemy_key": "Enemy",
     "count": 5,
     "max_health": 70,
     "attack_damage": 12,
@@ -22,7 +22,7 @@
   {
     "id": 3,
     "spawn_group_id": 1003,
-    "enemy_key": "BasicEnemy ",
+    "enemy_key": "Enemy",
     "count": 8,
     "max_health": 100,
     "attack_damage": 15,

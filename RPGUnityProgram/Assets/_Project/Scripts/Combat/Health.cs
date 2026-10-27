@@ -18,8 +18,25 @@ public class Health : MonoBehaviour
     // 死亡事件
     public event Action Died;
 
+    private bool initializedFromConfig;
+
+    public void InitializeFromConfig(float configuredMaxHealth)
+    {
+        maxHealth = Mathf.Max(1f, configuredMaxHealth);
+
+        CurrentHealth = maxHealth;
+        IsDead = false;
+
+        initializedFromConfig = true;
+
+        HealthChanged?.Invoke(CurrentHealth, MaxHealth);
+    }
+
     private void Awake()
     {
+        if (initializedFromConfig)
+            return;
+
         CurrentHealth = maxHealth;
         IsDead = false;
     }

@@ -1,11 +1,9 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class MainMenuController : MonoBehaviour
 {
     [SerializeField] private Button startButton;
-    [SerializeField] private string arenaSceneName = "Prototype_Arena";
 
     private void Awake()
     {
@@ -27,16 +25,7 @@ public class MainMenuController : MonoBehaviour
 
     public void StartGame()
     {
-        if (!Application.CanStreamedLevelBeLoaded(arenaSceneName))
-        {
-            Debug.LogError(
-                $"MainMenuController：场景 {arenaSceneName} 未加入 Build Settings。",
-                this
-            );
-            return;
-        }
-
-        SceneManager.LoadScene(arenaSceneName);
+        LevelManager.Instance.StartNewRun();
     }
 }
 

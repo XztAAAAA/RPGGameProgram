@@ -4,25 +4,40 @@ using UnityEngine.UI;
 public class RoomWinPanel : MonoBehaviour
 {
     public Button continueButton;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void OnEnable()
+
+    public Button ReturnButton;
+
+    private void OnEnable()
     {
-        continueButton.onClick.AddListener(HideClearPanel);
+        if (continueButton != null)
+        {
+            continueButton.gameObject.SetActive(
+                !LevelManager.Instance.IsLastLevel());
+        }
+
+        if (continueButton != null)
+            continueButton.onClick.AddListener(NextLevel);
+
+        if (ReturnButton != null)
+            ReturnButton.onClick.AddListener(ReturnMainMenu);
     }
 
-    private void HideClearPanel()
+    private void NextLevel()
     {
-        gameObject.SetActive(false);
+        LevelManager.Instance.GoToNextLevel();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void ReturnMainMenu()
     {
-
+        LevelManager.Instance.ReturnToMainMenu();
     }
 
     private void OnDisable()
     {
-        continueButton.onClick.RemoveListener(HideClearPanel);
+        if (continueButton != null)
+            continueButton.onClick.RemoveListener(NextLevel);
+
+        if (ReturnButton != null)
+            ReturnButton.onClick.RemoveListener(ReturnMainMenu);
     }
 }

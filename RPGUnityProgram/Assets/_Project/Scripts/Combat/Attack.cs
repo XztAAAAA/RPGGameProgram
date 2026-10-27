@@ -33,6 +33,11 @@ public class Attack : MonoBehaviour
         isActiveAndEnabled &&
         Time.time >= nextAttackTime;
 
+    public void InitializeDamage(float configuredDamage)
+    {
+        damage = Mathf.Max(0f, configuredDamage);
+    }
+
     private void Awake()
     {
         owner = GetComponent<Combatant>();

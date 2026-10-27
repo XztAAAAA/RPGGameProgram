@@ -17,7 +17,10 @@ public class RoomCombatManager : MonoBehaviour
     [Header("房间设置")]
     [SerializeField] private Transform enemyRoot;
 
-    [SerializeField] private bool startAutomatically = true;
+    /// <summary>
+    /// 默认关闭
+    /// </summary>
+    [SerializeField] private bool startAutomatically = false;
 
     [SerializeField, Min(0f)]
     private float startDelay = 0.5f;
@@ -50,6 +53,8 @@ public class RoomCombatManager : MonoBehaviour
     public RoomState State { get; private set; } = RoomState.Ready;
 
     public int RemainingEnemies => aliveEnemies.Count;
+
+    public Transform EnemyRoot => enemyRoot;
 
     private void Awake()
     {

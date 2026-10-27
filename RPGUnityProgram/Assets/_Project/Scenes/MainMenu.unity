@@ -307,17 +307,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &767019709 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 3559274983970666418, guid: d687d5f59f9a1a7459b5b030483675f6, type: 3}
-  m_PrefabInstance: {fileID: 2394314984915027479}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
 --- !u!21 &1148452397
 Material:
   serializedVersion: 8
@@ -928,7 +917,6 @@ GameObject:
   - component: {fileID: 1674011032}
   - component: {fileID: 1674011031}
   - component: {fileID: 1674011030}
-  - component: {fileID: 1674011029}
   m_Layer: 5
   m_Name: MenuCanvas
   m_TagString: Untagged
@@ -936,20 +924,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1674011029
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1674011028}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f9b0a6bdb6c3733488d0fd6d96880f10, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MainMenuController
-  startButton: {fileID: 767019709}
-  arenaSceneName: Prototype_Arena
 --- !u!114 &1674011030
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1108,7 +1082,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3815391186299217766, guid: d687d5f59f9a1a7459b5b030483675f6, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.0005493164
+      value: -0.00061035156
       objectReference: {fileID: 0}
     - target: {fileID: 3815391186299217766, guid: d687d5f59f9a1a7459b5b030483675f6, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x

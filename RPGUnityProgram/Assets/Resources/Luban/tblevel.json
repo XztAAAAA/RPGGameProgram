@@ -3,21 +3,21 @@
     "id": 1,
     "name": "遗迹入口",
     "next_level_id": 2,
-    "spawn_group_id": 0,
+    "spawn_group_id": 1001,
     "scene_name": "Prototype_Arena"
   },
   {
     "id": 2,
     "name": "遗迹深处",
     "next_level_id": 3,
-    "spawn_group_id": 0,
+    "spawn_group_id": 1002,
     "scene_name": "Prototype_Arena"
   },
   {
     "id": 3,
     "name": "遗迹核心",
     "next_level_id": 0,
-    "spawn_group_id": 0,
+    "spawn_group_id": 1003,
     "scene_name": "Prototype_Arena"
   }
 ]
