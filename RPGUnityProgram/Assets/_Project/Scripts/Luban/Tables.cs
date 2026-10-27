@@ -18,16 +18,28 @@ public partial class Tables
     /// 测试表
     /// </summary>
     public TbTest TbTest {get; }
+    /// <summary>
+    /// 等级表
+    /// </summary>
+    public TbLevel TbLevel {get; }
+    /// <summary>
+    /// 敌人生成表
+    /// </summary>
+    public TbLevelSpawn TbLevelSpawn {get; }
 
     public Tables(System.Func<string, JSONNode> loader)
     {
         TbTest = new TbTest(loader("tbtest"));
+        TbLevel = new TbLevel(loader("tblevel"));
+        TbLevelSpawn = new TbLevelSpawn(loader("tblevelspawn"));
         ResolveRef();
     }
     
     private void ResolveRef()
     {
         TbTest.ResolveRef(this);
+        TbLevel.ResolveRef(this);
+        TbLevelSpawn.ResolveRef(this);
     }
 }
 

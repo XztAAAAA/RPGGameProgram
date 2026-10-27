@@ -1,0 +1,32 @@
+[
+  {
+    "id": 1,
+    "spawn_group_id": 1001,
+    "enemy_key": "BasicEnemy ",
+    "count": 3,
+    "max_health": 50,
+    "attack_damage": 10,
+    "move_speed": 3,
+    "spawn_radius": 2
+  },
+  {
+    "id": 2,
+    "spawn_group_id": 1002,
+    "enemy_key": "BasicEnemy ",
+    "count": 5,
+    "max_health": 70,
+    "attack_damage": 12,
+    "move_speed": 3.2,
+    "spawn_radius": 3
+  },
+  {
+    "id": 3,
+    "spawn_group_id": 1003,
+    "enemy_key": "BasicEnemy ",
+    "count": 8,
+    "max_health": 100,
+    "attack_damage": 15,
+    "move_speed": 3.5,
+    "spawn_radius": 3.5
+  }
+]
