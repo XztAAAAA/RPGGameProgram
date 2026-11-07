@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Core;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -12,7 +13,7 @@ public enum RoomState
     Failed       // 玩家死亡，战斗失败
 }
 
-public class RoomCombatManager : MonoBehaviour
+public class RoomCombatManager : MonoSingleton<RoomCombatManager>
 {
     [Header("房间设置")]
     [SerializeField] private Transform enemyRoot;
