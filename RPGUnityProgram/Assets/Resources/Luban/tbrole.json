@@ -1,0 +1,11 @@
+[
+  {
+    "role_id": 1,
+    "role_name": "Player",
+    "prefab_key": "Player_Default",
+    "max_health": 1000,
+    "move_speed": 5,
+    "rotation_speed": 720,
+    "basic_attack_skill_id": 20001
+  }
+]

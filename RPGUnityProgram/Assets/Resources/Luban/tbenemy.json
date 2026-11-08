@@ -1,0 +1,16 @@
+[
+  {
+    "enemy_id": 1001,
+    "enemy_name": "BasicEnemy",
+    "prefab_key": "BasicEnemy",
+    "max_health": 50,
+    "move_speed": 3,
+    "rotation_speed": 720,
+    "skill_ids": [
+      1000210001
+    ],
+    "detect_range": 8,
+    "lose_target_range": 12,
+    "lose_target_delay": 3
+  }
+]

@@ -26,12 +26,24 @@ public partial class Tables
     /// 敌人生成表
     /// </summary>
     public TbLevelSpawn TbLevelSpawn {get; }
+    /// <summary>
+    /// 玩家角色表
+    /// </summary>
+    public TbRole TbRole {get; }
+    /// <summary>
+    /// 技能配置表
+    /// </summary>
+    public TbSkill TbSkill {get; }
+    public TbEnemy TbEnemy {get; }
 
     public Tables(System.Func<string, JSONNode> loader)
     {
         TbTest = new TbTest(loader("tbtest"));
         TbLevel = new TbLevel(loader("tblevel"));
         TbLevelSpawn = new TbLevelSpawn(loader("tblevelspawn"));
+        TbRole = new TbRole(loader("tbrole"));
+        TbSkill = new TbSkill(loader("tbskill"));
+        TbEnemy = new TbEnemy(loader("tbenemy"));
         ResolveRef();
     }
     
@@ -40,6 +52,9 @@ public partial class Tables
         TbTest.ResolveRef(this);
         TbLevel.ResolveRef(this);
         TbLevelSpawn.ResolveRef(this);
+        TbRole.ResolveRef(this);
+        TbSkill.ResolveRef(this);
+        TbEnemy.ResolveRef(this);
     }
 }
 

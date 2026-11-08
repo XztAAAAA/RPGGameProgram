@@ -1,0 +1,53 @@
+[
+  {
+    "skill_id": 20001,
+    "skill_key": "Player_Basic_Attack",
+    "skill_name": "玩家角色普通攻击",
+    "attack_type": 1,
+    "skill_kind": 1,
+    "damage": 10,
+    "trigger_range": 1.7,
+    "hit_radius": 0.9,
+    "cooldown": 1.2,
+    "startup_time": 0.25,
+    "telegraph_time": 0,
+    "active_time": 0.15,
+    "recovery_time": 0.55,
+    "stagger_time": 0,
+    "can_block_projectile": false
+  },
+  {
+    "skill_id": 10001,
+    "skill_key": "Enemy_Melee_Normal",
+    "skill_name": "普通挥击",
+    "attack_type": 1,
+    "skill_kind": 2,
+    "damage": 20,
+    "trigger_range": 1.7,
+    "hit_radius": 1.1,
+    "cooldown": 4,
+    "startup_time": 0.3,
+    "telegraph_time": 0.8,
+    "active_time": 0.15,
+    "recovery_time": 0.8,
+    "stagger_time": 1.2,
+    "can_block_projectile": false
+  },
+  {
+    "skill_id": 10002,
+    "skill_key": "Enemy_Melee_Special",
+    "skill_name": "蓄力重击",
+    "attack_type": 1,
+    "skill_kind": 1,
+    "damage": 20,
+    "trigger_range": 1.5,
+    "hit_radius": 0.9,
+    "cooldown": 0.45,
+    "startup_time": 0.1,
+    "telegraph_time": 0,
+    "active_time": 0.1,
+    "recovery_time": 0.3,
+    "stagger_time": 0,
+    "can_block_projectile": false
+  }
+]
