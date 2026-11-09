@@ -22,8 +22,10 @@ public class Combatant : MonoBehaviour
     public cfg.Enemy EnemyConfig { get; private set; }
 
     private BehaviorGraphAgent behaviorAgent;
+    private GameObject player;
     private GameObject target;
     private float targetOutOfRangeTime = -1f;
+    private float attackRange = 1.7f;
 
     private void Awake()
     {
@@ -66,6 +68,7 @@ public class Combatant : MonoBehaviour
         if (primarySkill != null)
         {
             attack.InitializeFromConfig(primarySkill);
+            attackRange = Mathf.Max(0f, primarySkill.TriggerRange);
         }
     }
 
@@ -74,7 +77,7 @@ public class Combatant : MonoBehaviour
         if (Faction == CombatFaction.Player) return;
 
         behaviorAgent = GetComponent<BehaviorGraphAgent>();
-        GameObject player = CombatTool.GetPlayer();
+        player = CombatTool.GetPlayer();
 
         if (player == null)
         {
@@ -85,9 +88,6 @@ public class Combatant : MonoBehaviour
             return;
         }
 
-        float attackRange = EnemyConfig != null && EnemyConfig.SkillIds.Length > 0
-            ? GetConfiguredAttackRange()
-            : 1.7f;
         behaviorAgent.SetVariableValue("AttackRange", attackRange);
 
         bool canDetectPlayer = EnemyConfig == null ||
@@ -101,7 +101,6 @@ public class Combatant : MonoBehaviour
         if (Faction == CombatFaction.Player || EnemyConfig == null)
             return;
 
-        GameObject player = CombatTool.GetPlayer();
         if (player == null || behaviorAgent == null)
             return;
 
@@ -134,15 +133,6 @@ public class Combatant : MonoBehaviour
 
         if (Time.time - targetOutOfRangeTime >= EnemyConfig.LoseTargetDelay)
             UpdateTarget(null);
-    }
-
-    private float GetConfiguredAttackRange()
-    {
-        cfg.Skill skill = TableSystem.Tables.TbSkill.GetOrDefault(
-            EnemyConfig.SkillIds[0]
-        );
-
-        return skill != null ? Mathf.Max(0f, skill.TriggerRange) : 1.7f;
     }
 
     private void UpdateTarget(GameObject newTarget)

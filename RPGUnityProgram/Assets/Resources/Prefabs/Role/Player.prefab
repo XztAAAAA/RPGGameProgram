@@ -20,6 +20,7 @@ GameObject:
   - component: {fileID: 2296885714713628031}
   - component: {fileID: 3696376280748043258}
   - component: {fileID: 6628730890488640694}
+  - component: {fileID: 7473695238001234567}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -254,3 +255,16 @@ MonoBehaviour:
   references:
     version: 2
     RefIds: []
+--- !u!114 &7473695238001234567
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 138172803367824895}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3ff29348a73553549a921a15c60df0f0, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerConfigInitializer
+  roleId: 1

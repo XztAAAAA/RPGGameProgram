@@ -1,10 +1,11 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 /// <summary>
 /// 玩家移动输入。
 /// 支持 PC WASD 和移动端 OnScreenStick 虚拟摇杆。
-/// 同时读取移动端攻击按钮，并通过 GameEventBus 请求攻击。
+/// 同时读取移动端攻击按钮，并发布本地攻击请求事件。
 /// PC 键盘/鼠标攻击仍由现有 PlayerAttackInput 负责。
 /// </summary>
 [RequireComponent(typeof(CharacterController))]
@@ -26,10 +27,7 @@ public class PlayerMovement : MonoBehaviour
     // 仅负责移动端虚拟攻击按钮，避免与现有 PC PlayerAttackInput 重复
     private InputAction mobileAttackAction;
 
-    public int RoleId { get; private set; }
-    public string RoleName { get; private set; }
-    public string PrefabKey { get; private set; }
-    public int BasicAttackSkillId { get; private set; }
+    public event Action MobileAttackRequested;
 
     private void Awake()
     {
@@ -69,22 +67,10 @@ public class PlayerMovement : MonoBehaviour
         mobileAttackAction.AddBinding("<Gamepad>/buttonSouth");
     }
 
-    public void InitializeFromConfig(cfg.Role role)
+    public void Configure(float configuredMoveSpeed, float configuredRotationSpeed)
     {
-        if (role == null)
-        {
-            Debug.LogError("PlayerMovement：角色配置为空，无法初始化玩家。", this);
-            return;
-        }
-
-        RoleId = role.RoleId;
-        RoleName = role.RoleName;
-        PrefabKey = role.PrefabKey;
-        BasicAttackSkillId = role.BasicAttackSkillId;
-        moveSpeed = Mathf.Max(0f, role.MoveSpeed);
-        rotationSpeed = Mathf.Max(0f, role.RotationSpeed);
-
-        gameObject.name = RoleName;
+        moveSpeed = Mathf.Max(0f, configuredMoveSpeed);
+        rotationSpeed = Mathf.Max(0f, configuredRotationSpeed);
     }
 
     private void OnEnable()
@@ -114,7 +100,7 @@ public class PlayerMovement : MonoBehaviour
         if (mobileAttackAction != null &&
             mobileAttackAction.WasPressedThisFrame())
         {
-            GameEventBus.Publish(new PlayerMobileAttackRequestedEvent());
+            MobileAttackRequested?.Invoke();
         }
 
         Vector2 input = moveAction != null

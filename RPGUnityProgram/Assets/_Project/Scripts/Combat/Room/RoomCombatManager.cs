@@ -15,9 +15,6 @@ public enum RoomState
 
 public class RoomCombatManager : MonoSingleton<RoomCombatManager>
 {
-    [Header("玩家角色配置")]
-    [SerializeField, Min(1)] private int playerRoleId = 1;
-
     [Header("房间设置")]
     [SerializeField] private Transform enemyRoot;
 
@@ -58,20 +55,18 @@ public class RoomCombatManager : MonoSingleton<RoomCombatManager>
 
     private void OnEnable()
     {
-        GameEventBus.Subscribe<PlayerMobileAttackRequestedEvent>(
-            HandleMobileAttackRequested
-        );
+        BindPlayerEvents();
     }
 
     private void OnDisable()
     {
-        GameEventBus.Unsubscribe<PlayerMobileAttackRequestedEvent>(
-            HandleMobileAttackRequested
-        );
+        UnbindPlayerEvents();
     }
 
     private void Awake()
     {
+        playerDeathHandler = HandlePlayerDied;
+
         if (enemyRoot == null)
         {
             Debug.LogError(
@@ -97,6 +92,12 @@ public class RoomCombatManager : MonoSingleton<RoomCombatManager>
 
     private void FindPlayerHealth()
     {
+        UnbindPlayerEvents();
+        playerHealth = null;
+        playerAttack = null;
+        playerMovement = null;
+        playerAttackInput = null;
+
         GameObject player = CombatTool.GetPlayer();
 
         if (player == null)
@@ -113,8 +114,6 @@ public class RoomCombatManager : MonoSingleton<RoomCombatManager>
         playerMovement = player.GetComponent<PlayerMovement>();
         playerAttackInput = player.GetComponent<PlayerAttackInput>();
 
-        InitializePlayerFromRole();
-
         if (playerHealth == null)
         {
             Debug.LogError(
@@ -124,64 +123,38 @@ public class RoomCombatManager : MonoSingleton<RoomCombatManager>
             return;
         }
 
-        playerDeathHandler = HandlePlayerDied;
-        playerHealth.Died -= playerDeathHandler;
-        playerHealth.Died += playerDeathHandler;
+        BindPlayerEvents();
     }
 
-    private void InitializePlayerFromRole()
+    private void BindPlayerEvents()
     {
-        cfg.Role role = TableSystem.Tables.TbRole.GetOrDefault(playerRoleId);
-        if (role == null)
+        if (playerMovement != null)
         {
-            Debug.LogError(
-                $"RoomCombatManager：TbRole 中找不到 RoleId = {playerRoleId} 的配置。",
-                this
-            );
-            return;
+            playerMovement.MobileAttackRequested -= HandleMobileAttackRequested;
+            playerMovement.MobileAttackRequested += HandleMobileAttackRequested;
         }
 
-        cfg.Skill basicAttack =
-            TableSystem.Tables.TbSkill.GetOrDefault(role.BasicAttackSkillId);
-        if (basicAttack == null)
+        if (playerHealth != null && playerDeathHandler != null)
         {
-            Debug.LogError(
-                $"RoomCombatManager：RoleId = {role.RoleId} 引用的技能 " +
-                $"{role.BasicAttackSkillId} 不存在。",
-                this
-            );
-            return;
+            playerHealth.Died -= playerDeathHandler;
+            playerHealth.Died += playerDeathHandler;
         }
+    }
 
-        if (playerHealth == null ||
-            playerMovement == null ||
-            playerAttack == null)
-        {
-            Debug.LogError(
-                "RoomCombatManager：Player 必须包含 Health、PlayerMovement 和 Attack 组件，" +
-                "才能应用角色配置。",
-                this
-            );
-            return;
-        }
+    private void UnbindPlayerEvents()
+    {
+        if (playerMovement != null)
+            playerMovement.MobileAttackRequested -= HandleMobileAttackRequested;
 
-        playerHealth.InitializeFromConfig(role.MaxHealth);
-        playerMovement.InitializeFromConfig(role);
-        playerAttack.InitializeFromConfig(basicAttack);
-
-        Debug.Log(
-            $"玩家角色配置已应用：{role.RoleName}（ID: {role.RoleId}，" +
-            $"基础技能: {basicAttack.SkillName}）。",
-            this
-        );
+        if (playerHealth != null && playerDeathHandler != null)
+            playerHealth.Died -= playerDeathHandler;
     }
 
     /// <summary>
     /// 接收移动端攻击按钮事件。
     /// 仅在战斗进行中调用玩家已有的 Attack 组件。
     /// </summary>
-    private void HandleMobileAttackRequested(
-        PlayerMobileAttackRequestedEvent eventData)
+    private void HandleMobileAttackRequested()
     {
         if (State != RoomState.InProgress)
             return;
