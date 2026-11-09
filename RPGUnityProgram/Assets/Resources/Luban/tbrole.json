@@ -6,6 +6,8 @@
     "max_health": 1000,
     "move_speed": 10,
     "rotation_speed": 720,
-    "basic_attack_skill_id": 20001
+    "basic_attack_skill_id": 20001,
+    "dodge distance": 5,
+    "dodge_time": 1
   }
 ]
