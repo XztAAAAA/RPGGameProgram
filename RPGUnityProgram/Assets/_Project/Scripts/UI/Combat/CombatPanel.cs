@@ -3,6 +3,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using UnityEngine.InputSystem;
 
 public class CombatPanel : MonoBehaviour
 {
@@ -16,6 +17,9 @@ public class CombatPanel : MonoBehaviour
     [Header("动态面板资源路径")]
     [SerializeField] private string clearPanelPath = "UI/RoomWinPanel";
     [SerializeField] private string failedPanelPath = "UI/RoomFailedPanel";
+
+    [SerializeField] private GameObject MobileControls;
+    [SerializeField] private GameObject JoystickBase;
 
     private GameObject clearPanel;
     private GameObject failedPanel;
@@ -57,6 +61,12 @@ public class CombatPanel : MonoBehaviour
 
         roomManager.onRoomCleared.AddListener(() => clearPanel.SetActive(roomManager.State == RoomState.Cleared));
         roomManager.onRoomFailed.AddListener(() => failedPanel.SetActive(roomManager.State == RoomState.Failed));
+
+#if UNITY_ANDROID || UNITY_IOS
+            MobileControls?.SetActive(true);
+#else
+            MobileControls?.SetActive(false);
+#endif
     }
 
     private GameObject LoadPanel(string path, Transform parent)
