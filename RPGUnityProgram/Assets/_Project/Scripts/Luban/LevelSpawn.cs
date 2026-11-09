@@ -25,7 +25,6 @@ public sealed partial class LevelSpawn : Luban.BeanBase
         { if(!_buf["enemy_key"].IsString) { throw new SerializationException(); }  EnemyKey = _buf["enemy_key"]; }
         { if(!_buf["count"].IsNumber) { throw new SerializationException(); }  Count = _buf["count"]; }
         { if(!_buf["max_health"].IsNumber) { throw new SerializationException(); }  MaxHealth = _buf["max_health"]; }
-        { if(!_buf["attack_damage"].IsNumber) { throw new SerializationException(); }  AttackDamage = _buf["attack_damage"]; }
         { if(!_buf["move_speed"].IsNumber) { throw new SerializationException(); }  MoveSpeed = _buf["move_speed"]; }
         { if(!_buf["spawn_radius"].IsNumber) { throw new SerializationException(); }  SpawnRadius = _buf["spawn_radius"]; }
     }
@@ -40,7 +39,6 @@ public sealed partial class LevelSpawn : Luban.BeanBase
     public readonly string EnemyKey;
     public readonly int Count;
     public readonly int MaxHealth;
-    public readonly float AttackDamage;
     public readonly float MoveSpeed;
     public readonly float SpawnRadius;
    
@@ -59,7 +57,6 @@ public sealed partial class LevelSpawn : Luban.BeanBase
         + "enemyKey:" + EnemyKey + ","
         + "count:" + Count + ","
         + "maxHealth:" + MaxHealth + ","
-        + "attackDamage:" + AttackDamage + ","
         + "moveSpeed:" + MoveSpeed + ","
         + "spawnRadius:" + SpawnRadius + ","
         + "}";

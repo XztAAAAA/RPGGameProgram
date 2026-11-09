@@ -248,6 +248,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Combatant
   faction: 1
+  enemyId: 1001
 --- !u!114 &-892380222198881406
 MonoBehaviour:
   m_ObjectHideFlags: 0

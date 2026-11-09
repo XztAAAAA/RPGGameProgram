@@ -1,4 +1,5 @@
 using Unity.Behavior;
+using UnityEngine.AI;
 using UnityEngine;
 
 public enum CombatFaction
@@ -13,9 +14,18 @@ public class Combatant : MonoBehaviour
     [SerializeField]
     private CombatFaction faction = CombatFaction.Enemy;
 
-    public CombatFaction Faction => faction;
+    [SerializeField, Min(0)]
+    private int enemyId;
 
-    void Awake()
+    public CombatFaction Faction => faction;
+    public int EnemyId => enemyId;
+    public cfg.Enemy EnemyConfig { get; private set; }
+
+    private BehaviorGraphAgent behaviorAgent;
+    private GameObject target;
+    private float targetOutOfRangeTime = -1f;
+
+    private void Awake()
     {
         Health health = GetComponent<Health>();
         HealthBar healthBar = GetComponentInChildren<HealthBar>(true);
@@ -24,14 +34,46 @@ public class Combatant : MonoBehaviour
             healthBar.Initialize(health);
     }
 
-    void Start()
+    public void InitializeFromConfig(cfg.Enemy enemy, cfg.Skill primarySkill)
+    {
+        if (enemy == null)
+        {
+            Debug.LogError("Combatant：敌人配置为空，无法初始化。", this);
+            return;
+        }
+
+        enemyId = enemy.EnemyId;
+        EnemyConfig = enemy;
+        gameObject.name = enemy.EnemyName;
+
+        Health health = GetComponent<Health>();
+        NavMeshAgent agent = GetComponent<NavMeshAgent>();
+        Attack attack = GetComponent<Attack>();
+
+        if (health == null || agent == null || attack == null)
+        {
+            Debug.LogError(
+                $"{name}：敌人 Prefab 必须包含 Health、NavMeshAgent 和 Attack 组件。",
+                this
+            );
+            return;
+        }
+
+        health.InitializeFromConfig(enemy.MaxHealth);
+        agent.speed = Mathf.Max(0.1f, enemy.MoveSpeed);
+        agent.angularSpeed = Mathf.Max(0f, enemy.RotationSpeed);
+
+        if (primarySkill != null)
+        {
+            attack.InitializeFromConfig(primarySkill);
+        }
+    }
+
+    private void Start()
     {
         if (Faction == CombatFaction.Player) return;
-        // 获取当前敌人的行为图组件
-        BehaviorGraphAgent behaviorAgent =
-            GetComponent<BehaviorGraphAgent>();
 
-        // 查找场景中的玩家
+        behaviorAgent = GetComponent<BehaviorGraphAgent>();
         GameObject player = CombatTool.GetPlayer();
 
         if (player == null)
@@ -43,29 +85,76 @@ public class Combatant : MonoBehaviour
             return;
         }
 
-        // 将玩家动态赋值给行为树黑板中的 Target
-        bool success =
-            behaviorAgent.SetVariableValue(
-                "Target",
-                player
-            );
+        float attackRange = EnemyConfig != null && EnemyConfig.SkillIds.Length > 0
+            ? GetConfiguredAttackRange()
+            : 1.7f;
+        behaviorAgent.SetVariableValue("AttackRange", attackRange);
 
-        behaviorAgent.SetVariableValue(
-                        "AttackRange",
-                        1.7f
-                    );
+        bool canDetectPlayer = EnemyConfig == null ||
+            Vector3.Distance(transform.position, player.transform.position) <=
+            EnemyConfig.DetectRange;
+        UpdateTarget(canDetectPlayer ? player : null);
+    }
 
-        if (success)
+    private void Update()
+    {
+        if (Faction == CombatFaction.Player || EnemyConfig == null)
+            return;
+
+        GameObject player = CombatTool.GetPlayer();
+        if (player == null || behaviorAgent == null)
+            return;
+
+        Health playerHealth = player.GetComponent<Health>();
+        if (!player.activeInHierarchy ||
+            (playerHealth != null && playerHealth.IsDead))
         {
-            Debug.Log(
-                $"{name}：Target 已设置为 {player.name}",
-                this
-            );
+            UpdateTarget(null);
+            return;
         }
-        else
+
+        float distance = Vector3.Distance(transform.position, player.transform.position);
+
+        if (target == null)
+        {
+            if (distance <= EnemyConfig.DetectRange)
+                UpdateTarget(player);
+
+            return;
+        }
+
+        if (distance <= EnemyConfig.LoseTargetRange)
+        {
+            targetOutOfRangeTime = -1f;
+            return;
+        }
+
+        if (targetOutOfRangeTime < 0f)
+            targetOutOfRangeTime = Time.time;
+
+        if (Time.time - targetOutOfRangeTime >= EnemyConfig.LoseTargetDelay)
+            UpdateTarget(null);
+    }
+
+    private float GetConfiguredAttackRange()
+    {
+        cfg.Skill skill = TableSystem.Tables.TbSkill.GetOrDefault(
+            EnemyConfig.SkillIds[0]
+        );
+
+        return skill != null ? Mathf.Max(0f, skill.TriggerRange) : 1.7f;
+    }
+
+    private void UpdateTarget(GameObject newTarget)
+    {
+        target = newTarget;
+        targetOutOfRangeTime = -1f;
+
+        if (behaviorAgent != null &&
+            !behaviorAgent.SetVariableValue("Target", target))
         {
             Debug.LogError(
-                $"{name}：设置 Target 失败，请检查行为图中是否存在名为 Target 的 GameObject 变量。",
+                $"{name}：设置行为图 Target 失败，请检查 Blackboard 是否包含 Target 变量。",
                 this
             );
         }

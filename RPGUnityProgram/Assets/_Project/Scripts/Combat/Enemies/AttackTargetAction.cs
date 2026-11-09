@@ -84,7 +84,7 @@ public partial class AttackTargetAction : Action
             self.transform.rotation = Quaternion.RotateTowards(
                 self.transform.rotation,
                 targetRotation,
-                720f * Time.deltaTime
+                agent.angularSpeed * Time.deltaTime
             );
         }
 
@@ -100,4 +100,3 @@ public partial class AttackTargetAction : Action
         // 切换到追击分支时，由 MoveToTarget 负责恢复移动。
     }
 }
-

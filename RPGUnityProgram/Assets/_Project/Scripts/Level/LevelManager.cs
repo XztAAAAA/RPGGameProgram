@@ -386,6 +386,57 @@ public class LevelManager : PersistentMonoSingleton<LevelManager>
                 continue;
             }
 
+            Combatant prefabCombatant = prefab.GetComponent<Combatant>();
+            if (prefabCombatant == null)
+            {
+                Debug.LogError(
+                    $"敌人 Prefab {prefab.name} 缺少 Combatant 组件，无法读取敌人配置 ID。",
+                    prefab
+                );
+                continue;
+            }
+
+            cfg.Enemy enemyConfig = ResolveEnemyConfig(
+                tables,
+                prefabCombatant,
+                prefab,
+                spawn.EnemyKey
+            );
+            if (enemyConfig == null)
+                continue;
+
+            cfg.Skill primarySkill = null;
+            if (enemyConfig.SkillIds.Length == 0)
+            {
+                Debug.LogError(
+                    $"敌人 {enemyConfig.EnemyName}（ID: {enemyConfig.EnemyId}）没有配置技能，无法初始化攻击属性。",
+                    this
+                );
+                continue;
+            }
+            else
+            {
+                if (enemyConfig.SkillIds.Length > 1)
+                {
+                    Debug.LogWarning(
+                        $"敌人 {enemyConfig.EnemyName} 配置了多个技能；当前 Attack 组件只支持一个技能，" +
+                        $"本次使用第一个技能 ID {enemyConfig.SkillIds[0]}。",
+                        this
+                    );
+                }
+
+                primarySkill = tables.TbSkill.GetOrDefault(enemyConfig.SkillIds[0]);
+                if (primarySkill == null)
+                {
+                    Debug.LogError(
+                        $"敌人 {enemyConfig.EnemyName} 引用的技能 ID " +
+                        $"{enemyConfig.SkillIds[0]} 不存在于 TbSkill，无法初始化攻击属性。",
+                        this
+                    );
+                    continue;
+                }
+            }
+
             for (int i = 0; i < spawn.Count; i++)
             {
                 Vector3 position =
@@ -401,11 +452,12 @@ public class LevelManager : PersistentMonoSingleton<LevelManager>
                 Health health = enemy.GetComponent<Health>();
                 Attack attack = enemy.GetComponent<Attack>();
                 NavMeshAgent agent = enemy.GetComponent<NavMeshAgent>();
+                Combatant combatant = enemy.GetComponent<Combatant>();
 
-                if (health == null || attack == null || agent == null)
+                if (health == null || attack == null || agent == null || combatant == null)
                 {
                     Debug.LogError(
-                        $"敌人 Prefab {prefab.name} 必须包含 Health、Attack 和 NavMeshAgent。",
+                        $"敌人 Prefab {prefab.name} 必须包含 Health、Attack、NavMeshAgent 和 Combatant。",
                         prefab
                     );
 
@@ -414,8 +466,9 @@ public class LevelManager : PersistentMonoSingleton<LevelManager>
                 }
 
                 // EnemyRoot 当前为非激活状态，因此可以先设置属性，再激活敌人。
+                combatant.InitializeFromConfig(enemyConfig, primarySkill);
+                // 保留关卡表对生命和移速的逐关覆盖。
                 health.InitializeFromConfig(spawn.MaxHealth);
-                attack.InitializeDamage(spawn.AttackDamage);
                 agent.speed = Mathf.Max(0.1f, spawn.MoveSpeed);
 
                 spawnedCount++;
@@ -431,6 +484,72 @@ public class LevelManager : PersistentMonoSingleton<LevelManager>
         }
 
         return spawnedCount;
+    }
+
+    private cfg.Enemy ResolveEnemyConfig(
+        cfg.Tables tables,
+        Combatant prefabCombatant,
+        GameObject prefab,
+        string spawnKey)
+    {
+        cfg.Enemy enemy = prefabCombatant.EnemyId > 0
+            ? tables.TbEnemy.GetOrDefault(prefabCombatant.EnemyId)
+            : null;
+
+        if (enemy == null && prefabCombatant.EnemyId <= 0)
+        {
+            foreach (cfg.Enemy candidate in tables.TbEnemy.DataList)
+            {
+                if (!string.Equals(
+                        candidate.PrefabKey,
+                        prefab.name,
+                        StringComparison.OrdinalIgnoreCase) &&
+                    !string.Equals(
+                        candidate.PrefabKey,
+                        spawnKey,
+                        StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+
+                if (enemy != null)
+                {
+                    Debug.LogError(
+                        $"敌人 Prefab {prefab.name} 对应多个 TbEnemy 配置，请在 Combatant 上指定 EnemyId。",
+                        prefab
+                    );
+                    return null;
+                }
+
+                enemy = candidate;
+            }
+        }
+
+        if (enemy == null)
+        {
+            Debug.LogError(
+                $"无法为敌人 Prefab {prefab.name} 找到 TbEnemy 配置。" +
+                (prefabCombatant.EnemyId > 0
+                    ? $" Combatant 配置的 EnemyId={prefabCombatant.EnemyId} 不存在。"
+                    : " 请在 Combatant 上设置 EnemyId，或确保 PrefabKey 与 Prefab 名称一致。"),
+                prefab
+            );
+            return null;
+        }
+
+        if (!string.Equals(
+                enemy.PrefabKey,
+                prefab.name,
+                StringComparison.OrdinalIgnoreCase))
+        {
+            Debug.LogWarning(
+                $"敌人表 PrefabKey={enemy.PrefabKey} 与实际 Prefab={prefab.name} 不一致；" +
+                $"继续使用 Combatant EnemyId={enemy.EnemyId} 配置（关卡生成键：{spawnKey}）。",
+                prefab
+            );
+        }
+
+        return enemy;
     }
 
     private Vector3 GetSpawnPosition(

@@ -7,7 +7,7 @@
     "move_speed": 3,
     "rotation_speed": 720,
     "skill_ids": [
-      1000210001
+      10001
     ],
     "detect_range": 8,
     "lose_target_range": 12,
