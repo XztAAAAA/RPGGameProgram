@@ -183,8 +183,7 @@ public class RoomCombatManager : MonoSingleton<RoomCombatManager>
 
         foreach (Combatant combatant in combatants)
         {
-            if (combatant == null ||
-                combatant.Faction != CombatFaction.Enemy)
+            if (combatant == null)
             {
                 continue;
             }
@@ -234,7 +233,7 @@ public class RoomCombatManager : MonoSingleton<RoomCombatManager>
         if (RemainingEnemies == 0)
         {
             Debug.LogError(
-                "房间没有找到有效敌人，请检查 EnemyRoot 和 Combatant 阵营。",
+                "房间没有找到有效敌人，请检查 EnemyRoot 和 CombatFactionMarker 阵营。",
                 this
             );
 
@@ -263,8 +262,15 @@ public class RoomCombatManager : MonoSingleton<RoomCombatManager>
             return;
         }
 
-        if (combatant == null ||
-            combatant.Faction != CombatFaction.Enemy)
+        if (combatant == null)
+        {
+            return;
+        }
+
+        CombatFactionMarker factionMarker =
+            combatant.GetComponent<CombatFactionMarker>();
+        if (factionMarker == null ||
+            factionMarker.Faction != CombatFaction.Enemy)
         {
             return;
         }

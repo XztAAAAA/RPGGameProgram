@@ -2,22 +2,13 @@ using Unity.Behavior;
 using UnityEngine.AI;
 using UnityEngine;
 
-public enum CombatFaction
-{
-    Player,
-    Enemy
-}
-
 [RequireComponent(typeof(BehaviorGraphAgent))]
+[RequireComponent(typeof(CombatFactionMarker))]
 public class Combatant : MonoBehaviour
 {
-    [SerializeField]
-    private CombatFaction faction = CombatFaction.Enemy;
-
     [SerializeField, Min(0)]
     private int enemyId;
 
-    public CombatFaction Faction => faction;
     public int EnemyId => enemyId;
     public cfg.Enemy EnemyConfig { get; private set; }
 
@@ -74,8 +65,6 @@ public class Combatant : MonoBehaviour
 
     private void Start()
     {
-        if (Faction == CombatFaction.Player) return;
-
         behaviorAgent = GetComponent<BehaviorGraphAgent>();
         player = CombatTool.GetPlayer();
 
@@ -98,8 +87,14 @@ public class Combatant : MonoBehaviour
 
     private void Update()
     {
-        if (Faction == CombatFaction.Player || EnemyConfig == null)
+        CombatFactionMarker factionMarker =
+            GetComponent<CombatFactionMarker>();
+        if (factionMarker == null ||
+            factionMarker.Faction != CombatFaction.Enemy ||
+            EnemyConfig == null)
+        {
             return;
+        }
 
         if (player == null || behaviorAgent == null)
             return;

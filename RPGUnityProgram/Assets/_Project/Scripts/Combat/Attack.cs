@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(Combatant))]
+[RequireComponent(typeof(CombatFactionMarker))]
 public class Attack : MonoBehaviour
 {
     [Header("攻击设置")]
@@ -24,7 +24,7 @@ public class Attack : MonoBehaviour
     [SerializeField]
     private LayerMask hitLayers = ~0;
 
-    private Combatant owner;
+    private CombatFactionMarker ownerFaction;
     private float nextAttackTime;
 
     public float Damage => damage;
@@ -54,7 +54,7 @@ public class Attack : MonoBehaviour
 
     private void Awake()
     {
-        owner = GetComponent<Combatant>();
+        ownerFaction = GetComponent<CombatFactionMarker>();
     }
 
     /// <summary>
@@ -63,7 +63,7 @@ public class Attack : MonoBehaviour
     /// </summary>
     public bool TryAttack()
     {
-        if (!CanAttack || owner == null)
+        if (!CanAttack || ownerFaction == null)
             return false;
 
         nextAttackTime = Time.time + cooldown;
@@ -91,22 +91,20 @@ public class Attack : MonoBehaviour
             if (targetHealth == null || targetHealth.IsDead)
                 continue;
 
-            Combatant targetCombatant =
-                targetHealth.GetComponent<Combatant>();
+            CombatFactionMarker targetFaction =
+                targetHealth.GetComponent<CombatFactionMarker>();
 
-            if (targetCombatant == null)
+            if (targetFaction == null)
             {
-                targetCombatant =
-                    targetHealth.GetComponentInParent<Combatant>();
+                targetFaction =
+                    targetHealth.GetComponentInParent<CombatFactionMarker>();
             }
 
-            // 没有阵营标识的对象不会被这套攻击系统命中
-            if (targetCombatant == null)
+            if (targetFaction == null)
                 continue;
 
-            // 不攻击自己或同阵营对象
-            if (targetCombatant == owner ||
-                targetCombatant.Faction == owner.Faction)
+            if (targetFaction == ownerFaction ||
+                targetFaction.Faction == ownerFaction.Faction)
             {
                 continue;
             }

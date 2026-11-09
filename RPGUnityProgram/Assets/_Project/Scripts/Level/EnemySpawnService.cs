@@ -44,10 +44,14 @@ public sealed class EnemySpawnService
             }
 
             Combatant prefabCombatant = prefab.GetComponent<Combatant>();
-            if (prefabCombatant == null)
+            CombatFactionMarker prefabFaction =
+                prefab.GetComponent<CombatFactionMarker>();
+            if (prefabCombatant == null ||
+                prefabFaction == null ||
+                prefabFaction.Faction != CombatFaction.Enemy)
             {
                 Debug.LogError(
-                    $"敌人 Prefab {prefab.name} 缺少 Combatant 组件，无法读取敌人配置 ID。",
+                    $"敌人 Prefab {prefab.name} 必须包含 Combatant 和 Enemy 阵营标记。",
                     prefab
                 );
                 continue;
@@ -80,11 +84,15 @@ public sealed class EnemySpawnService
                 Attack attack = enemy.GetComponent<Attack>();
                 NavMeshAgent agent = enemy.GetComponent<NavMeshAgent>();
                 Combatant combatant = enemy.GetComponent<Combatant>();
+                CombatFactionMarker factionMarker =
+                    enemy.GetComponent<CombatFactionMarker>();
 
-                if (health == null || attack == null || agent == null || combatant == null)
+                if (health == null || attack == null || agent == null ||
+                    combatant == null || factionMarker == null ||
+                    factionMarker.Faction != CombatFaction.Enemy)
                 {
                     Debug.LogError(
-                        $"敌人 Prefab {prefab.name} 必须包含 Health、Attack、NavMeshAgent 和 Combatant。",
+                        $"敌人 Prefab {prefab.name} 必须包含 Health、Attack、NavMeshAgent、Combatant 和 Enemy 阵营标记。",
                         prefab
                     );
                     UnityEngine.Object.Destroy(enemy);

@@ -14,13 +14,13 @@ GameObject:
   - component: {fileID: 6118409678680587352}
   - component: {fileID: 493605217341403104}
   - component: {fileID: 5163054172515676852}
-  - component: {fileID: 532661577789766890}
   - component: {fileID: -298731608680883065}
   - component: {fileID: 554719385814117188}
   - component: {fileID: 2296885714713628031}
   - component: {fileID: 3696376280748043258}
   - component: {fileID: 6628730890488640694}
   - component: {fileID: 7473695238001234567}
+  - component: {fileID: 8101357924680135792}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -158,23 +158,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f14db6e6d84bed7418a581bbb87b0a27, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
   moveSpeed: 10
   cameraTransform: {fileID: 0}
---- !u!114 &532661577789766890
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 138172803367824895}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2d2eea0e8488b3f41a46a03c924dc109, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Combatant
-  faction: 0
 --- !u!114 &-298731608680883065
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -268,3 +255,16 @@ MonoBehaviour:
   m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerConfigInitializer
   roleId: 1
+--- !u!114 &8101357924680135792
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 138172803367824895}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 19f7e4c078c847e19bc587fd91552b2e, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::CombatFactionMarker
+  faction: 0

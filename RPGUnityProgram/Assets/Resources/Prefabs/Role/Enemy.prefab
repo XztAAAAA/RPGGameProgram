@@ -74,7 +74,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.CanvasScaler
   m_UiScaleMode: 0
   m_ReferencePixelsPerUnit: 100
@@ -134,6 +134,7 @@ GameObject:
   - component: {fileID: -4189563823993112271}
   - component: {fileID: -1807723872940192073}
   - component: {fileID: 2000836984309619972}
+  - component: {fileID: 8101357924680135792}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Untagged
@@ -247,7 +248,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d2eea0e8488b3f41a46a03c924dc109, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Combatant
-  faction: 1
   enemyId: 1001
 --- !u!114 &-892380222198881406
 MonoBehaviour:
@@ -366,6 +366,19 @@ MonoBehaviour:
           m_Value1: 7420750636982675473
         Name: AttackRange
         m_Value: 0
+--- !u!114 &8101357924680135792
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6226038009422841868}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 19f7e4c078c847e19bc587fd91552b2e, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::CombatFactionMarker
+  faction: 1
 --- !u!1001 &6446054279562103189
 PrefabInstance:
   m_ObjectHideFlags: 0
