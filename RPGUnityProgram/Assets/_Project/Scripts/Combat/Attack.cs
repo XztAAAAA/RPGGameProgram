@@ -6,20 +6,20 @@ public class Attack : MonoBehaviour
 {
     [Header("攻击设置")]
     [SerializeField, Min(0f)]
-    private float damage = 20f;
+    private float damage;
 
     [SerializeField, Min(0.1f)]
-    private float attackCooldown = 0.45f;
+    private float cooldown;
 
     [Header("攻击范围")]
     [SerializeField, Min(0.1f)]
-    private float attackRadius = 0.9f;
+    private float hitRadius;
 
     [SerializeField]
-    private float attackForwardOffset = 1f;
+    private float hitOffset;
 
     [SerializeField]
-    private float attackHeight = 0.1f;
+    private float attackHeight;
 
     [SerializeField]
     private LayerMask hitLayers = ~0;
@@ -38,6 +38,20 @@ public class Attack : MonoBehaviour
         damage = Mathf.Max(0f, configuredDamage);
     }
 
+    public void InitializeFromConfig(cfg.Skill skill)
+    {
+        if (skill == null)
+        {
+            Debug.LogError("Attack：技能配置为空，无法初始化攻击属性。", this);
+            return;
+        }
+
+        damage = Mathf.Max(0f, skill.Damage);
+        cooldown = Mathf.Max(0.1f, skill.Cooldown);
+        hitRadius = Mathf.Max(0.1f, skill.HitRadius);
+        hitOffset = Mathf.Max(0f, skill.HitOffset);
+    }
+
     private void Awake()
     {
         owner = GetComponent<Combatant>();
@@ -52,16 +66,16 @@ public class Attack : MonoBehaviour
         if (!CanAttack || owner == null)
             return false;
 
-        nextAttackTime = Time.time + attackCooldown;
+        nextAttackTime = Time.time + cooldown;
 
         Vector3 attackCenter =
             transform.position
             + Vector3.up * attackHeight
-            + transform.forward * attackForwardOffset;
+            + transform.forward * hitOffset;
 
         Collider[] hits = Physics.OverlapSphere(
             attackCenter,
-            attackRadius,
+            hitRadius,
             hitLayers,
             QueryTriggerInteraction.Ignore
         );
@@ -111,9 +125,9 @@ public class Attack : MonoBehaviour
         Vector3 attackCenter =
             transform.position
             + Vector3.up * attackHeight
-            + transform.forward * attackForwardOffset;
+            + transform.forward * hitOffset;
 
         Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(attackCenter, attackRadius);
+        Gizmos.DrawWireSphere(attackCenter, hitRadius);
     }
 }

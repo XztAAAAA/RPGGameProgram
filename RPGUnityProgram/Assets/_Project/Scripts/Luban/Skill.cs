@@ -27,6 +27,7 @@ public sealed partial class Skill : Luban.BeanBase
         { if(!_buf["skill_kind"].IsNumber) { throw new SerializationException(); }  SkillKind = _buf["skill_kind"]; }
         { if(!_buf["damage"].IsNumber) { throw new SerializationException(); }  Damage = _buf["damage"]; }
         { if(!_buf["trigger_range"].IsNumber) { throw new SerializationException(); }  TriggerRange = _buf["trigger_range"]; }
+        { if(!_buf["hit_offset"].IsNumber) { throw new SerializationException(); }  HitOffset = _buf["hit_offset"]; }
         { if(!_buf["hit_radius"].IsNumber) { throw new SerializationException(); }  HitRadius = _buf["hit_radius"]; }
         { if(!_buf["cooldown"].IsNumber) { throw new SerializationException(); }  Cooldown = _buf["cooldown"]; }
         { if(!_buf["startup_time"].IsNumber) { throw new SerializationException(); }  StartupTime = _buf["startup_time"]; }
@@ -49,6 +50,7 @@ public sealed partial class Skill : Luban.BeanBase
     public readonly int SkillKind;
     public readonly float Damage;
     public readonly float TriggerRange;
+    public readonly float HitOffset;
     public readonly float HitRadius;
     public readonly float Cooldown;
     public readonly float StartupTime;
@@ -75,6 +77,7 @@ public sealed partial class Skill : Luban.BeanBase
         + "skillKind:" + SkillKind + ","
         + "damage:" + Damage + ","
         + "triggerRange:" + TriggerRange + ","
+        + "hitOffset:" + HitOffset + ","
         + "hitRadius:" + HitRadius + ","
         + "cooldown:" + Cooldown + ","
         + "startupTime:" + StartupTime + ","

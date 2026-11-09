@@ -15,6 +15,9 @@ public enum RoomState
 
 public class RoomCombatManager : MonoSingleton<RoomCombatManager>
 {
+    [Header("玩家角色配置")]
+    [SerializeField, Min(1)] private int playerRoleId = 1;
+
     [Header("房间设置")]
     [SerializeField] private Transform enemyRoot;
 
@@ -110,6 +113,8 @@ public class RoomCombatManager : MonoSingleton<RoomCombatManager>
         playerMovement = player.GetComponent<PlayerMovement>();
         playerAttackInput = player.GetComponent<PlayerAttackInput>();
 
+        InitializePlayerFromRole();
+
         if (playerHealth == null)
         {
             Debug.LogError(
@@ -122,6 +127,53 @@ public class RoomCombatManager : MonoSingleton<RoomCombatManager>
         playerDeathHandler = HandlePlayerDied;
         playerHealth.Died -= playerDeathHandler;
         playerHealth.Died += playerDeathHandler;
+    }
+
+    private void InitializePlayerFromRole()
+    {
+        cfg.Role role = TableSystem.Tables.TbRole.GetOrDefault(playerRoleId);
+        if (role == null)
+        {
+            Debug.LogError(
+                $"RoomCombatManager：TbRole 中找不到 RoleId = {playerRoleId} 的配置。",
+                this
+            );
+            return;
+        }
+
+        cfg.Skill basicAttack =
+            TableSystem.Tables.TbSkill.GetOrDefault(role.BasicAttackSkillId);
+        if (basicAttack == null)
+        {
+            Debug.LogError(
+                $"RoomCombatManager：RoleId = {role.RoleId} 引用的技能 " +
+                $"{role.BasicAttackSkillId} 不存在。",
+                this
+            );
+            return;
+        }
+
+        if (playerHealth == null ||
+            playerMovement == null ||
+            playerAttack == null)
+        {
+            Debug.LogError(
+                "RoomCombatManager：Player 必须包含 Health、PlayerMovement 和 Attack 组件，" +
+                "才能应用角色配置。",
+                this
+            );
+            return;
+        }
+
+        playerHealth.InitializeFromConfig(role.MaxHealth);
+        playerMovement.InitializeFromConfig(role);
+        playerAttack.InitializeFromConfig(basicAttack);
+
+        Debug.Log(
+            $"玩家角色配置已应用：{role.RoleName}（ID: {role.RoleId}，" +
+            $"基础技能: {basicAttack.SkillName}）。",
+            this
+        );
     }
 
     /// <summary>

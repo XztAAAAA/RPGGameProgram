@@ -12,6 +12,7 @@ public class PlayerMovement : MonoBehaviour
 {
     [Header("移动设置")]
     [SerializeField] private float moveSpeed = 4f;
+    [SerializeField] private float rotationSpeed = 720f;
 
     [Header("参考相机")]
     [SerializeField] private Transform cameraTransform;
@@ -24,6 +25,11 @@ public class PlayerMovement : MonoBehaviour
 
     // 仅负责移动端虚拟攻击按钮，避免与现有 PC PlayerAttackInput 重复
     private InputAction mobileAttackAction;
+
+    public int RoleId { get; private set; }
+    public string RoleName { get; private set; }
+    public string PrefabKey { get; private set; }
+    public int BasicAttackSkillId { get; private set; }
 
     private void Awake()
     {
@@ -61,6 +67,24 @@ public class PlayerMovement : MonoBehaviour
 
         // Mobile：OnScreenButton 写入的虚拟 Gamepad 南键
         mobileAttackAction.AddBinding("<Gamepad>/buttonSouth");
+    }
+
+    public void InitializeFromConfig(cfg.Role role)
+    {
+        if (role == null)
+        {
+            Debug.LogError("PlayerMovement：角色配置为空，无法初始化玩家。", this);
+            return;
+        }
+
+        RoleId = role.RoleId;
+        RoleName = role.RoleName;
+        PrefabKey = role.PrefabKey;
+        BasicAttackSkillId = role.BasicAttackSkillId;
+        moveSpeed = Mathf.Max(0f, role.MoveSpeed);
+        rotationSpeed = Mathf.Max(0f, role.RotationSpeed);
+
+        gameObject.name = RoleName;
     }
 
     private void OnEnable()
@@ -121,7 +145,14 @@ public class PlayerMovement : MonoBehaviour
 
         // 让角色朝移动方向转身
         if (move.sqrMagnitude > 0.001f)
-            transform.forward = move;
+        {
+            Quaternion targetRotation = Quaternion.LookRotation(move);
+            transform.rotation = Quaternion.RotateTowards(
+                transform.rotation,
+                targetRotation,
+                rotationSpeed * Time.deltaTime
+            );
+        }
 
         // 执行移动
         controller.Move(move * moveSpeed * Time.deltaTime);
