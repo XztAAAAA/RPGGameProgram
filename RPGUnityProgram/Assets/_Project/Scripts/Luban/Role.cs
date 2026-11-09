@@ -27,7 +27,7 @@ public sealed partial class Role : Luban.BeanBase
         { if(!_buf["move_speed"].IsNumber) { throw new SerializationException(); }  MoveSpeed = _buf["move_speed"]; }
         { if(!_buf["rotation_speed"].IsNumber) { throw new SerializationException(); }  RotationSpeed = _buf["rotation_speed"]; }
         { if(!_buf["basic_attack_skill_id"].IsNumber) { throw new SerializationException(); }  BasicAttackSkillId = _buf["basic_attack_skill_id"]; }
-        { if(!_buf["dodge distance"].IsNumber) { throw new SerializationException(); }  Dodge distance = _buf["dodge distance"]; }
+        { if(!_buf["dodge_distance"].IsNumber) { throw new SerializationException(); }  DodgeDistance = _buf["dodge_distance"]; }
         { if(!_buf["dodge_time"].IsNumber) { throw new SerializationException(); }  DodgeTime = _buf["dodge_time"]; }
     }
 
@@ -43,7 +43,7 @@ public sealed partial class Role : Luban.BeanBase
     public readonly float MoveSpeed;
     public readonly float RotationSpeed;
     public readonly int BasicAttackSkillId;
-    public readonly float Dodge distance;
+    public readonly float DodgeDistance;
     public readonly float DodgeTime;
    
     public const int __ID__ = 2552982;
@@ -63,7 +63,7 @@ public sealed partial class Role : Luban.BeanBase
         + "moveSpeed:" + MoveSpeed + ","
         + "rotationSpeed:" + RotationSpeed + ","
         + "basicAttackSkillId:" + BasicAttackSkillId + ","
-        + "dodge distance:" + Dodge distance + ","
+        + "dodgeDistance:" + DodgeDistance + ","
         + "dodgeTime:" + DodgeTime + ","
         + "}";
     }
