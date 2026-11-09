@@ -19,7 +19,7 @@ public class RoomCombatManager : MonoSingleton<RoomCombatManager>
     [SerializeField] private Transform enemyRoot;
 
     /// <summary>
-    /// 默认关闭
+    /// 默认关闭，由关卡系统生成敌人后调用 StartRoom。
     /// </summary>
     [SerializeField] private bool startAutomatically = false;
 
@@ -28,16 +28,13 @@ public class RoomCombatManager : MonoSingleton<RoomCombatManager>
 
     [Header("房间事件")]
     [SerializeField]
-    private UnityEvent onRoomStarted =
-        new UnityEvent();
+    private UnityEvent onRoomStarted = new UnityEvent();
 
     [SerializeField]
-    public UnityEvent onRoomCleared =
-        new UnityEvent();
+    public UnityEvent onRoomCleared = new UnityEvent();
 
     [SerializeField]
-    public UnityEvent onRoomFailed =
-        new UnityEvent();
+    public UnityEvent onRoomFailed = new UnityEvent();
 
     private readonly HashSet<Health> aliveEnemies =
         new HashSet<Health>();
@@ -46,16 +43,29 @@ public class RoomCombatManager : MonoSingleton<RoomCombatManager>
         new Dictionary<Health, Action>();
 
     private Health playerHealth;
+    private Attack playerAttack;
     private Action playerDeathHandler;
 
     private PlayerMovement playerMovement;
     private PlayerAttackInput playerAttackInput;
 
     public RoomState State { get; private set; } = RoomState.Ready;
-
     public int RemainingEnemies => aliveEnemies.Count;
-
     public Transform EnemyRoot => enemyRoot;
+
+    private void OnEnable()
+    {
+        GameEventBus.Subscribe<PlayerMobileAttackRequestedEvent>(
+            HandleMobileAttackRequested
+        );
+    }
+
+    private void OnDisable()
+    {
+        GameEventBus.Unsubscribe<PlayerMobileAttackRequestedEvent>(
+            HandleMobileAttackRequested
+        );
+    }
 
     private void Awake()
     {
@@ -73,16 +83,13 @@ public class RoomCombatManager : MonoSingleton<RoomCombatManager>
         // 玩家保持激活，因此可以在这里初始化玩家引用
         FindPlayerHealth();
 
-        // 不要在这里调用 CollectEnemies()
-        // 也不要在这里通过 SetActive(false) 关闭 EnemyRoot
+        // 不在这里初始化敌人；由关卡系统准备敌人后调用 StartRoom。
     }
 
     private void Start()
     {
         if (startAutomatically)
-        {
             StartCoroutine(StartRoomAfterDelay());
-        }
     }
 
     private void FindPlayerHealth()
@@ -92,27 +99,54 @@ public class RoomCombatManager : MonoSingleton<RoomCombatManager>
         if (player == null)
         {
             Debug.LogError(
-                $"RoomCombatManager：没有找到 Tag 为 {player} 的玩家。",
+                "RoomCombatManager：没有找到 Player。",
                 this
             );
             return;
         }
 
         playerHealth = player.GetComponent<Health>();
+        playerAttack = player.GetComponent<Attack>();
         playerMovement = player.GetComponent<PlayerMovement>();
         playerAttackInput = player.GetComponent<PlayerAttackInput>();
 
         if (playerHealth == null)
         {
             Debug.LogError(
-                "RoomCombatManager：玩家没有 Health 组件。",
+                "RoomCombatManager：Player 没有 Health 组件。",
                 player
             );
             return;
         }
 
         playerDeathHandler = HandlePlayerDied;
+        playerHealth.Died -= playerDeathHandler;
         playerHealth.Died += playerDeathHandler;
+    }
+
+    /// <summary>
+    /// 接收移动端攻击按钮事件。
+    /// 仅在战斗进行中调用玩家已有的 Attack 组件。
+    /// </summary>
+    private void HandleMobileAttackRequested(
+        PlayerMobileAttackRequestedEvent eventData)
+    {
+        if (State != RoomState.InProgress)
+            return;
+
+        if (playerHealth == null || playerHealth.IsDead)
+            return;
+
+        if (playerAttack == null)
+        {
+            Debug.LogError(
+                "RoomCombatManager：Player 缺少 Attack 组件，无法响应移动端攻击。",
+                this
+            );
+            return;
+        }
+
+        playerAttack.TryAttack();
     }
 
     private void CollectEnemies()
@@ -142,9 +176,7 @@ public class RoomCombatManager : MonoSingleton<RoomCombatManager>
     private IEnumerator StartRoomAfterDelay()
     {
         if (startDelay > 0f)
-        {
             yield return new WaitForSecondsRealtime(startDelay);
-        }
 
         StartRoom();
     }
@@ -165,6 +197,7 @@ public class RoomCombatManager : MonoSingleton<RoomCombatManager>
             FailRoom();
             return;
         }
+
         CommonTool.SetTimeScale(1f);
 
         // 先激活敌人，让其 Awake 和 OnEnable 执行
@@ -184,7 +217,6 @@ public class RoomCombatManager : MonoSingleton<RoomCombatManager>
             return;
         }
 
-        // 只有准备完成后，才正式开始战斗
         State = RoomState.InProgress;
 
         Debug.Log(
@@ -234,7 +266,6 @@ public class RoomCombatManager : MonoSingleton<RoomCombatManager>
 
     private void HandleEnemyDied(Health health)
     {
-        // 只有正在战斗且登记过的敌人才能参与结算
         if (State != RoomState.InProgress)
             return;
 
@@ -254,9 +285,7 @@ public class RoomCombatManager : MonoSingleton<RoomCombatManager>
         );
 
         if (RemainingEnemies == 0)
-        {
             ClearRoom();
-        }
     }
 
     private void HandlePlayerDied()
@@ -272,7 +301,6 @@ public class RoomCombatManager : MonoSingleton<RoomCombatManager>
 
     private void ClearRoom()
     {
-        // 防止重复结算
         if (State != RoomState.InProgress)
             return;
 
@@ -280,19 +308,14 @@ public class RoomCombatManager : MonoSingleton<RoomCombatManager>
 
         Debug.Log("房间已清空！", this);
 
-        // 停止玩家移动和攻击
         StopPlayerControls();
-
-        // 暂停游戏，但保留 UI 的运行与交互
         PauseGameplay();
 
-        // 通知 CombatPanel 等监听者
         onRoomCleared?.Invoke();
     }
 
     private void FailRoom()
     {
-        // 只允许从 Ready 或 InProgress 进入失败状态
         if (State != RoomState.Ready &&
             State != RoomState.InProgress)
         {
@@ -303,22 +326,20 @@ public class RoomCombatManager : MonoSingleton<RoomCombatManager>
 
         Debug.Log("玩家死亡，房间战斗失败！", this);
 
-        // 停止玩家移动和攻击
         StopPlayerControls();
 
-        // 停止敌人 AI 和移动
         if (enemyRoot != null)
             enemyRoot.gameObject.SetActive(false);
 
-        // 暂停游戏
         PauseGameplay();
 
-        // 显示失败面板
         onRoomFailed?.Invoke();
     }
 
     /// <summary>
     /// 房间结束后停止玩家移动和攻击输入。
+    /// 移动端攻击输入由 PlayerMovement 发布事件；
+    /// 禁用 PlayerMovement 后也会停止读取虚拟按钮。
     /// </summary>
     private void StopPlayerControls()
     {
@@ -329,9 +350,6 @@ public class RoomCombatManager : MonoSingleton<RoomCombatManager>
             playerAttackInput.enabled = false;
     }
 
-    /// <summary>
-    /// 暂停游戏时间，保留 UI 交互。
-    /// </summary>
     private void PauseGameplay()
     {
         CommonTool.SetTimeScale(0f);
@@ -339,18 +357,13 @@ public class RoomCombatManager : MonoSingleton<RoomCombatManager>
 
     private void OnDestroy()
     {
-        if (playerHealth != null &&
-            playerDeathHandler != null)
-        {
+        if (playerHealth != null && playerDeathHandler != null)
             playerHealth.Died -= playerDeathHandler;
-        }
 
         foreach (var pair in enemyDeathHandlers)
         {
             if (pair.Key != null && pair.Value != null)
-            {
                 pair.Key.Died -= pair.Value;
-            }
         }
 
         enemyDeathHandlers.Clear();

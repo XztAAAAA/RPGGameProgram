@@ -1,7 +1,15 @@
-
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+
+/// <summary>
+/// 移动端攻击按钮请求事件。
+/// 由 PlayerMovement 在虚拟攻击按钮按下时发布，
+/// 由 RoomCombatManager 在战斗进行中转发给玩家 Attack 组件。
+/// </summary>
+public struct PlayerMobileAttackRequestedEvent
+{
+}
 
 /// <summary>
 /// 全局事件总线。
@@ -56,13 +64,9 @@ public static class GameEventBus
         Delegate remaining = Delegate.Remove(existing, callback);
 
         if (remaining == null)
-        {
             EventTable.Remove(eventType);
-        }
         else
-        {
             EventTable[eventType] = remaining;
-        }
     }
 
     /// <summary>
