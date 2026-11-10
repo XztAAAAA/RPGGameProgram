@@ -24,8 +24,6 @@ public sealed partial class LevelSpawn : Luban.BeanBase
         { if(!_buf["spawn_group_id"].IsNumber) { throw new SerializationException(); }  SpawnGroupId = _buf["spawn_group_id"]; }
         { if(!_buf["enemy_key"].IsString) { throw new SerializationException(); }  EnemyKey = _buf["enemy_key"]; }
         { if(!_buf["count"].IsNumber) { throw new SerializationException(); }  Count = _buf["count"]; }
-        { if(!_buf["max_health"].IsNumber) { throw new SerializationException(); }  MaxHealth = _buf["max_health"]; }
-        { if(!_buf["move_speed"].IsNumber) { throw new SerializationException(); }  MoveSpeed = _buf["move_speed"]; }
         { if(!_buf["spawn_radius"].IsNumber) { throw new SerializationException(); }  SpawnRadius = _buf["spawn_radius"]; }
     }
 
@@ -38,8 +36,6 @@ public sealed partial class LevelSpawn : Luban.BeanBase
     public readonly int SpawnGroupId;
     public readonly string EnemyKey;
     public readonly int Count;
-    public readonly int MaxHealth;
-    public readonly float MoveSpeed;
     public readonly float SpawnRadius;
    
     public const int __ID__ = -2105616777;
@@ -56,8 +52,6 @@ public sealed partial class LevelSpawn : Luban.BeanBase
         + "spawnGroupId:" + SpawnGroupId + ","
         + "enemyKey:" + EnemyKey + ","
         + "count:" + Count + ","
-        + "maxHealth:" + MaxHealth + ","
-        + "moveSpeed:" + MoveSpeed + ","
         + "spawnRadius:" + SpawnRadius + ","
         + "}";
     }

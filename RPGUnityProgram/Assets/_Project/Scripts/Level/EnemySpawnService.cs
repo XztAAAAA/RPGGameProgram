@@ -100,8 +100,8 @@ public sealed class EnemySpawnService
                 }
 
                 combatant.InitializeFromConfig(enemyConfig, primarySkill);
-                health.InitializeFromConfig(spawn.MaxHealth);
-                agent.speed = Mathf.Max(0.1f, spawn.MoveSpeed);
+                health.InitializeFromConfig(enemyConfig.MaxHealth);
+                agent.speed = Mathf.Max(0.1f, enemyConfig.MoveSpeed);
                 spawnedCount++;
             }
         }
