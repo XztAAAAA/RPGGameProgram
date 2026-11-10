@@ -19,6 +19,7 @@ public class Health : MonoBehaviour
     public event Action Died;
 
     private bool initializedFromConfig;
+    private PlayerMovement playerMovement;
 
     public void InitializeFromConfig(float configuredMaxHealth)
     {
@@ -34,6 +35,8 @@ public class Health : MonoBehaviour
 
     private void Awake()
     {
+        playerMovement = GetComponent<PlayerMovement>();
+
         if (initializedFromConfig)
             return;
 
@@ -43,7 +46,8 @@ public class Health : MonoBehaviour
 
     public void TakeDamage(float amount)
     {
-        if (IsDead || amount <= 0f)
+        if (IsDead || amount <= 0f ||
+            (playerMovement != null && playerMovement.IsDodging))
             return;
 
         CurrentHealth = Mathf.Max(

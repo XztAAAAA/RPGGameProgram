@@ -52,6 +52,7 @@ public sealed class PlayerConfigInitializer : MonoBehaviour
         gameObject.name = role.RoleName;
         health.InitializeFromConfig(role.MaxHealth);
         movement.Configure(role.MoveSpeed, role.RotationSpeed);
+        movement.ConfigureDodge(role.DodgeDistance, role.DodgeTime, role.DodgeDuration);
         attack.InitializeFromConfig(basicAttack);
     }
 }

@@ -29,6 +29,7 @@ public sealed partial class Role : Luban.BeanBase
         { if(!_buf["basic_attack_skill_id"].IsNumber) { throw new SerializationException(); }  BasicAttackSkillId = _buf["basic_attack_skill_id"]; }
         { if(!_buf["dodge_distance"].IsNumber) { throw new SerializationException(); }  DodgeDistance = _buf["dodge_distance"]; }
         { if(!_buf["dodge_time"].IsNumber) { throw new SerializationException(); }  DodgeTime = _buf["dodge_time"]; }
+        { if(!_buf["dodge_duration"].IsNumber) { throw new SerializationException(); }  DodgeDuration = _buf["dodge_duration"]; }
     }
 
     public static Role DeserializeRole(JSONNode _buf)
@@ -45,6 +46,7 @@ public sealed partial class Role : Luban.BeanBase
     public readonly int BasicAttackSkillId;
     public readonly float DodgeDistance;
     public readonly float DodgeTime;
+    public readonly float DodgeDuration;
    
     public const int __ID__ = 2552982;
     public override int GetTypeId() => __ID__;
@@ -65,6 +67,7 @@ public sealed partial class Role : Luban.BeanBase
         + "basicAttackSkillId:" + BasicAttackSkillId + ","
         + "dodgeDistance:" + DodgeDistance + ","
         + "dodgeTime:" + DodgeTime + ","
+        + "dodgeDuration:" + DodgeDuration + ","
         + "}";
     }
 }

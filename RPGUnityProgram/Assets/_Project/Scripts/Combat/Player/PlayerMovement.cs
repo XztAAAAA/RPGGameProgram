@@ -26,8 +26,18 @@ public class PlayerMovement : MonoBehaviour
 
     // 仅负责移动端虚拟攻击按钮，避免与现有 PC PlayerAttackInput 重复
     private InputAction mobileAttackAction;
+    private InputAction dodgeAction;
+
+    private float dodgeDistance;
+    private float dodgeCooldown;
+    private float dodgeDuration;
+    private float nextDodgeTime;
+    private float dodgeElapsed;
+    private Vector3 dodgeDirection;
+    private bool dodgeConfigured;
 
     public event Action MobileAttackRequested;
+    public bool IsDodging { get; private set; }
 
     private void Awake()
     {
@@ -65,6 +75,15 @@ public class PlayerMovement : MonoBehaviour
 
         // Mobile：OnScreenButton 写入的虚拟 Gamepad 南键
         mobileAttackAction.AddBinding("<Gamepad>/buttonSouth");
+
+        dodgeAction = new InputAction(
+            name: "Dodge",
+            type: InputActionType.Button
+        );
+        dodgeAction.AddBinding("<Keyboard>/leftShift");
+        dodgeAction.AddBinding("<Keyboard>/rightShift");
+        dodgeAction.AddBinding("<Mouse>/rightButton");
+        dodgeAction.AddBinding("<Gamepad>/buttonEast");
     }
 
     public void Configure(float configuredMoveSpeed, float configuredRotationSpeed)
@@ -73,27 +92,54 @@ public class PlayerMovement : MonoBehaviour
         rotationSpeed = Mathf.Max(0f, configuredRotationSpeed);
     }
 
+    public void ConfigureDodge(float configuredDistance, float configuredCooldown, float configuredDuration)
+    {
+        dodgeConfigured = false;
+        if (float.IsNaN(configuredDistance) || float.IsInfinity(configuredDistance) ||
+            float.IsNaN(configuredCooldown) || float.IsInfinity(configuredCooldown) ||
+            float.IsNaN(configuredDuration) || float.IsInfinity(configuredDuration) ||
+            configuredDistance <= 0f || configuredCooldown < 0f || configuredDuration <= 0f)
+        {
+            Debug.LogError("PlayerMovement：闪避距离和持续时间必须大于 0，冷却时间不能小于 0，且都必须是有限数值。", this);
+            return;
+        }
+
+        dodgeDistance = configuredDistance;
+        dodgeCooldown = configuredCooldown;
+        dodgeDuration = configuredDuration;
+        dodgeConfigured = true;
+    }
+
     private void OnEnable()
     {
         moveAction?.Enable();
         mobileAttackAction?.Enable();
+        dodgeAction?.Enable();
     }
 
     private void OnDisable()
     {
         moveAction?.Disable();
         mobileAttackAction?.Disable();
+        dodgeAction?.Disable();
+        IsDodging = false;
     }
 
     private void Update()
     {
         // 玩家死亡后不再执行移动或移动端攻击输入
         if (health != null && health.IsDead)
+        {
+            IsDodging = false;
             return;
+        }
 
         // 角色控制器不可用时不执行移动
         if (controller == null || !controller.enabled)
+        {
+            IsDodging = false;
             return;
+        }
 
         // 移动端攻击按钮按下时发布事件。
         // RoomCombatManager 只会在 InProgress 状态响应该事件。
@@ -129,6 +175,40 @@ public class PlayerMovement : MonoBehaviour
 
         Vector3 move = forward * input.y + right * input.x;
 
+        if (!IsDodging && Time.deltaTime > 0f && dodgeConfigured && Time.time >= nextDodgeTime &&
+            dodgeAction.WasPressedThisFrame())
+        {
+            dodgeDirection = move.sqrMagnitude > 0.001f
+                ? move.normalized
+                : transform.forward;
+            dodgeDirection.y = 0f;
+            dodgeDirection.Normalize();
+            if (dodgeDirection.sqrMagnitude > 0f)
+            {
+                IsDodging = true;
+                dodgeElapsed = 0f;
+                nextDodgeTime = Time.time + dodgeCooldown;
+            }
+        }
+
+        if (IsDodging)
+        {
+            float stepTime = Mathf.Min(Time.deltaTime, dodgeDuration - dodgeElapsed);
+            float stepDistance = dodgeDistance * stepTime / dodgeDuration;
+            Vector3 startPosition = transform.position;
+            CollisionFlags flags = controller.Move(dodgeDirection * stepDistance);
+            dodgeElapsed += stepTime;
+
+            float actualDistance = Vector3.Dot(transform.position - startPosition, dodgeDirection);
+            if (dodgeElapsed >= dodgeDuration ||
+                ((flags & CollisionFlags.Sides) != 0 && actualDistance < stepDistance - 0.001f))
+            {
+                IsDodging = false;
+            }
+
+            return;
+        }
+
         // 让角色朝移动方向转身
         if (move.sqrMagnitude > 0.001f)
         {
@@ -148,5 +228,6 @@ public class PlayerMovement : MonoBehaviour
     {
         moveAction?.Dispose();
         mobileAttackAction?.Dispose();
+        dodgeAction?.Dispose();
     }
 }
