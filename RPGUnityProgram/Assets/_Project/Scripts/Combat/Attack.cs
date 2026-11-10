@@ -24,8 +24,18 @@ public class Attack : MonoBehaviour
     [SerializeField]
     private LayerMask hitLayers = ~0;
 
+    [Header("攻击范围显示")]
+    [SerializeField, Min(0.01f)]
+    private float rangeDisplayDuration = 0.3f;
+
+    private const int RangeSegments = 64;
+    private const float RangeLineWidth = 0.04f;
     private CombatFactionMarker ownerFaction;
     private float nextAttackTime;
+    private LineRenderer[] rangeLines;
+    private Material rangeMaterial;
+    private float rangeDisplayEndTime;
+    private bool rangeDisplayFailed;
 
     public float Damage => damage;
 
@@ -73,6 +83,8 @@ public class Attack : MonoBehaviour
             + Vector3.up * attackHeight
             + transform.forward * hitOffset;
 
+        ShowAttackRange(attackCenter, hitRadius);
+
         Collider[] hits = Physics.OverlapSphere(
             attackCenter,
             hitRadius,
@@ -116,6 +128,100 @@ public class Attack : MonoBehaviour
         }
 
         return true;
+    }
+
+    private void ShowAttackRange(Vector3 center, float radius)
+    {
+        if (rangeDisplayFailed)
+            return;
+
+        if (rangeLines == null && !CreateRangeLines())
+            return;
+
+        for (int plane = 0; plane < rangeLines.Length; plane++)
+        {
+            LineRenderer line = rangeLines[plane];
+            for (int i = 0; i < RangeSegments; i++)
+            {
+                float angle = 2f * Mathf.PI * i / RangeSegments;
+                float x = Mathf.Cos(angle) * radius;
+                float y = Mathf.Sin(angle) * radius;
+                Vector3 offset = plane == 0 ? new Vector3(x, 0f, y) :
+                    plane == 1 ? new Vector3(x, y, 0f) : new Vector3(0f, x, y);
+                line.SetPosition(i, center + offset);
+            }
+
+            line.enabled = true;
+        }
+
+        rangeDisplayEndTime = Time.unscaledTime + Mathf.Max(0.01f, rangeDisplayDuration);
+    }
+
+    private bool CreateRangeLines()
+    {
+        Shader shader = Resources.Load<Shader>("Shaders/AttackRange");
+        if (shader == null || !shader.isSupported)
+        {
+            Debug.LogError("Attack：无法加载攻击范围显示着色器。", this);
+            rangeDisplayFailed = true;
+            return false;
+        }
+
+        rangeMaterial = new Material(shader);
+        rangeLines = new LineRenderer[3];
+        for (int i = 0; i < rangeLines.Length; i++)
+        {
+            GameObject lineObject = new GameObject("Attack Range");
+            lineObject.transform.SetParent(transform, false);
+            LineRenderer line = lineObject.AddComponent<LineRenderer>();
+            line.useWorldSpace = true;
+            line.loop = true;
+            line.positionCount = RangeSegments;
+            line.widthMultiplier = RangeLineWidth;
+            line.sharedMaterial = rangeMaterial;
+            line.startColor = line.endColor = new Color(1f, 0.15f, 0.1f, 0.85f);
+            line.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+            line.receiveShadows = false;
+            line.enabled = false;
+            rangeLines[i] = line;
+        }
+
+        return true;
+    }
+
+    private void Update()
+    {
+        if (rangeLines != null && Time.unscaledTime >= rangeDisplayEndTime)
+            HideAttackRange();
+    }
+
+    private void OnDisable()
+    {
+        HideAttackRange();
+    }
+
+    private void HideAttackRange()
+    {
+        if (rangeLines == null)
+            return;
+
+        foreach (LineRenderer line in rangeLines)
+            line.enabled = false;
+    }
+
+    private void OnDestroy()
+    {
+        if (rangeLines != null)
+        {
+            foreach (LineRenderer line in rangeLines)
+            {
+                if (line != null)
+                    Destroy(line.gameObject);
+            }
+        }
+
+        if (rangeMaterial != null)
+            Destroy(rangeMaterial);
     }
 
     private void OnDrawGizmosSelected()
