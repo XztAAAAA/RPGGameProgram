@@ -12,6 +12,7 @@ public partial class MoveToTargetAction : Action
     [SerializeReference] public BlackboardVariable<GameObject> Target;
     [SerializeReference] public BlackboardVariable<float> AttackRange;
     private UnityEngine.AI.NavMeshAgent agent;
+    private Attack attack;
     private Vector3 lastDestination;
     private float nextPathUpdate;
     private bool hasDestination;
@@ -23,6 +24,7 @@ public partial class MoveToTargetAction : Action
             return Status.Failure;
 
         agent = self.GetComponent<UnityEngine.AI.NavMeshAgent>();
+        attack = self.GetComponent<Attack>();
 
         if (agent == null)
             return Status.Failure;
@@ -74,7 +76,12 @@ public partial class MoveToTargetAction : Action
         direction.y = 0f;
 
         // 进入攻击距离后，让行为树重新选择攻击分支
-        if (direction.sqrMagnitude <= range * range)
+        bool targetWithinAttackRange = attack != null &&
+            attack.HasConfiguredSkills
+                ? attack.HasSkillInRange(target.transform)
+                : direction.sqrMagnitude <= range * range;
+
+        if (targetWithinAttackRange)
         {
             agent.isStopped = true;
             hasDestination = false;
@@ -116,4 +123,3 @@ public partial class MoveToTargetAction : Action
         }
     }
 }
-

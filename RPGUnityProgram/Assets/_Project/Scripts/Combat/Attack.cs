@@ -35,12 +35,15 @@ public class Attack : MonoBehaviour
     private cfg.Skill[] configuredSkills;
     private float[] nextSkillAttackTimes;
     private int nextSkillIndex;
+    private int selectedSkillIndex = -1;
     private LineRenderer[] rangeLines;
     private Material rangeMaterial;
     private float rangeDisplayEndTime;
     private bool rangeDisplayFailed;
 
     public float Damage => damage;
+    public bool HasConfiguredSkills =>
+        configuredSkills != null && configuredSkills.Length > 0;
 
     public bool CanAttack
     {
@@ -77,6 +80,7 @@ public class Attack : MonoBehaviour
 
         configuredSkills = null;
         nextSkillAttackTimes = null;
+        selectedSkillIndex = -1;
         damage = Mathf.Max(0f, skill.Damage);
         cooldown = Mathf.Max(0.1f, skill.Cooldown);
         hitRadius = Mathf.Max(0.1f, skill.HitRadius);
@@ -94,6 +98,70 @@ public class Attack : MonoBehaviour
         configuredSkills = skills;
         nextSkillAttackTimes = new float[skills.Length];
         nextSkillIndex = 0;
+        selectedSkillIndex = -1;
+    }
+
+    public bool SelectAvailableSkill(Transform target)
+    {
+        if (!HasConfiguredSkills || nextSkillAttackTimes == null || target == null)
+        {
+            selectedSkillIndex = -1;
+            return false;
+        }
+
+        selectedSkillIndex = FindReadySkill(target);
+        return selectedSkillIndex >= 0;
+    }
+
+    public bool HasSkillInRange(Transform target)
+    {
+        if (!HasConfiguredSkills || target == null)
+            return false;
+
+        float targetDistance = GetHorizontalDistance(target);
+        foreach (cfg.Skill skill in configuredSkills)
+        {
+            if (skill != null && targetDistance <= skill.TriggerRange)
+                return true;
+        }
+
+        return false;
+    }
+
+    public bool IsSkillInRange(cfg.Skill skill, Transform target)
+    {
+        return skill != null &&
+            target != null &&
+            GetHorizontalDistance(target) <= skill.TriggerRange;
+    }
+
+    public bool TryBeginSelectedSkill(Transform target, out cfg.Skill skill)
+    {
+        skill = null;
+        if (!HasConfiguredSkills ||
+            selectedSkillIndex < 0 ||
+            selectedSkillIndex >= configuredSkills.Length ||
+            target == null)
+        {
+            return false;
+        }
+
+        int skillIndex = selectedSkillIndex;
+        cfg.Skill candidate = configuredSkills[skillIndex];
+        if (candidate == null ||
+            Time.time < nextSkillAttackTimes[skillIndex] ||
+            GetHorizontalDistance(target) > candidate.TriggerRange)
+        {
+            selectedSkillIndex = -1;
+            return false;
+        }
+
+        skill = candidate;
+        nextSkillAttackTimes[skillIndex] =
+            Time.time + Mathf.Max(0.1f, candidate.Cooldown);
+        nextSkillIndex = (skillIndex + 1) % configuredSkills.Length;
+        selectedSkillIndex = -1;
+        return true;
     }
 
     private void Awake()
@@ -132,16 +200,36 @@ public class Attack : MonoBehaviour
             nextSkillIndex = (skillIndex + 1) % configuredSkills.Length;
         }
 
+        ApplyAttack(damage, hitRadius, hitOffset);
+        return true;
+    }
+
+    public void ApplySkillDamage(cfg.Skill skill)
+    {
+        if (skill == null)
+        {
+            Debug.LogError("Attack：技能配置为空，无法造成伤害。", this);
+            return;
+        }
+
+        damage = Mathf.Max(0f, skill.Damage);
+        hitRadius = Mathf.Max(0.1f, skill.HitRadius);
+        hitOffset = Mathf.Max(0f, skill.HitOffset);
+        ApplyAttack(damage, hitRadius, hitOffset);
+    }
+
+    private void ApplyAttack(float attackDamage, float attackRadius, float attackOffset)
+    {
         Vector3 attackCenter =
             transform.position
             + Vector3.up * attackHeight
-            + transform.forward * hitOffset;
+            + transform.forward * attackOffset;
 
-        ShowAttackRange(attackCenter, hitRadius);
+        ShowAttackRange(attackCenter, attackRadius);
 
         Collider[] hits = Physics.OverlapSphere(
             attackCenter,
-            hitRadius,
+            attackRadius,
             hitLayers,
             QueryTriggerInteraction.Ignore
         );
@@ -177,20 +265,16 @@ public class Attack : MonoBehaviour
 
             if (damagedTargets.Add(targetHealth))
             {
-                targetHealth.TakeDamage(damage);
+                targetHealth.TakeDamage(attackDamage);
             }
         }
-
-        return true;
     }
 
     private int FindReadySkill(Transform target)
     {
-        Vector3 targetOffset = target != null
-            ? target.position - transform.position
-            : Vector3.zero;
-        targetOffset.y = 0f;
-        float targetDistance = targetOffset.magnitude;
+        float targetDistance = target != null
+            ? GetHorizontalDistance(target)
+            : 0f;
 
         for (int offset = 0; offset < configuredSkills.Length; offset++)
         {
@@ -207,6 +291,13 @@ public class Attack : MonoBehaviour
         }
 
         return -1;
+    }
+
+    private float GetHorizontalDistance(Transform target)
+    {
+        Vector3 targetOffset = target.position - transform.position;
+        targetOffset.y = 0f;
+        return targetOffset.magnitude;
     }
 
     private void ShowAttackRange(Vector3 center, float radius)

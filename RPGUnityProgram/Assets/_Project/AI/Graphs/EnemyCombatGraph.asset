@@ -70,7 +70,7 @@ MonoBehaviour:
   - rid: 342646876301688948
   - rid: 342646876301688964
   - rid: 342646876301688969
-  m_VersionTimestamp: 639285334880478432
+  m_VersionTimestamp: 639301141427782812
   m_SerializedVersion: 3
   m_DebugInfo: {fileID: 4793105406995650457}
   m_RuntimeGraph: {fileID: 9167170967213167455}
@@ -92,9 +92,9 @@ MonoBehaviour:
     Variables: []
     NamedChildren: []
     IsPlaceholder: 0
-  - Name: IsTargetInAttackRange
-    Story: 'Checks whether [Self] is within [AttackRange] of [Target]'
-    RuntimeTypeString: IsTargetInAttackRangeAction, Assembly-CSharp, Version=0.0.0.0,
+  - Name: Select Available Skill
+    Story: '[Self] selects an available skill for [Target] within [AttackRange]'
+    RuntimeTypeString: SelectAvailableSkillAction, Assembly-CSharp, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
     RuntimeTypeID:
       m_Value0: 2411231874421811335
@@ -117,10 +117,10 @@ MonoBehaviour:
       Tooltip: 
     NamedChildren: []
     IsPlaceholder: 0
-  - Name: Attack Target
-    Story: '[Self] faces [Target] and attacks while Target is within [AttackRange]'
-    RuntimeTypeString: AttackTargetAction, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
+  - Name: Execute Selected Skill
+    Story: '[Self] executes its selected skill against [Target]'
+    RuntimeTypeString: ExecuteSelectedSkillAction, Assembly-CSharp, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
     RuntimeTypeID:
       m_Value0: 1661180295323917189
       m_Value1: 12966181048063528788
@@ -232,7 +232,7 @@ MonoBehaviour:
     - rid: 342646876301688918
       type: {class: ActionNodeModel, ns: Unity.Behavior, asm: Unity.Behavior.Authoring}
       data:
-        Position: {x: -199.42802, y: 111.84136}
+        Position: {x: -196.93465, y: 111.217995}
         ID:
           m_Value0: 17444680182250585181
           m_Value1: 3149502307785481675
@@ -241,7 +241,7 @@ MonoBehaviour:
         - rid: 342646876301688919
         - rid: 342646876301688920
         NodeType:
-          m_SerializableType: IsTargetInAttackRangeAction, Assembly-CSharp, Version=0.0.0.0,
+          m_SerializableType: SelectAvailableSkillAction, Assembly-CSharp, Version=0.0.0.0,
             Culture=neutral, PublicKeyToken=null
         NodeTypeID:
           m_Value0: 2411231874421811335
@@ -360,7 +360,7 @@ MonoBehaviour:
     - rid: 342646876301688933
       type: {class: ActionNodeModel, ns: Unity.Behavior, asm: Unity.Behavior.Authoring}
       data:
-        Position: {x: -199.4211, y: 187.6868}
+        Position: {x: -199.4211, y: 188.2201}
         ID:
           m_Value0: 11299568676864345193
           m_Value1: 515228810972279077
@@ -369,7 +369,7 @@ MonoBehaviour:
         - rid: 342646876301688934
         - rid: 342646876301688935
         NodeType:
-          m_SerializableType: AttackTargetAction, Assembly-CSharp, Version=0.0.0.0,
+          m_SerializableType: ExecuteSelectedSkillAction, Assembly-CSharp, Version=0.0.0.0,
             Culture=neutral, PublicKeyToken=null
         NodeTypeID:
           m_Value0: 1661180295323917189
@@ -487,7 +487,7 @@ MonoBehaviour:
     - rid: 342646876301688948
       type: {class: ActionNodeModel, ns: Unity.Behavior, asm: Unity.Behavior.Authoring}
       data:
-        Position: {x: 213.53711, y: 27.96443}
+        Position: {x: 215.3172, y: 27.96443}
         ID:
           m_Value0: 13238615886053068300
           m_Value1: 1261041692840795261
@@ -790,7 +790,7 @@ MonoBehaviour:
         BlackboardGroupReferences: []
         Root:
           rid: 342646876301689017
-        m_VersionTimestamp: 639285334880478432
+        m_VersionTimestamp: 639301141427782812
     - rid: 342646837785395273
       type: {class: BlackboardReference, ns: Unity.Behavior, asm: Unity.Behavior}
       data:
@@ -900,7 +900,7 @@ MonoBehaviour:
         - rid: 342646876301689023
         m_RegisteredObservers: []
     - rid: 342646876301689022
-      type: {class: IsTargetInAttackRangeAction, ns: , asm: Assembly-CSharp}
+      type: {class: SelectAvailableSkillAction, ns: , asm: Assembly-CSharp}
       data:
         ID:
           m_Value0: 17444680182250585181
@@ -916,7 +916,7 @@ MonoBehaviour:
         Target:
           rid: 342646876301689010
     - rid: 342646876301689023
-      type: {class: AttackTargetAction, ns: , asm: Assembly-CSharp}
+      type: {class: ExecuteSelectedSkillAction, ns: , asm: Assembly-CSharp}
       data:
         ID:
           m_Value0: 11299568676864345193
