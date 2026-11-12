@@ -66,8 +66,8 @@ public sealed class EnemySpawnService
             if (enemyConfig == null)
                 continue;
 
-            cfg.Skill primarySkill = ResolvePrimarySkill(tables, enemyConfig, logContext);
-            if (primarySkill == null)
+            cfg.Skill[] skills = ResolveSkills(tables, enemyConfig, logContext);
+            if (skills == null)
                 continue;
 
             for (int i = 0; i < spawn.Count; i++)
@@ -99,7 +99,7 @@ public sealed class EnemySpawnService
                     continue;
                 }
 
-                combatant.InitializeFromConfig(enemyConfig, primarySkill);
+                combatant.InitializeFromConfig(enemyConfig, skills);
                 health.InitializeFromConfig(enemyConfig.MaxHealth);
                 agent.speed = Mathf.Max(0.1f, enemyConfig.MoveSpeed);
                 spawnedCount++;
@@ -117,7 +117,7 @@ public sealed class EnemySpawnService
         return spawnedCount;
     }
 
-    private static cfg.Skill ResolvePrimarySkill(
+    private static cfg.Skill[] ResolveSkills(
         cfg.Tables tables,
         cfg.Enemy enemy,
         UnityEngine.Object logContext)
@@ -131,26 +131,23 @@ public sealed class EnemySpawnService
             return null;
         }
 
-        if (enemy.SkillIds.Length > 1)
+        cfg.Skill[] skills = new cfg.Skill[enemy.SkillIds.Length];
+        for (int i = 0; i < enemy.SkillIds.Length; i++)
         {
-            Debug.LogWarning(
-                $"敌人 {enemy.EnemyName} 配置了多个技能；当前 Attack 组件只支持一个技能，" +
-                $"本次使用第一个技能 ID {enemy.SkillIds[0]}。",
-                logContext
-            );
+            int skillId = enemy.SkillIds[i];
+            skills[i] = tables.TbSkill.GetOrDefault(skillId);
+            if (skills[i] == null)
+            {
+                Debug.LogError(
+                    $"敌人 {enemy.EnemyName} 引用的技能 ID {skillId} 不存在于 TbSkill，" +
+                    "无法初始化攻击属性。",
+                    logContext
+                );
+                return null;
+            }
         }
 
-        cfg.Skill skill = tables.TbSkill.GetOrDefault(enemy.SkillIds[0]);
-        if (skill == null)
-        {
-            Debug.LogError(
-                $"敌人 {enemy.EnemyName} 引用的技能 ID {enemy.SkillIds[0]} 不存在于 TbSkill，" +
-                "无法初始化攻击属性。",
-                logContext
-            );
-        }
-
-        return skill;
+        return skills;
     }
 
     private static cfg.Enemy ResolveEnemyConfig(

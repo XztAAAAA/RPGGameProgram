@@ -27,7 +27,7 @@ public class Combatant : MonoBehaviour
             healthBar.Initialize(health);
     }
 
-    public void InitializeFromConfig(cfg.Enemy enemy, cfg.Skill primarySkill)
+    public void InitializeFromConfig(cfg.Enemy enemy, cfg.Skill[] skills)
     {
         if (enemy == null)
         {
@@ -56,10 +56,15 @@ public class Combatant : MonoBehaviour
         agent.speed = Mathf.Max(0.1f, enemy.MoveSpeed);
         agent.angularSpeed = Mathf.Max(0f, enemy.RotationSpeed);
 
-        if (primarySkill != null)
+        if (skills != null && skills.Length > 0)
         {
-            attack.InitializeFromConfig(primarySkill);
-            attackRange = Mathf.Max(0f, primarySkill.TriggerRange);
+            attack.InitializeFromConfig(skills);
+            attackRange = 0f;
+            foreach (cfg.Skill skill in skills)
+            {
+                if (skill != null)
+                    attackRange = Mathf.Max(attackRange, skill.TriggerRange);
+            }
         }
     }
 

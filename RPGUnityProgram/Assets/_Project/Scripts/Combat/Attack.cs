@@ -32,6 +32,9 @@ public class Attack : MonoBehaviour
     private const float RangeLineWidth = 0.04f;
     private CombatFactionMarker ownerFaction;
     private float nextAttackTime;
+    private cfg.Skill[] configuredSkills;
+    private float[] nextSkillAttackTimes;
+    private int nextSkillIndex;
     private LineRenderer[] rangeLines;
     private Material rangeMaterial;
     private float rangeDisplayEndTime;
@@ -39,9 +42,25 @@ public class Attack : MonoBehaviour
 
     public float Damage => damage;
 
-    public bool CanAttack =>
-        isActiveAndEnabled &&
-        Time.time >= nextAttackTime;
+    public bool CanAttack
+    {
+        get
+        {
+            if (!isActiveAndEnabled)
+                return false;
+
+            if (configuredSkills == null)
+                return Time.time >= nextAttackTime;
+
+            for (int i = 0; i < configuredSkills.Length; i++)
+            {
+                if (Time.time >= nextSkillAttackTimes[i])
+                    return true;
+            }
+
+            return false;
+        }
+    }
 
     public void InitializeDamage(float configuredDamage)
     {
@@ -56,10 +75,25 @@ public class Attack : MonoBehaviour
             return;
         }
 
+        configuredSkills = null;
+        nextSkillAttackTimes = null;
         damage = Mathf.Max(0f, skill.Damage);
         cooldown = Mathf.Max(0.1f, skill.Cooldown);
         hitRadius = Mathf.Max(0.1f, skill.HitRadius);
         hitOffset = Mathf.Max(0f, skill.HitOffset);
+    }
+
+    public void InitializeFromConfig(cfg.Skill[] skills)
+    {
+        if (skills == null || skills.Length == 0)
+        {
+            Debug.LogError("Attack：技能配置为空，无法初始化攻击属性。", this);
+            return;
+        }
+
+        configuredSkills = skills;
+        nextSkillAttackTimes = new float[skills.Length];
+        nextSkillIndex = 0;
     }
 
     private void Awake()
@@ -71,12 +105,32 @@ public class Attack : MonoBehaviour
     /// 尝试执行一次攻击。
     /// 玩家输入和敌人 AI 都调用这个方法。
     /// </summary>
-    public bool TryAttack()
+    public bool TryAttack(Transform target = null)
     {
-        if (!CanAttack || ownerFaction == null)
+        if (!isActiveAndEnabled || ownerFaction == null)
             return false;
 
-        nextAttackTime = Time.time + cooldown;
+        if (configuredSkills == null)
+        {
+            if (Time.time < nextAttackTime)
+                return false;
+
+            nextAttackTime = Time.time + cooldown;
+        }
+        else
+        {
+            int skillIndex = FindReadySkill(target);
+            if (skillIndex < 0)
+                return false;
+
+            cfg.Skill skill = configuredSkills[skillIndex];
+            damage = Mathf.Max(0f, skill.Damage);
+            cooldown = Mathf.Max(0.1f, skill.Cooldown);
+            hitRadius = Mathf.Max(0.1f, skill.HitRadius);
+            hitOffset = Mathf.Max(0f, skill.HitOffset);
+            nextSkillAttackTimes[skillIndex] = Time.time + cooldown;
+            nextSkillIndex = (skillIndex + 1) % configuredSkills.Length;
+        }
 
         Vector3 attackCenter =
             transform.position
@@ -128,6 +182,31 @@ public class Attack : MonoBehaviour
         }
 
         return true;
+    }
+
+    private int FindReadySkill(Transform target)
+    {
+        Vector3 targetOffset = target != null
+            ? target.position - transform.position
+            : Vector3.zero;
+        targetOffset.y = 0f;
+        float targetDistance = targetOffset.magnitude;
+
+        for (int offset = 0; offset < configuredSkills.Length; offset++)
+        {
+            int index = (nextSkillIndex + offset) % configuredSkills.Length;
+            cfg.Skill skill = configuredSkills[index];
+            if (skill == null ||
+                Time.time < nextSkillAttackTimes[index] ||
+                (target != null && targetDistance > skill.TriggerRange))
+            {
+                continue;
+            }
+
+            return index;
+        }
+
+        return -1;
     }
 
     private void ShowAttackRange(Vector3 center, float radius)

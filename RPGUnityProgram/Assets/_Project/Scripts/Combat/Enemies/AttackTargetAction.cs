@@ -89,7 +89,7 @@ public partial class AttackTargetAction : Action
         }
 
         // 攻击冷却仍由原来的 Attack 组件管理
-        attack.TryAttack();
+        attack.TryAttack(target.transform);
 
         return Status.Running;
     }
