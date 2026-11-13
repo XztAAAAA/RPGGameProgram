@@ -260,7 +260,7 @@ public class Attack : MonoBehaviour
 
             Vector3 start = transform.position + Vector3.up * attackHeight;
             SkillProjectile.Create(start, transform.forward, ownerFaction.Faction, damage,
-                skill.ProjectileSpeed, skill.TriggerRange, hitLayers);
+                skill.ProjectileSpeed, skill.TriggerRange, hitLayers, skill.CanBlockProjectile);
         }
         else
         {
@@ -276,6 +276,9 @@ public class Attack : MonoBehaviour
             + transform.forward * attackOffset;
 
         ShowAttackRange(attackCenter, attackRadius);
+
+        if (ownerFaction.Faction == CombatFaction.Player)
+            SkillProjectile.BlockInRange(attackCenter, attackRadius, ownerFaction.Faction);
 
         Collider[] hits = Physics.OverlapSphere(
             attackCenter,

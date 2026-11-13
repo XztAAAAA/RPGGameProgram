@@ -1,18 +1,21 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public sealed class SkillProjectile : MonoBehaviour
 {
     private const float Radius = 0.2f;
+    private static readonly List<SkillProjectile> ActiveProjectiles = new List<SkillProjectile>();
 
     private Vector3 direction;
     private CombatFaction ownerFaction;
+    private bool canBlock;
     private float damage;
     private float speed;
     private float remainingDistance;
     private LayerMask hitLayers;
 
     public static void Create(Vector3 position, Vector3 direction, CombatFaction ownerFaction,
-        float damage, float speed, float maxDistance, LayerMask hitLayers)
+        float damage, float speed, float maxDistance, LayerMask hitLayers, bool canBlock)
     {
         GameObject projectile = GameObject.CreatePrimitive(PrimitiveType.Sphere);
         projectile.name = "Skill Projectile";
@@ -25,10 +28,39 @@ public sealed class SkillProjectile : MonoBehaviour
         SkillProjectile component = projectile.AddComponent<SkillProjectile>();
         component.direction = direction.normalized;
         component.ownerFaction = ownerFaction;
+        component.canBlock = canBlock;
         component.damage = damage;
         component.speed = speed;
         component.remainingDistance = maxDistance;
         component.hitLayers = hitLayers;
+    }
+
+    public static void BlockInRange(Vector3 center, float radius, CombatFaction blockingFaction)
+    {
+        float reach = radius + Radius;
+        float reachSquared = reach * reach;
+        for (int i = ActiveProjectiles.Count - 1; i >= 0; i--)
+        {
+            SkillProjectile projectile = ActiveProjectiles[i];
+            if (!projectile.canBlock || projectile.ownerFaction == blockingFaction ||
+                (projectile.transform.position - center).sqrMagnitude > reachSquared)
+            {
+                continue;
+            }
+
+            projectile.gameObject.SetActive(false);
+            Destroy(projectile.gameObject);
+        }
+    }
+
+    private void OnEnable()
+    {
+        ActiveProjectiles.Add(this);
+    }
+
+    private void OnDisable()
+    {
+        ActiveProjectiles.Remove(this);
     }
 
     private void Update()
