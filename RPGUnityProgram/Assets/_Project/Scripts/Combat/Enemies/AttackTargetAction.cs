@@ -87,7 +87,7 @@ public partial class ExecuteSelectedSkillAction : Action
 
         if (!damageApplied)
         {
-            attack.ApplySkillDamage(skill);
+            attack.ApplySkillDamage(skill, target.transform);
             damageApplied = true;
         }
 

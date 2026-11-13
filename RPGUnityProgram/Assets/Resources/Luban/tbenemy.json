@@ -1,8 +1,8 @@
 [
   {
     "enemy_id": 1001,
-    "enemy_name": "BasicEnemy",
-    "prefab_key": "BasicEnemy",
+    "enemy_name": "BasicEnemy1",
+    "prefab_key": "BasicEnemy1",
     "max_health": 50,
     "move_speed": 3,
     "rotation_speed": 720,
@@ -12,6 +12,20 @@
     ],
     "detect_range": 8,
     "lose_target_range": 12,
+    "lose_target_delay": 3
+  },
+  {
+    "enemy_id": 1002,
+    "enemy_name": "BasicEnemy2",
+    "prefab_key": "BasicEnemy2",
+    "max_health": 50,
+    "move_speed": 2,
+    "rotation_speed": 720,
+    "skill_ids": [
+      10003
+    ],
+    "detect_range": 50,
+    "lose_target_range": 55,
     "lose_target_delay": 3
   }
 ]

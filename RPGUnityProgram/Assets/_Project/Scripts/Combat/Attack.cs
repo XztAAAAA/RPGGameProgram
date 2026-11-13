@@ -24,6 +24,10 @@ public class Attack : MonoBehaviour
     [SerializeField]
     private LayerMask hitLayers = ~0;
 
+    [Header("远程攻击")]
+    [SerializeField, Min(0.1f)]
+    private float projectileSpeed = 10f;
+
     [Header("攻击范围显示")]
     [SerializeField, Min(0.01f)]
     private float rangeDisplayDuration = 0.3f;
@@ -192,19 +196,27 @@ public class Attack : MonoBehaviour
                 return false;
 
             cfg.Skill skill = configuredSkills[skillIndex];
+            if (skill.AttackType == 2 && target == null)
+            {
+                Debug.LogError("Attack：远程技能需要指定目标。", this);
+                return false;
+            }
+
             damage = Mathf.Max(0f, skill.Damage);
             cooldown = Mathf.Max(0.1f, skill.Cooldown);
             hitRadius = Mathf.Max(0.1f, skill.HitRadius);
             hitOffset = Mathf.Max(0f, skill.HitOffset);
             nextSkillAttackTimes[skillIndex] = Time.time + cooldown;
             nextSkillIndex = (skillIndex + 1) % configuredSkills.Length;
+            ApplySkillDamage(skill, target);
+            return true;
         }
 
         ApplyAttack(damage, hitRadius, hitOffset);
         return true;
     }
 
-    public void ApplySkillDamage(cfg.Skill skill)
+    public void ApplySkillDamage(cfg.Skill skill, Transform target)
     {
         if (skill == null)
         {
@@ -215,7 +227,34 @@ public class Attack : MonoBehaviour
         damage = Mathf.Max(0f, skill.Damage);
         hitRadius = Mathf.Max(0.1f, skill.HitRadius);
         hitOffset = Mathf.Max(0f, skill.HitOffset);
-        ApplyAttack(damage, hitRadius, hitOffset);
+        if (skill.AttackType == 1)
+        {
+            ApplyAttack(damage, hitRadius, hitOffset);
+        }
+        else if (skill.AttackType == 2)
+        {
+            if (target == null)
+            {
+                Debug.LogError("Attack：远程技能需要指定目标。", this);
+                return;
+            }
+
+            Health targetHealth = target.GetComponent<Health>();
+            CombatFactionMarker targetFaction = target.GetComponent<CombatFactionMarker>();
+            if (targetHealth == null || targetFaction == null || ownerFaction == null ||
+                targetFaction.Faction == ownerFaction.Faction)
+            {
+                Debug.LogError("Attack：远程技能目标必须是具有生命值的敌对角色。", this);
+                return;
+            }
+
+            Vector3 start = transform.position + Vector3.up * attackHeight;
+            SkillProjectile.Create(start, targetHealth, damage, Mathf.Max(0.1f, projectileSpeed));
+        }
+        else
+        {
+            Debug.LogError($"Attack：不支持的攻击类型 {skill.AttackType}。", this);
+        }
     }
 
     private void ApplyAttack(float attackDamage, float attackRadius, float attackOffset)

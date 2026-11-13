@@ -52,5 +52,23 @@
     "recovery_time": 0.3,
     "stagger_time": 2,
     "can_block_projectile": false
+  },
+  {
+    "skill_id": 10003,
+    "skill_key": "Enemy_Melee_Special",
+    "skill_name": "普通远程攻击",
+    "attack_type": 2,
+    "skill_kind": 1,
+    "damage": 10,
+    "trigger_range": 50,
+    "hit_offset": 1,
+    "hit_radius": 2,
+    "cooldown": 2,
+    "startup_time": 0.1,
+    "telegraph_time": 0,
+    "active_time": 0.1,
+    "recovery_time": 0.3,
+    "stagger_time": 0,
+    "can_block_projectile": true
   }
 ]
