@@ -15,7 +15,8 @@
     "active_time": 0.15,
     "recovery_time": 0.55,
     "stagger_time": 0,
-    "can_block_projectile": false
+    "can_block_projectile": false,
+    "projectile_speed": 0
   },
   {
     "skill_id": 10001,
@@ -33,7 +34,8 @@
     "active_time": 0.15,
     "recovery_time": 0.8,
     "stagger_time": 0,
-    "can_block_projectile": false
+    "can_block_projectile": false,
+    "projectile_speed": 0
   },
   {
     "skill_id": 10002,
@@ -51,7 +53,8 @@
     "active_time": 0.1,
     "recovery_time": 0.3,
     "stagger_time": 2,
-    "can_block_projectile": false
+    "can_block_projectile": false,
+    "projectile_speed": 0
   },
   {
     "skill_id": 10003,
@@ -69,6 +72,7 @@
     "active_time": 0.1,
     "recovery_time": 0.3,
     "stagger_time": 0,
-    "can_block_projectile": true
+    "can_block_projectile": true,
+    "projectile_speed": 10
   }
 ]

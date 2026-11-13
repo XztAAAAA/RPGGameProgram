@@ -36,6 +36,7 @@ public sealed partial class Skill : Luban.BeanBase
         { if(!_buf["recovery_time"].IsNumber) { throw new SerializationException(); }  RecoveryTime = _buf["recovery_time"]; }
         { if(!_buf["stagger_time"].IsNumber) { throw new SerializationException(); }  StaggerTime = _buf["stagger_time"]; }
         { if(!_buf["can_block_projectile"].IsBoolean) { throw new SerializationException(); }  CanBlockProjectile = _buf["can_block_projectile"]; }
+        { if(!_buf["projectile_speed"].IsNumber) { throw new SerializationException(); }  ProjectileSpeed = _buf["projectile_speed"]; }
     }
 
     public static Skill DeserializeSkill(JSONNode _buf)
@@ -59,6 +60,7 @@ public sealed partial class Skill : Luban.BeanBase
     public readonly float RecoveryTime;
     public readonly float StaggerTime;
     public readonly bool CanBlockProjectile;
+    public readonly float ProjectileSpeed;
    
     public const int __ID__ = 79944241;
     public override int GetTypeId() => __ID__;
@@ -86,6 +88,7 @@ public sealed partial class Skill : Luban.BeanBase
         + "recoveryTime:" + RecoveryTime + ","
         + "staggerTime:" + StaggerTime + ","
         + "canBlockProjectile:" + CanBlockProjectile + ","
+        + "projectileSpeed:" + ProjectileSpeed + ","
         + "}";
     }
 }

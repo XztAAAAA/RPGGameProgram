@@ -24,10 +24,6 @@ public class Attack : MonoBehaviour
     [SerializeField]
     private LayerMask hitLayers = ~0;
 
-    [Header("远程攻击")]
-    [SerializeField, Min(0.1f)]
-    private float projectileSpeed = 10f;
-
     [Header("攻击范围显示")]
     [SerializeField, Min(0.01f)]
     private float rangeDisplayDuration = 0.3f;
@@ -248,8 +244,23 @@ public class Attack : MonoBehaviour
                 return;
             }
 
+            if (float.IsNaN(skill.TriggerRange) || float.IsInfinity(skill.TriggerRange) ||
+                skill.TriggerRange <= 0f)
+            {
+                Debug.LogError("Attack：远程技能的飞行距离必须是大于 0 的有限数值。", this);
+                return;
+            }
+
+            if (float.IsNaN(skill.ProjectileSpeed) || float.IsInfinity(skill.ProjectileSpeed) ||
+                skill.ProjectileSpeed <= 0f)
+            {
+                Debug.LogError($"Attack：远程技能 {skill.SkillId} 的弹幕速度必须是大于 0 的有限数值。", this);
+                return;
+            }
+
             Vector3 start = transform.position + Vector3.up * attackHeight;
-            SkillProjectile.Create(start, targetHealth, damage, Mathf.Max(0.1f, projectileSpeed));
+            SkillProjectile.Create(start, transform.forward, ownerFaction.Faction, damage,
+                skill.ProjectileSpeed, skill.TriggerRange, hitLayers);
         }
         else
         {

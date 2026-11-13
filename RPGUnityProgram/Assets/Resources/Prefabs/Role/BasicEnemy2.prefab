@@ -282,7 +282,6 @@ MonoBehaviour:
   hitLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  projectileSpeed: 10
   rangeDisplayDuration: 0.3
 --- !u!114 &-4189563823993112271
 MonoBehaviour:
