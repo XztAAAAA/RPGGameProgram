@@ -49,6 +49,13 @@ public partial class MoveToTargetAction : Action
             return Status.Running;
         }
 
+        if (attack != null && attack.IsStaggered)
+        {
+            agent.isStopped = true;
+            hasDestination = false;
+            return Status.Running;
+        }
+
         // 没有目标时停止，并等待目标重新出现
         if (target == null || !target.activeInHierarchy)
         {

@@ -30,6 +30,7 @@ public class Attack : MonoBehaviour
 
     private const int RangeSegments = 64;
     private const float RangeLineWidth = 0.04f;
+    private static readonly HashSet<Attack> ActiveSpecialSkills = new HashSet<Attack>();
     private CombatFactionMarker ownerFaction;
     private float nextAttackTime;
     private cfg.Skill[] configuredSkills;
@@ -40,8 +41,30 @@ public class Attack : MonoBehaviour
     private Material rangeMaterial;
     private float rangeDisplayEndTime;
     private bool rangeDisplayFailed;
+    private cfg.Skill executingSpecialSkill;
+    private Transform specialSkillTarget;
+    private float specialSkillStartTime;
+    private float staggerEndTime;
+    private bool specialSkillParried;
+    private GameObject parryWarning;
+    private bool parryWarningFailed;
 
     public float Damage => damage;
+    public bool IsStaggered => Time.time < staggerEndTime;
+    public bool IsCurrentSkillParried => specialSkillParried;
+    public bool IsParryWindowOpen
+    {
+        get
+        {
+            if (!isActiveAndEnabled || executingSpecialSkill == null || specialSkillParried)
+                return false;
+
+            float elapsed = Time.time - specialSkillStartTime;
+            float windowStart = Mathf.Max(0f, executingSpecialSkill.StartupTime - executingSpecialSkill.TelegraphTime);
+            return executingSpecialSkill.TelegraphTime > 0f &&
+                elapsed >= windowStart && elapsed < executingSpecialSkill.StartupTime;
+        }
+    }
     public bool HasConfiguredSkills =>
         configuredSkills != null && configuredSkills.Length > 0;
 
@@ -49,7 +72,7 @@ public class Attack : MonoBehaviour
     {
         get
         {
-            if (!isActiveAndEnabled)
+            if (!isActiveAndEnabled || IsStaggered)
                 return false;
 
             if (configuredSkills == null)
@@ -103,7 +126,8 @@ public class Attack : MonoBehaviour
 
     public bool SelectAvailableSkill(Transform target)
     {
-        if (!HasConfiguredSkills || nextSkillAttackTimes == null || target == null)
+        if (!isActiveAndEnabled || IsStaggered ||
+            !HasConfiguredSkills || nextSkillAttackTimes == null || target == null)
         {
             selectedSkillIndex = -1;
             return false;
@@ -138,7 +162,7 @@ public class Attack : MonoBehaviour
     public bool TryBeginSelectedSkill(Transform target, out cfg.Skill skill)
     {
         skill = null;
-        if (!HasConfiguredSkills ||
+        if (!isActiveAndEnabled || IsStaggered || !HasConfiguredSkills ||
             selectedSkillIndex < 0 ||
             selectedSkillIndex >= configuredSkills.Length ||
             target == null)
@@ -164,6 +188,64 @@ public class Attack : MonoBehaviour
         return true;
     }
 
+    public void BeginSkillExecution(cfg.Skill skill, Transform target, float startTime)
+    {
+        EndSkillExecution();
+        if (skill.SkillKind != 2 || ownerFaction == null ||
+            ownerFaction.Faction != CombatFaction.Enemy)
+        {
+            return;
+        }
+
+        if (float.IsNaN(skill.StartupTime) || float.IsInfinity(skill.StartupTime) ||
+            float.IsNaN(skill.TelegraphTime) || float.IsInfinity(skill.TelegraphTime) ||
+            float.IsNaN(skill.StaggerTime) || float.IsInfinity(skill.StaggerTime) ||
+            skill.StartupTime < 0f || skill.TelegraphTime < 0f || skill.StaggerTime < 0f)
+        {
+            Debug.LogError($"Attack：特殊技能 {skill.SkillId} 的前摇、格挡窗口和硬直时间必须是非负有限数值。", this);
+            return;
+        }
+
+        executingSpecialSkill = skill;
+        specialSkillTarget = target;
+        specialSkillStartTime = startTime;
+        ActiveSpecialSkills.Add(this);
+    }
+
+    public void EndSkillExecution()
+    {
+        ActiveSpecialSkills.Remove(this);
+        executingSpecialSkill = null;
+        specialSkillTarget = null;
+        specialSkillParried = false;
+        HideParryWarning();
+    }
+
+    private static bool TryParrySpecialSkills(Transform player)
+    {
+        bool parried = false;
+        foreach (Attack enemy in ActiveSpecialSkills)
+        {
+            if (!enemy.IsParryWindowOpen ||
+                enemy.specialSkillTarget != player)
+            {
+                continue;
+            }
+
+            cfg.Skill skill = enemy.executingSpecialSkill;
+            enemy.specialSkillParried = true;
+            parried = true;
+            enemy.HideParryWarning();
+            enemy.staggerEndTime = Time.time + skill.StaggerTime;
+            enemy.selectedSkillIndex = -1;
+            UnityEngine.AI.NavMeshAgent agent = enemy.GetComponent<UnityEngine.AI.NavMeshAgent>();
+            if (agent != null && agent.enabled && agent.isOnNavMesh)
+                agent.isStopped = true;
+        }
+
+        return parried;
+    }
+
     private void Awake()
     {
         ownerFaction = GetComponent<CombatFactionMarker>();
@@ -175,8 +257,11 @@ public class Attack : MonoBehaviour
     /// </summary>
     public bool TryAttack(Transform target = null)
     {
-        if (!isActiveAndEnabled || ownerFaction == null)
+        if (!isActiveAndEnabled || ownerFaction == null || IsStaggered)
             return false;
+
+        bool parried = ownerFaction.Faction == CombatFaction.Player &&
+            TryParrySpecialSkills(transform);
 
         if (configuredSkills == null)
         {
@@ -204,15 +289,15 @@ public class Attack : MonoBehaviour
             hitOffset = Mathf.Max(0f, skill.HitOffset);
             nextSkillAttackTimes[skillIndex] = Time.time + cooldown;
             nextSkillIndex = (skillIndex + 1) % configuredSkills.Length;
-            ApplySkillDamage(skill, target);
+            ApplySkillDamage(skill, target, parried);
             return true;
         }
 
-        ApplyAttack(damage, hitRadius, hitOffset);
+        ApplyAttack(damage, hitRadius, hitOffset, parried);
         return true;
     }
 
-    public void ApplySkillDamage(cfg.Skill skill, Transform target)
+    public void ApplySkillDamage(cfg.Skill skill, Transform target, bool suppressDamage = false)
     {
         if (skill == null)
         {
@@ -225,7 +310,7 @@ public class Attack : MonoBehaviour
         hitOffset = Mathf.Max(0f, skill.HitOffset);
         if (skill.AttackType == 1)
         {
-            ApplyAttack(damage, hitRadius, hitOffset);
+            ApplyAttack(damage, hitRadius, hitOffset, suppressDamage);
         }
         else if (skill.AttackType == 2)
         {
@@ -258,9 +343,12 @@ public class Attack : MonoBehaviour
                 return;
             }
 
-            Vector3 start = transform.position + Vector3.up * attackHeight;
-            SkillProjectile.Create(start, transform.forward, ownerFaction.Faction, damage,
-                skill.ProjectileSpeed, skill.TriggerRange, hitLayers, skill.CanBlockProjectile);
+            if (!suppressDamage)
+            {
+                Vector3 start = transform.position + Vector3.up * attackHeight;
+                SkillProjectile.Create(start, transform.forward, ownerFaction.Faction, damage,
+                    skill.ProjectileSpeed, skill.TriggerRange, hitLayers, skill.CanBlockProjectile);
+            }
         }
         else
         {
@@ -268,7 +356,7 @@ public class Attack : MonoBehaviour
         }
     }
 
-    private void ApplyAttack(float attackDamage, float attackRadius, float attackOffset)
+    private void ApplyAttack(float attackDamage, float attackRadius, float attackOffset, bool suppressDamage)
     {
         Vector3 attackCenter =
             transform.position
@@ -279,6 +367,9 @@ public class Attack : MonoBehaviour
 
         if (ownerFaction.Faction == CombatFaction.Player)
             SkillProjectile.BlockInRange(attackCenter, attackRadius, ownerFaction.Faction);
+
+        if (suppressDamage)
+            return;
 
         Collider[] hits = Physics.OverlapSphere(
             attackCenter,
@@ -414,12 +505,35 @@ public class Attack : MonoBehaviour
 
     private void Update()
     {
+        if (IsParryWindowOpen)
+        {
+            if (parryWarning == null && !parryWarningFailed)
+            {
+                parryWarning = ParryWarning.Create(transform);
+                parryWarningFailed = parryWarning == null;
+            }
+
+            if (parryWarning != null && !parryWarning.activeSelf)
+                parryWarning.SetActive(true);
+        }
+        else
+        {
+            HideParryWarning();
+        }
+
         if (rangeLines != null && Time.unscaledTime >= rangeDisplayEndTime)
             HideAttackRange();
     }
 
+    private void HideParryWarning()
+    {
+        if (parryWarning != null && parryWarning.activeSelf)
+            parryWarning.SetActive(false);
+    }
+
     private void OnDisable()
     {
+        EndSkillExecution();
         HideAttackRange();
     }
 

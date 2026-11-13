@@ -3,7 +3,7 @@
     "id": 1,
     "name": "遗迹入口",
     "next_level_id": 2,
-    "spawn_group_id": 1002,
+    "spawn_group_id": 1001,
     "scene_name": "Prototype_Arena"
   },
   {

@@ -43,6 +43,7 @@ public partial class ExecuteSelectedSkillAction : Action
             agent.isStopped = true;
         agent.updateRotation = false;
         skillStartTime = Time.time;
+        attack.BeginSkillExecution(skill, target.transform, skillStartTime);
         damageApplied = false;
         return Status.Running;
     }
@@ -53,6 +54,9 @@ public partial class ExecuteSelectedSkillAction : Action
         GameObject target = Target != null ? Target.Value : null;
         if (self == null || target == null || attack == null || agent == null)
             return Status.Failure;
+
+        if (attack.IsCurrentSkillParried)
+            return attack.IsStaggered ? Status.Running : Status.Success;
 
         Health selfHealth = self.GetComponent<Health>();
         Health targetHealth = target.GetComponent<Health>();
@@ -78,7 +82,9 @@ public partial class ExecuteSelectedSkillAction : Action
 
         float elapsed = Time.time - skillStartTime;
         float startupEnd = Mathf.Max(0f, skill.StartupTime);
-        float telegraphEnd = startupEnd + Mathf.Max(0f, skill.TelegraphTime);
+        float telegraphEnd = skill.SkillKind == 2
+            ? startupEnd
+            : startupEnd + Mathf.Max(0f, skill.TelegraphTime);
         float activeEnd = telegraphEnd + Mathf.Max(0f, skill.ActiveTime);
         float recoveryEnd = activeEnd + Mathf.Max(0f, skill.RecoveryTime);
 
@@ -98,6 +104,8 @@ public partial class ExecuteSelectedSkillAction : Action
 
     protected override void OnEnd()
     {
+        if (attack != null)
+            attack.EndSkillExecution();
         if (agent != null)
             agent.updateRotation = true;
     }
