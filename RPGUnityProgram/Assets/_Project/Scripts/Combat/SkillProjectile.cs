@@ -4,7 +4,10 @@ using UnityEngine;
 public sealed class SkillProjectile : MonoBehaviour
 {
     private const float Radius = 0.2f;
+    private const int InitialHitBufferSize = 16;
     private static readonly List<SkillProjectile> ActiveProjectiles = new List<SkillProjectile>();
+    private static Collider[] overlapBuffer = new Collider[InitialHitBufferSize];
+    private static RaycastHit[] sphereCastBuffer = new RaycastHit[InitialHitBufferSize];
 
     private Vector3 direction;
     private CombatFaction ownerFaction;
@@ -65,13 +68,17 @@ public sealed class SkillProjectile : MonoBehaviour
 
     private void Update()
     {
-        Collider[] overlapping = Physics.OverlapSphere(
-            transform.position, Radius, hitLayers, QueryTriggerInteraction.Ignore);
-        foreach (Collider hit in overlapping)
+        int overlapCount = GetOverlappingColliders();
+        for (int i = 0; i < overlapCount; i++)
         {
+            Collider hit = overlapBuffer[i];
+            overlapBuffer[i] = null;
             Health health = GetEnemyHealth(hit);
             if (health != null)
             {
+                for (int j = i + 1; j < overlapCount; j++)
+                    overlapBuffer[j] = null;
+
                 health.TakeDamage(damage);
                 Destroy(gameObject);
                 return;
@@ -79,12 +86,13 @@ public sealed class SkillProjectile : MonoBehaviour
         }
 
         float distance = Mathf.Min(speed * Time.deltaTime, remainingDistance);
-        RaycastHit[] hits = Physics.SphereCastAll(
-            transform.position, Radius, direction, distance, hitLayers, QueryTriggerInteraction.Ignore);
+        int hitCount = GetSphereCastHits(distance);
         Health closestHealth = null;
         float closestDistance = float.PositiveInfinity;
-        foreach (RaycastHit hit in hits)
+        for (int i = 0; i < hitCount; i++)
         {
+            RaycastHit hit = sphereCastBuffer[i];
+            sphereCastBuffer[i] = default;
             Health health = GetEnemyHealth(hit.collider);
             if (health != null && hit.distance < closestDistance)
             {
@@ -104,6 +112,46 @@ public sealed class SkillProjectile : MonoBehaviour
         remainingDistance -= distance;
         if (remainingDistance <= 0f)
             Destroy(gameObject);
+    }
+
+    private int GetOverlappingColliders()
+    {
+        while (true)
+        {
+            int hitCount = Physics.OverlapSphereNonAlloc(
+                transform.position,
+                Radius,
+                overlapBuffer,
+                hitLayers,
+                QueryTriggerInteraction.Ignore
+            );
+            if (hitCount < overlapBuffer.Length)
+                return hitCount;
+
+            System.Array.Clear(overlapBuffer, 0, hitCount);
+            System.Array.Resize(ref overlapBuffer, overlapBuffer.Length * 2);
+        }
+    }
+
+    private int GetSphereCastHits(float distance)
+    {
+        while (true)
+        {
+            int hitCount = Physics.SphereCastNonAlloc(
+                transform.position,
+                Radius,
+                direction,
+                sphereCastBuffer,
+                distance,
+                hitLayers,
+                QueryTriggerInteraction.Ignore
+            );
+            if (hitCount < sphereCastBuffer.Length)
+                return hitCount;
+
+            System.Array.Clear(sphereCastBuffer, 0, hitCount);
+            System.Array.Resize(ref sphereCastBuffer, sphereCastBuffer.Length * 2);
+        }
     }
 
     private Health GetEnemyHealth(Collider hit)

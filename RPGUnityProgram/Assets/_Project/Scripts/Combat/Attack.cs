@@ -31,6 +31,9 @@ public class Attack : MonoBehaviour
     private const int RangeSegments = 64;
     private const float RangeLineWidth = 0.04f;
     private static readonly HashSet<Attack> ActiveSpecialSkills = new HashSet<Attack>();
+    private readonly HashSet<Health> oneShotHitTargets = new HashSet<Health>();
+    private readonly HashSet<Health> meleeSkillHitTargets = new HashSet<Health>();
+    private Collider[] hitBuffer = new Collider[16];
     private CombatFactionMarker ownerFaction;
     private float nextAttackTime;
     private cfg.Skill[] configuredSkills;
@@ -48,7 +51,6 @@ public class Attack : MonoBehaviour
     private bool specialSkillParried;
     private cfg.Skill activeMeleeSkill;
     private float meleeSkillActiveEndTime;
-    private HashSet<Health> meleeSkillHitTargets;
     private bool suppressMeleeSkillDamage;
     private GameObject parryWarning;
     private bool parryWarningFailed;
@@ -373,7 +375,7 @@ public class Attack : MonoBehaviour
         EndMeleeSkillHitbox();
         activeMeleeSkill = skill;
         meleeSkillActiveEndTime = Time.time + Mathf.Max(0f, activeTime);
-        meleeSkillHitTargets = new HashSet<Health>();
+        meleeSkillHitTargets.Clear();
         suppressMeleeSkillDamage = suppressDamage;
         ApplyMeleeSkillHitbox(true);
 
@@ -410,7 +412,7 @@ public class Attack : MonoBehaviour
     private void EndMeleeSkillHitbox()
     {
         activeMeleeSkill = null;
-        meleeSkillHitTargets = null;
+        meleeSkillHitTargets.Clear();
         suppressMeleeSkillDamage = false;
     }
 
@@ -436,18 +438,20 @@ public class Attack : MonoBehaviour
         if (suppressDamage)
             return;
 
-        Collider[] hits = Physics.OverlapSphere(
+        int hitCount = GetOverlappingColliders(
             attackCenter,
-            attackRadius,
-            hitLayers,
-            QueryTriggerInteraction.Ignore
+            attackRadius
         );
 
         // 防止同一目标有多个 Collider 时重复受到伤害
-        HashSet<Health> damagedTargets = hitTargets ?? new HashSet<Health>();
+        HashSet<Health> damagedTargets = hitTargets ?? oneShotHitTargets;
+        if (hitTargets == null)
+            damagedTargets.Clear();
 
-        foreach (Collider hit in hits)
+        for (int i = 0; i < hitCount; i++)
         {
+            Collider hit = hitBuffer[i];
+            hitBuffer[i] = null;
             Health targetHealth =
                 hit.GetComponentInParent<Health>();
 
@@ -476,6 +480,25 @@ public class Attack : MonoBehaviour
             {
                 targetHealth.TakeDamage(attackDamage);
             }
+        }
+    }
+
+    private int GetOverlappingColliders(Vector3 center, float radius)
+    {
+        while (true)
+        {
+            int hitCount = Physics.OverlapSphereNonAlloc(
+                center,
+                radius,
+                hitBuffer,
+                hitLayers,
+                QueryTriggerInteraction.Ignore
+            );
+            if (hitCount < hitBuffer.Length)
+                return hitCount;
+
+            System.Array.Clear(hitBuffer, 0, hitCount);
+            System.Array.Resize(ref hitBuffer, hitBuffer.Length * 2);
         }
     }
 
