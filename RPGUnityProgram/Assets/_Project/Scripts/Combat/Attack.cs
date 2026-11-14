@@ -29,6 +29,11 @@ public class Attack : MonoBehaviour
     [SerializeField, Min(0.01f)]
     private float rangeDisplayDuration = 0.3f;
 
+    [Header("近战格挡时停")]
+    [Tooltip("格挡成功后的时停时长（秒，使用真实时间）；设为 0 可关闭时停。")]
+    [SerializeField, Min(0f)]
+    private float parryHitStopDuration = 0.08f;
+
     private const int RangeSegments = 64;
     private const float RangeLineWidth = 0.04f;
     private static readonly HashSet<Attack> ActiveSpecialSkills = new HashSet<Attack>();
@@ -236,10 +241,11 @@ public class Attack : MonoBehaviour
         HideParryWarning();
     }
 
-    private bool TryParrySpecialSkills()
+    private bool TryParrySpecialSkills(float attackRadius, float attackOffset)
     {
         bool parried = false;
         bool meleeParried = false;
+        Vector3 attackCenter = GetAttackCenter(attackOffset);
         foreach (Attack enemy in ActiveSpecialSkills)
         {
             if (!enemy.IsParryWindowOpen ||
@@ -249,6 +255,12 @@ public class Attack : MonoBehaviour
             }
 
             cfg.Skill skill = enemy.executingSpecialSkill;
+            float enemyRadius = Mathf.Max(0.1f, skill.HitRadius);
+            Vector3 enemyCenter = enemy.GetAttackCenter(Mathf.Max(0f, skill.HitOffset));
+            float combinedRadius = attackRadius + enemyRadius;
+            if ((attackCenter - enemyCenter).sqrMagnitude > combinedRadius * combinedRadius)
+                continue;
+
             enemy.specialSkillParried = true;
             parried = true;
             meleeParried |= skill.AttackType == 1;
@@ -281,15 +293,32 @@ public class Attack : MonoBehaviour
         if (parryHitStop != null || Time.timeScale <= 0f)
             return;
 
+        if (float.IsNaN(parryHitStopDuration) || float.IsInfinity(parryHitStopDuration) ||
+            parryHitStopDuration < 0f)
+        {
+            Debug.LogError("Attack：近战格挡时停时长必须是非负有限数值。", this);
+            return;
+        }
+
+        if (parryHitStopDuration == 0f)
+            return;
+
         timeScaleBeforeParry = Time.timeScale;
         CommonTool.SetTimeScale(0f);
         parryTimeScaleVersion = CommonTool.TimeScaleVersion;
-        parryHitStop = StartCoroutine(ResumeAfterParry());
+        parryHitStop = StartCoroutine(ResumeAfterParry(parryHitStopDuration));
     }
 
-    private IEnumerator ResumeAfterParry()
+    private IEnumerator ResumeAfterParry(float duration)
     {
-        yield return null;
+        double endTime = Time.realtimeSinceStartupAsDouble + duration;
+        do
+        {
+            yield return null;
+        }
+        while (Time.realtimeSinceStartupAsDouble < endTime &&
+            CommonTool.TimeScaleVersion == parryTimeScaleVersion && Time.timeScale == 0f);
+
         EndParryHitStop();
     }
 
@@ -317,8 +346,12 @@ public class Attack : MonoBehaviour
         if (!isActiveAndEnabled || ownerFaction == null || IsStaggered)
             return false;
 
+        int skillIndex = configuredSkills != null ? FindReadySkill(target) : -1;
+        cfg.Skill attackSkill = skillIndex >= 0 ? configuredSkills[skillIndex] : null;
+        float parryRadius = attackSkill != null ? Mathf.Max(0.1f, attackSkill.HitRadius) : hitRadius;
+        float parryOffset = attackSkill != null ? Mathf.Max(0f, attackSkill.HitOffset) : hitOffset;
         bool parried = ownerFaction.Faction == CombatFaction.Player &&
-            TryParrySpecialSkills();
+            TryParrySpecialSkills(parryRadius, parryOffset);
 
         if (configuredSkills == null)
         {
@@ -329,7 +362,6 @@ public class Attack : MonoBehaviour
         }
         else
         {
-            int skillIndex = FindReadySkill(target);
             if (skillIndex < 0)
                 return false;
 
@@ -495,10 +527,7 @@ public class Attack : MonoBehaviour
         bool showRange = true,
         float? displayDuration = null)
     {
-        Vector3 attackCenter =
-            transform.position
-            + Vector3.up * attackHeight
-            + transform.forward * attackOffset;
+        Vector3 attackCenter = GetAttackCenter(attackOffset);
 
         if (showRange)
             ShowAttackRange(attackCenter, attackRadius, displayDuration);
@@ -571,6 +600,11 @@ public class Attack : MonoBehaviour
             System.Array.Clear(hitBuffer, 0, hitCount);
             System.Array.Resize(ref hitBuffer, hitBuffer.Length * 2);
         }
+    }
+
+    private Vector3 GetAttackCenter(float attackOffset)
+    {
+        return transform.position + Vector3.up * attackHeight + transform.forward * attackOffset;
     }
 
     private int FindReadySkill(Transform target)
