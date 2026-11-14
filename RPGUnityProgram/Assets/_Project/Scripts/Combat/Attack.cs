@@ -36,6 +36,7 @@ public class Attack : MonoBehaviour
     private Collider[] hitBuffer = new Collider[16];
     private CombatFactionMarker ownerFaction;
     private float nextAttackTime;
+    private cfg.Skill basicAttackSkill;
     private cfg.Skill[] configuredSkills;
     private float[] nextSkillAttackTimes;
     private int nextSkillIndex;
@@ -43,6 +44,7 @@ public class Attack : MonoBehaviour
     private LineRenderer[] rangeLines;
     private Material rangeMaterial;
     private float rangeDisplayEndTime;
+    private bool rangeDisplayUsesScaledTime;
     private bool rangeDisplayFailed;
     private cfg.Skill executingSpecialSkill;
     private Transform specialSkillTarget;
@@ -108,6 +110,7 @@ public class Attack : MonoBehaviour
         }
 
         configuredSkills = null;
+        basicAttackSkill = skill;
         nextSkillAttackTimes = null;
         selectedSkillIndex = -1;
         damage = Mathf.Max(0f, skill.Damage);
@@ -124,6 +127,7 @@ public class Attack : MonoBehaviour
             return;
         }
 
+        basicAttackSkill = null;
         configuredSkills = skills;
         nextSkillAttackTimes = new float[skills.Length];
         nextSkillIndex = 0;
@@ -300,7 +304,10 @@ public class Attack : MonoBehaviour
             return true;
         }
 
-        ApplyAttack(damage, hitRadius, hitOffset, parried);
+        float? displayDuration = basicAttackSkill != null && basicAttackSkill.AttackType == 1
+            ? GetMeleeActiveTime(basicAttackSkill)
+            : (float?)null;
+        ApplyAttack(damage, hitRadius, hitOffset, parried, displayDuration: displayDuration);
         return true;
     }
 
@@ -365,22 +372,28 @@ public class Attack : MonoBehaviour
 
     private void BeginMeleeSkillHitbox(cfg.Skill skill, bool suppressDamage)
     {
-        float activeTime = skill.ActiveTime;
-        if (float.IsNaN(activeTime) || float.IsInfinity(activeTime))
-        {
-            Debug.LogError($"Attack：近战技能 {skill.SkillId} 的持续时间必须是有限数值。", this);
-            activeTime = 0f;
-        }
-
+        float activeTime = GetMeleeActiveTime(skill);
         EndMeleeSkillHitbox();
         activeMeleeSkill = skill;
-        meleeSkillActiveEndTime = Time.time + Mathf.Max(0f, activeTime);
+        meleeSkillActiveEndTime = Time.time + activeTime;
         meleeSkillHitTargets.Clear();
         suppressMeleeSkillDamage = suppressDamage;
         ApplyMeleeSkillHitbox(true);
 
         if (activeTime <= 0f)
             EndMeleeSkillHitbox();
+    }
+
+    private float GetMeleeActiveTime(cfg.Skill skill)
+    {
+        float activeTime = skill.ActiveTime;
+        if (float.IsNaN(activeTime) || float.IsInfinity(activeTime))
+        {
+            Debug.LogError($"Attack：近战技能 {skill.SkillId} 的持续时间必须是有限数值。", this);
+            return 0f;
+        }
+
+        return Mathf.Max(0f, activeTime);
     }
 
     private void UpdateMeleeSkillHitbox()
@@ -405,12 +418,16 @@ public class Attack : MonoBehaviour
             Mathf.Max(0f, activeMeleeSkill.HitOffset),
             suppressMeleeSkillDamage,
             meleeSkillHitTargets,
-            showRange
+            showRange,
+            meleeSkillActiveEndTime - Time.time
         );
     }
 
     private void EndMeleeSkillHitbox()
     {
+        if (activeMeleeSkill != null)
+            HideAttackRange();
+
         activeMeleeSkill = null;
         meleeSkillHitTargets.Clear();
         suppressMeleeSkillDamage = false;
@@ -422,7 +439,8 @@ public class Attack : MonoBehaviour
         float attackOffset,
         bool suppressDamage,
         HashSet<Health> hitTargets = null,
-        bool showRange = true)
+        bool showRange = true,
+        float? displayDuration = null)
     {
         Vector3 attackCenter =
             transform.position
@@ -430,7 +448,7 @@ public class Attack : MonoBehaviour
             + transform.forward * attackOffset;
 
         if (showRange)
-            ShowAttackRange(attackCenter, attackRadius);
+            ShowAttackRange(attackCenter, attackRadius, displayDuration);
 
         if (ownerFaction.Faction == CombatFaction.Player)
             SkillProjectile.BlockInRange(attackCenter, attackRadius, ownerFaction.Faction);
@@ -532,8 +550,14 @@ public class Attack : MonoBehaviour
         return targetOffset.magnitude;
     }
 
-    private void ShowAttackRange(Vector3 center, float radius)
+    private void ShowAttackRange(Vector3 center, float radius, float? displayDuration)
     {
+        if (displayDuration.HasValue && displayDuration.Value <= 0f)
+        {
+            HideAttackRange();
+            return;
+        }
+
         if (rangeDisplayFailed)
             return;
 
@@ -556,7 +580,10 @@ public class Attack : MonoBehaviour
             line.enabled = true;
         }
 
-        rangeDisplayEndTime = Time.unscaledTime + Mathf.Max(0.01f, rangeDisplayDuration);
+        rangeDisplayUsesScaledTime = displayDuration.HasValue;
+        rangeDisplayEndTime = rangeDisplayUsesScaledTime
+            ? Time.time + displayDuration.Value
+            : Time.unscaledTime + Mathf.Max(0.01f, rangeDisplayDuration);
     }
 
     private bool CreateRangeLines()
@@ -611,7 +638,8 @@ public class Attack : MonoBehaviour
             HideParryWarning();
         }
 
-        if (rangeLines != null && Time.unscaledTime >= rangeDisplayEndTime)
+        float rangeDisplayTime = rangeDisplayUsesScaledTime ? Time.time : Time.unscaledTime;
+        if (rangeLines != null && rangeDisplayTime >= rangeDisplayEndTime)
             HideAttackRange();
     }
 
