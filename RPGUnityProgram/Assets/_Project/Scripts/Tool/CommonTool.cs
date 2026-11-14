@@ -4,6 +4,8 @@ using UnityEngine.SceneManagement;
 
 public class CommonTool
 {
+    internal static uint TimeScaleVersion { get; private set; }
+
     public static void Log(object message, UnityEngine.Object context = null)
     {
 #if UNITY_EDITOR
@@ -38,6 +40,7 @@ public class CommonTool
 
     public static void SetTimeScale(float value)
     {
+        TimeScaleVersion++;
         Time.timeScale = value;
     }
 

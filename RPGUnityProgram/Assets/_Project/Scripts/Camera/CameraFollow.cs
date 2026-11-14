@@ -2,6 +2,10 @@ using UnityEngine;
 
 public class CameraFollow : MonoBehaviour
 {
+    private const float ParryShakeDuration = 0.18f;
+    private const float ParryShakeStrength = 0.14f;
+    private const float ParryShakeFrequency = 25f;
+
     [Header("跟随目标")]
     [SerializeField] private Transform target;
 
@@ -19,6 +23,14 @@ public class CameraFollow : MonoBehaviour
 
     // SmoothDamp 内部使用的速度
     private Vector3 currentVelocity = Vector3.zero;
+
+    private float parryShakeRemaining;
+    private Vector3 appliedShakeOffset;
+
+    public void ShakeForMeleeParry()
+    {
+        parryShakeRemaining = ParryShakeDuration;
+    }
 
     private void Awake()
     {
@@ -41,6 +53,9 @@ public class CameraFollow : MonoBehaviour
 
     private void LateUpdate()
     {
+        transform.position -= appliedShakeOffset;
+        appliedShakeOffset = Vector3.zero;
+
         if (target == null)
             return;
 
@@ -81,11 +96,32 @@ public class CameraFollow : MonoBehaviour
         Vector3 targetPosition = followPosition + offset;
 
         // 平滑跟随玩家
-        transform.position = Vector3.SmoothDamp(
-            transform.position,
-            targetPosition,
-            ref currentVelocity,
-            smoothTime
-        );
+        if (Time.deltaTime > 0f)
+        {
+            transform.position = Vector3.SmoothDamp(
+                transform.position,
+                targetPosition,
+                ref currentVelocity,
+                smoothTime
+            );
+        }
+
+        if (parryShakeRemaining > 0f)
+        {
+            parryShakeRemaining = Mathf.Max(0f, parryShakeRemaining - Time.unscaledDeltaTime);
+            float elapsed = ParryShakeDuration - parryShakeRemaining;
+            float strength = ParryShakeStrength * (parryShakeRemaining / ParryShakeDuration);
+            float phase = elapsed * ParryShakeFrequency * 2f * Mathf.PI;
+            appliedShakeOffset = (transform.right * Mathf.Sin(phase) +
+                transform.up * Mathf.Cos(phase)) * strength;
+            transform.position += appliedShakeOffset;
+        }
+    }
+
+    private void OnDisable()
+    {
+        transform.position -= appliedShakeOffset;
+        appliedShakeOffset = Vector3.zero;
+        parryShakeRemaining = 0f;
     }
 }

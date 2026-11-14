@@ -15,6 +15,7 @@ public partial class ExecuteSelectedSkillAction : Action
     private UnityEngine.AI.NavMeshAgent agent;
     private Attack attack;
     private cfg.Skill skill;
+    private GameObject skillTarget;
     private float skillStartTime;
     private bool damageApplied;
 
@@ -42,6 +43,7 @@ public partial class ExecuteSelectedSkillAction : Action
         if (agent.enabled && agent.isOnNavMesh)
             agent.isStopped = true;
         agent.updateRotation = false;
+        skillTarget = target;
         skillStartTime = Time.time;
         attack.BeginSkillExecution(skill, target.transform, skillStartTime);
         damageApplied = false;
@@ -51,33 +53,35 @@ public partial class ExecuteSelectedSkillAction : Action
     protected override Status OnUpdate()
     {
         GameObject self = Self != null ? Self.Value : null;
-        GameObject target = Target != null ? Target.Value : null;
-        if (self == null || target == null || attack == null || agent == null)
+        if (self == null || attack == null || agent == null)
             return Status.Failure;
 
-        if (attack.IsCurrentSkillParried)
-            return attack.IsStaggered ? Status.Running : Status.Success;
-
         Health selfHealth = self.GetComponent<Health>();
-        Health targetHealth = target.GetComponent<Health>();
-        if (!self.activeInHierarchy || !target.activeInHierarchy ||
-            (selfHealth != null && selfHealth.IsDead) ||
-            (targetHealth != null && targetHealth.IsDead) ||
-            !attack.IsSkillInRange(skill, target.transform))
+        if (!self.activeInHierarchy || !attack.isActiveAndEnabled ||
+            (selfHealth != null && selfHealth.IsDead))
         {
             return Status.Failure;
         }
 
-        Vector3 direction = target.transform.position - self.transform.position;
-        direction.y = 0f;
-        if (direction.sqrMagnitude > 0.001f)
+        if (attack.IsCurrentSkillParried)
+            return attack.IsStaggered ? Status.Running : Status.Success;
+
+        if (attack.IsStaggered)
+            return Status.Failure;
+
+        if (skillTarget != null && skillTarget.activeInHierarchy)
         {
-            Quaternion targetRotation = Quaternion.LookRotation(direction);
-            self.transform.rotation = Quaternion.RotateTowards(
-                self.transform.rotation,
-                targetRotation,
-                agent.angularSpeed * Time.deltaTime
-            );
+            Vector3 direction = skillTarget.transform.position - self.transform.position;
+            direction.y = 0f;
+            if (direction.sqrMagnitude > 0.001f)
+            {
+                Quaternion targetRotation = Quaternion.LookRotation(direction);
+                self.transform.rotation = Quaternion.RotateTowards(
+                    self.transform.rotation,
+                    targetRotation,
+                    agent.angularSpeed * Time.deltaTime
+                );
+            }
         }
 
         float elapsed = Time.time - skillStartTime;
@@ -93,7 +97,9 @@ public partial class ExecuteSelectedSkillAction : Action
 
         if (!damageApplied)
         {
-            attack.ApplySkillDamage(skill, target.transform);
+            attack.ApplySkillDamage(
+                skill, skillTarget != null ? skillTarget.transform : null,
+                allowMissingTarget: true);
             damageApplied = true;
         }
 
@@ -108,6 +114,7 @@ public partial class ExecuteSelectedSkillAction : Action
             attack.EndSkillExecution();
         if (agent != null)
             agent.updateRotation = true;
+        skillTarget = null;
     }
 
     private static float HorizontalDistance(Transform first, Transform second)

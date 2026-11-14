@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -54,6 +55,9 @@ public class Attack : MonoBehaviour
     private cfg.Skill activeMeleeSkill;
     private float meleeSkillActiveEndTime;
     private bool suppressMeleeSkillDamage;
+    private Coroutine parryHitStop;
+    private float timeScaleBeforeParry;
+    private uint parryTimeScaleVersion;
     private GameObject parryWarning;
     private bool parryWarningFailed;
 
@@ -232,13 +236,14 @@ public class Attack : MonoBehaviour
         HideParryWarning();
     }
 
-    private static bool TryParrySpecialSkills(Transform player)
+    private bool TryParrySpecialSkills()
     {
         bool parried = false;
+        bool meleeParried = false;
         foreach (Attack enemy in ActiveSpecialSkills)
         {
             if (!enemy.IsParryWindowOpen ||
-                enemy.specialSkillTarget != player)
+                enemy.specialSkillTarget != transform)
             {
                 continue;
             }
@@ -246,6 +251,7 @@ public class Attack : MonoBehaviour
             cfg.Skill skill = enemy.executingSpecialSkill;
             enemy.specialSkillParried = true;
             parried = true;
+            meleeParried |= skill.AttackType == 1;
             enemy.HideParryWarning();
             enemy.staggerEndTime = Time.time + skill.StaggerTime;
             enemy.selectedSkillIndex = -1;
@@ -254,7 +260,47 @@ public class Attack : MonoBehaviour
                 agent.isStopped = true;
         }
 
+        if (meleeParried)
+        {
+            StartParryHitStop();
+            Camera mainCamera = Camera.main;
+            CameraFollow cameraFollow = mainCamera != null
+                ? mainCamera.GetComponent<CameraFollow>()
+                : null;
+            if (cameraFollow != null && cameraFollow.isActiveAndEnabled)
+                cameraFollow.ShakeForMeleeParry();
+            else
+                Debug.LogWarning("Attack：无法找到启用的主相机跟随组件，近战格挡不会触发镜头抖动。", this);
+        }
+
         return parried;
+    }
+
+    private void StartParryHitStop()
+    {
+        if (parryHitStop != null || Time.timeScale <= 0f)
+            return;
+
+        timeScaleBeforeParry = Time.timeScale;
+        CommonTool.SetTimeScale(0f);
+        parryTimeScaleVersion = CommonTool.TimeScaleVersion;
+        parryHitStop = StartCoroutine(ResumeAfterParry());
+    }
+
+    private IEnumerator ResumeAfterParry()
+    {
+        yield return null;
+        EndParryHitStop();
+    }
+
+    private void EndParryHitStop()
+    {
+        if (parryHitStop == null)
+            return;
+
+        parryHitStop = null;
+        if (CommonTool.TimeScaleVersion == parryTimeScaleVersion && Time.timeScale == 0f)
+            CommonTool.SetTimeScale(timeScaleBeforeParry);
     }
 
     private void Awake()
@@ -272,7 +318,7 @@ public class Attack : MonoBehaviour
             return false;
 
         bool parried = ownerFaction.Faction == CombatFaction.Player &&
-            TryParrySpecialSkills(transform);
+            TryParrySpecialSkills();
 
         if (configuredSkills == null)
         {
@@ -311,7 +357,11 @@ public class Attack : MonoBehaviour
         return true;
     }
 
-    public void ApplySkillDamage(cfg.Skill skill, Transform target, bool suppressDamage = false)
+    public void ApplySkillDamage(
+        cfg.Skill skill,
+        Transform target,
+        bool suppressDamage = false,
+        bool allowMissingTarget = false)
     {
         if (skill == null)
         {
@@ -328,16 +378,19 @@ public class Attack : MonoBehaviour
         }
         else if (skill.AttackType == 2)
         {
-            if (target == null)
+            if (target == null && !allowMissingTarget)
             {
                 Debug.LogError("Attack：远程技能需要指定目标。", this);
                 return;
             }
 
-            Health targetHealth = target.GetComponent<Health>();
-            CombatFactionMarker targetFaction = target.GetComponent<CombatFactionMarker>();
-            if (targetHealth == null || targetFaction == null || ownerFaction == null ||
-                targetFaction.Faction == ownerFaction.Faction)
+            Health targetHealth = target != null ? target.GetComponent<Health>() : null;
+            CombatFactionMarker targetFaction = target != null
+                ? target.GetComponent<CombatFactionMarker>()
+                : null;
+            if (ownerFaction == null ||
+                (target != null && (targetHealth == null || targetFaction == null ||
+                    targetFaction.Faction == ownerFaction.Faction)))
             {
                 Debug.LogError("Attack：远程技能目标必须是具有生命值的敌对角色。", this);
                 return;
@@ -651,6 +704,9 @@ public class Attack : MonoBehaviour
 
     private void OnDisable()
     {
+        if (parryHitStop != null)
+            StopCoroutine(parryHitStop);
+        EndParryHitStop();
         EndSkillExecution();
         HideAttackRange();
     }
