@@ -47,12 +47,35 @@ public sealed class SkillProjectile : MonoBehaviour
         projectile.name = "Skill Projectile";
         projectile.transform.position = position;
         projectile.transform.localScale = Vector3.one * (Radius * 2f);
-        projectile.GetComponent<Renderer>().sharedMaterial = projectileMaterial;
-        Collider projectileCollider = projectile.GetComponent<Collider>();
-        projectileCollider.enabled = false;
-        Destroy(projectileCollider);
+        MeshFilter meshFilter = projectile.GetComponent<MeshFilter>();
+        MeshRenderer meshRenderer = projectile.GetComponent<MeshRenderer>();
+        if (meshFilter == null || meshFilter.sharedMesh == null || meshRenderer == null)
+        {
+            Debug.LogError("SkillProjectile：无法创建弹幕的网格或渲染组件。");
+            Destroy(projectile);
+            return;
+        }
+
+        meshRenderer.sharedMaterial = projectileMaterial;
+        SphereCollider projectileCollider = projectile.GetComponent<SphereCollider>();
+        if (projectileCollider != null)
+        {
+            projectileCollider.enabled = false;
+            Destroy(projectileCollider);
+        }
+        else
+        {
+            Debug.LogWarning("SkillProjectile：球体碰撞体缺失，弹幕仍将使用物理查询检测命中。");
+        }
 
         SkillProjectile component = projectile.AddComponent<SkillProjectile>();
+        if (component == null)
+        {
+            Debug.LogError("SkillProjectile：无法添加弹幕移动组件。");
+            Destroy(projectile);
+            return;
+        }
+
         component.direction = direction.normalized;
         component.ownerFaction = ownerFaction;
         component.canBlock = canBlock;
