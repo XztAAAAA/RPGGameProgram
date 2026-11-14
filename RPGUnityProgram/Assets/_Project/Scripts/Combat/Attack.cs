@@ -46,6 +46,10 @@ public class Attack : MonoBehaviour
     private float specialSkillStartTime;
     private float staggerEndTime;
     private bool specialSkillParried;
+    private cfg.Skill activeMeleeSkill;
+    private float meleeSkillActiveEndTime;
+    private HashSet<Health> meleeSkillHitTargets;
+    private bool suppressMeleeSkillDamage;
     private GameObject parryWarning;
     private bool parryWarningFailed;
 
@@ -214,6 +218,7 @@ public class Attack : MonoBehaviour
 
     public void EndSkillExecution()
     {
+        EndMeleeSkillHitbox();
         ActiveSpecialSkills.Remove(this);
         executingSpecialSkill = null;
         specialSkillTarget = null;
@@ -310,7 +315,7 @@ public class Attack : MonoBehaviour
         hitOffset = Mathf.Max(0f, skill.HitOffset);
         if (skill.AttackType == 1)
         {
-            ApplyAttack(damage, hitRadius, hitOffset, suppressDamage);
+            BeginMeleeSkillHitbox(skill, suppressDamage);
         }
         else if (skill.AttackType == 2)
         {
@@ -356,14 +361,74 @@ public class Attack : MonoBehaviour
         }
     }
 
-    private void ApplyAttack(float attackDamage, float attackRadius, float attackOffset, bool suppressDamage)
+    private void BeginMeleeSkillHitbox(cfg.Skill skill, bool suppressDamage)
+    {
+        float activeTime = skill.ActiveTime;
+        if (float.IsNaN(activeTime) || float.IsInfinity(activeTime))
+        {
+            Debug.LogError($"Attack：近战技能 {skill.SkillId} 的持续时间必须是有限数值。", this);
+            activeTime = 0f;
+        }
+
+        EndMeleeSkillHitbox();
+        activeMeleeSkill = skill;
+        meleeSkillActiveEndTime = Time.time + Mathf.Max(0f, activeTime);
+        meleeSkillHitTargets = new HashSet<Health>();
+        suppressMeleeSkillDamage = suppressDamage;
+        ApplyMeleeSkillHitbox(true);
+
+        if (activeTime <= 0f)
+            EndMeleeSkillHitbox();
+    }
+
+    private void UpdateMeleeSkillHitbox()
+    {
+        if (activeMeleeSkill == null)
+            return;
+
+        if (Time.time >= meleeSkillActiveEndTime)
+        {
+            EndMeleeSkillHitbox();
+            return;
+        }
+
+        ApplyMeleeSkillHitbox(false);
+    }
+
+    private void ApplyMeleeSkillHitbox(bool showRange)
+    {
+        ApplyAttack(
+            Mathf.Max(0f, activeMeleeSkill.Damage),
+            Mathf.Max(0.1f, activeMeleeSkill.HitRadius),
+            Mathf.Max(0f, activeMeleeSkill.HitOffset),
+            suppressMeleeSkillDamage,
+            meleeSkillHitTargets,
+            showRange
+        );
+    }
+
+    private void EndMeleeSkillHitbox()
+    {
+        activeMeleeSkill = null;
+        meleeSkillHitTargets = null;
+        suppressMeleeSkillDamage = false;
+    }
+
+    private void ApplyAttack(
+        float attackDamage,
+        float attackRadius,
+        float attackOffset,
+        bool suppressDamage,
+        HashSet<Health> hitTargets = null,
+        bool showRange = true)
     {
         Vector3 attackCenter =
             transform.position
             + Vector3.up * attackHeight
             + transform.forward * attackOffset;
 
-        ShowAttackRange(attackCenter, attackRadius);
+        if (showRange)
+            ShowAttackRange(attackCenter, attackRadius);
 
         if (ownerFaction.Faction == CombatFaction.Player)
             SkillProjectile.BlockInRange(attackCenter, attackRadius, ownerFaction.Faction);
@@ -379,7 +444,7 @@ public class Attack : MonoBehaviour
         );
 
         // 防止同一目标有多个 Collider 时重复受到伤害
-        HashSet<Health> damagedTargets = new HashSet<Health>();
+        HashSet<Health> damagedTargets = hitTargets ?? new HashSet<Health>();
 
         foreach (Collider hit in hits)
         {
@@ -505,6 +570,8 @@ public class Attack : MonoBehaviour
 
     private void Update()
     {
+        UpdateMeleeSkillHitbox();
+
         if (IsParryWindowOpen)
         {
             if (parryWarning == null && !parryWarningFailed)

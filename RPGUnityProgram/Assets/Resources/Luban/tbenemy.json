@@ -20,7 +20,7 @@
     "prefab_key": "BasicEnemy2",
     "max_health": 50,
     "move_speed": 2,
-    "rotation_speed": 720,
+    "rotation_speed": 360,
     "skill_ids": [
       10003
     ],
