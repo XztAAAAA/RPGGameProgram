@@ -1,13 +1,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[UnityEngine.Scripting.Preserve]
 public sealed class SkillProjectile : MonoBehaviour
 {
     private const float Radius = 0.2f;
     private const int InitialHitBufferSize = 16;
+    private const string ProjectileMaterialPath = "Materials/SkillProjectile";
     private static readonly List<SkillProjectile> ActiveProjectiles = new List<SkillProjectile>();
     private static Collider[] overlapBuffer = new Collider[InitialHitBufferSize];
     private static RaycastHit[] sphereCastBuffer = new RaycastHit[InitialHitBufferSize];
+    private static Material projectileMaterial;
+    private static bool projectileMaterialLoadFailed;
 
     private Vector3 direction;
     private CombatFaction ownerFaction;
@@ -20,10 +24,30 @@ public sealed class SkillProjectile : MonoBehaviour
     public static void Create(Vector3 position, Vector3 direction, CombatFaction ownerFaction,
         float damage, float speed, float maxDistance, LayerMask hitLayers, bool canBlock)
     {
+        if (projectileMaterial == null)
+        {
+            projectileMaterial = Resources.Load<Material>(ProjectileMaterialPath);
+            if (projectileMaterial == null)
+            {
+                if (!projectileMaterialLoadFailed)
+                {
+                    Debug.LogError(
+                        $"无法加载 Resources/{ProjectileMaterialPath} 弹幕材质，未生成弹幕。"
+                    );
+                }
+
+                projectileMaterialLoadFailed = true;
+                return;
+            }
+
+            projectileMaterialLoadFailed = false;
+        }
+
         GameObject projectile = GameObject.CreatePrimitive(PrimitiveType.Sphere);
         projectile.name = "Skill Projectile";
         projectile.transform.position = position;
         projectile.transform.localScale = Vector3.one * (Radius * 2f);
+        projectile.GetComponent<Renderer>().sharedMaterial = projectileMaterial;
         Collider projectileCollider = projectile.GetComponent<Collider>();
         projectileCollider.enabled = false;
         Destroy(projectileCollider);
@@ -56,16 +80,19 @@ public sealed class SkillProjectile : MonoBehaviour
         }
     }
 
+    [UnityEngine.Scripting.Preserve]
     private void OnEnable()
     {
         ActiveProjectiles.Add(this);
     }
 
+    [UnityEngine.Scripting.Preserve]
     private void OnDisable()
     {
         ActiveProjectiles.Remove(this);
     }
 
+    [UnityEngine.Scripting.Preserve]
     private void Update()
     {
         int overlapCount = GetOverlappingColliders();
