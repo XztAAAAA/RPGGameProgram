@@ -21,6 +21,18 @@ public partial class ExecuteSelectedSkillAction : Action
 
     protected override Status OnStart()
     {
+        agent = null;
+        attack = null;
+        skill = null;
+        skillTarget = null;
+        return StartSkill();
+    }
+
+    private Status StartSkill()
+    {
+        if (Time.timeScale <= 0f)
+            return Status.Running;
+
         GameObject self = Self != null ? Self.Value : null;
         GameObject target = Target != null ? Target.Value : null;
         if (self == null || target == null)
@@ -52,6 +64,12 @@ public partial class ExecuteSelectedSkillAction : Action
 
     protected override Status OnUpdate()
     {
+        if (Time.timeScale <= 0f)
+            return Status.Running;
+
+        if (skill == null)
+            return StartSkill();
+
         GameObject self = Self != null ? Self.Value : null;
         if (self == null || attack == null || agent == null)
             return Status.Failure;

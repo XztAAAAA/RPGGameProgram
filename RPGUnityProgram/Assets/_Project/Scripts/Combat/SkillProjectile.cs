@@ -118,6 +118,9 @@ public sealed class SkillProjectile : MonoBehaviour
     [UnityEngine.Scripting.Preserve]
     private void Update()
     {
+        if (Time.timeScale <= 0f)
+            return;
+
         int overlapCount = GetOverlappingColliders();
         for (int i = 0; i < overlapCount; i++)
         {

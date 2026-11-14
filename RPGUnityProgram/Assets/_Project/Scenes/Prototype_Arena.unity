@@ -1486,6 +1486,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 554719385814117188, guid: 309260475a932f644baa11e9254670f4, type: 3}
+      propertyPath: parryHitStopDuration
+      value: 0.35
+      objectReference: {fileID: 0}
     - target: {fileID: 3274863457598240695, guid: 309260475a932f644baa11e9254670f4, type: 3}
       propertyPath: m_LocalPosition.x
       value: 10

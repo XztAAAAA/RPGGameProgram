@@ -92,6 +92,9 @@ public class Combatant : MonoBehaviour
 
     private void Update()
     {
+        if (Time.timeScale <= 0f)
+            return;
+
         CombatFactionMarker factionMarker =
             GetComponent<CombatFactionMarker>();
         if (factionMarker == null ||

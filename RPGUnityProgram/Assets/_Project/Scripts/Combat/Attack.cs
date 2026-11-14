@@ -32,7 +32,7 @@ public class Attack : MonoBehaviour
     [Header("近战格挡时停")]
     [Tooltip("格挡成功后的时停时长（秒，使用真实时间）；设为 0 可关闭时停。")]
     [SerializeField, Min(0f)]
-    private float parryHitStopDuration = 0.08f;
+    private float parryHitStopDuration = 0.1f;
 
     private const int RangeSegments = 64;
     private const float RangeLineWidth = 0.04f;
@@ -343,7 +343,7 @@ public class Attack : MonoBehaviour
     /// </summary>
     public bool TryAttack(Transform target = null)
     {
-        if (!isActiveAndEnabled || ownerFaction == null || IsStaggered)
+        if (!isActiveAndEnabled || ownerFaction == null || IsStaggered || Time.timeScale <= 0f)
             return false;
 
         int skillIndex = configuredSkills != null ? FindReadySkill(target) : -1;
@@ -352,6 +352,12 @@ public class Attack : MonoBehaviour
         float parryOffset = attackSkill != null ? Mathf.Max(0f, attackSkill.HitOffset) : hitOffset;
         bool parried = ownerFaction.Faction == CombatFaction.Player &&
             TryParrySpecialSkills(parryRadius, parryOffset);
+
+        if (parried)
+        {
+            EndMeleeSkillHitbox();
+            HideAttackRange();
+        }
 
         if (configuredSkills == null)
         {
@@ -529,7 +535,7 @@ public class Attack : MonoBehaviour
     {
         Vector3 attackCenter = GetAttackCenter(attackOffset);
 
-        if (showRange)
+        if (showRange && !suppressDamage)
             ShowAttackRange(attackCenter, attackRadius, displayDuration);
 
         if (ownerFaction.Faction == CombatFaction.Player)
@@ -707,6 +713,9 @@ public class Attack : MonoBehaviour
 
     private void Update()
     {
+        if (Time.timeScale <= 0f)
+            return;
+
         UpdateMeleeSkillHitbox();
 
         if (IsParryWindowOpen)

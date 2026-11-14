@@ -14,6 +14,19 @@ public partial class SelectAvailableSkillAction : Action
 
     protected override Status OnStart()
     {
+        return SelectSkill();
+    }
+
+    protected override Status OnUpdate()
+    {
+        return SelectSkill();
+    }
+
+    private Status SelectSkill()
+    {
+        if (Time.timeScale <= 0f)
+            return Status.Running;
+
         GameObject self = Self != null ? Self.Value : null;
         GameObject target = Target != null ? Target.Value : null;
 
@@ -43,11 +56,6 @@ public partial class SelectAvailableSkillAction : Action
         return attack != null && attack.SelectAvailableSkill(target.transform)
             ? Status.Success
             : Status.Failure;
-    }
-
-    protected override Status OnUpdate()
-    {
-        return Status.Success;
     }
 
     protected override void OnEnd()

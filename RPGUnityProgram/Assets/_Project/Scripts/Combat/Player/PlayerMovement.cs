@@ -127,6 +127,9 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
+        if (Time.timeScale <= 0f)
+            return;
+
         // 玩家死亡后不再执行移动或移动端攻击输入
         if (health != null && health.IsDead)
         {
@@ -147,6 +150,8 @@ public class PlayerMovement : MonoBehaviour
             mobileAttackAction.WasPressedThisFrame())
         {
             MobileAttackRequested?.Invoke();
+            if (Time.timeScale <= 0f)
+                return;
         }
 
         Vector2 input = moveAction != null

@@ -36,6 +36,9 @@ public partial class MoveToTargetAction : Action
 
     protected override Status OnUpdate()
     {
+        if (Time.timeScale <= 0f)
+            return Status.Running;
+
         GameObject self = Self != null ? Self.Value : null;
         GameObject target = Target != null ? Target.Value : null;
 
