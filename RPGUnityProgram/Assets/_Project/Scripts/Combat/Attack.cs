@@ -67,6 +67,7 @@ public class Attack : MonoBehaviour
     private bool parryWarningFailed;
 
     public float Damage => damage;
+    public int LastMeleeParryFacingFrame { get; private set; } = -1;
     public bool IsStaggered => Time.time < staggerEndTime;
     public bool IsCurrentSkillParried => specialSkillParried;
     public bool IsParryWindowOpen
@@ -245,6 +246,8 @@ public class Attack : MonoBehaviour
     {
         bool parried = false;
         bool meleeParried = false;
+        Vector3 meleeParryDirection = Vector3.zero;
+        float nearestMeleeDistanceSquared = float.PositiveInfinity;
         Vector3 attackCenter = GetAttackCenter(attackOffset);
         foreach (Attack enemy in ActiveSpecialSkills)
         {
@@ -274,6 +277,17 @@ public class Attack : MonoBehaviour
             enemy.specialSkillParried = true;
             parried = true;
             meleeParried |= skill.AttackType == 1;
+            if (skill.AttackType == 1)
+            {
+                Vector3 direction = enemy.transform.position - transform.position;
+                direction.y = 0f;
+                float distanceSquared = direction.sqrMagnitude;
+                if (distanceSquared > 0.000001f && distanceSquared < nearestMeleeDistanceSquared)
+                {
+                    nearestMeleeDistanceSquared = distanceSquared;
+                    meleeParryDirection = direction;
+                }
+            }
             enemy.HideParryWarning();
             enemy.staggerEndTime = Time.time + skill.StaggerTime;
             enemy.selectedSkillIndex = -1;
@@ -284,6 +298,12 @@ public class Attack : MonoBehaviour
 
         if (meleeParried)
         {
+            if (nearestMeleeDistanceSquared < float.PositiveInfinity)
+            {
+                transform.rotation = Quaternion.LookRotation(meleeParryDirection);
+                LastMeleeParryFacingFrame = Time.frameCount;
+            }
+
             StartParryHitStop();
             Camera mainCamera = Camera.main;
             CameraFollow cameraFollow = mainCamera != null
