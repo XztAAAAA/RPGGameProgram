@@ -257,8 +257,18 @@ public class Attack : MonoBehaviour
             cfg.Skill skill = enemy.executingSpecialSkill;
             float enemyRadius = Mathf.Max(0.1f, skill.HitRadius);
             Vector3 enemyCenter = enemy.GetAttackCenter(Mathf.Max(0f, skill.HitOffset));
-            float combinedRadius = attackRadius + enemyRadius;
-            if ((attackCenter - enemyCenter).sqrMagnitude > combinedRadius * combinedRadius)
+            bool inRange;
+            if (skill.AttackType == 1)
+            {
+                inRange = enemy.IsTargetInAttackRange(transform, enemyCenter, enemyRadius);
+            }
+            else
+            {
+                float combinedRadius = attackRadius + enemyRadius;
+                inRange = (attackCenter - enemyCenter).sqrMagnitude <= combinedRadius * combinedRadius;
+            }
+
+            if (!inRange)
                 continue;
 
             enemy.specialSkillParried = true;
@@ -286,6 +296,22 @@ public class Attack : MonoBehaviour
         }
 
         return parried;
+    }
+
+    private bool IsTargetInAttackRange(Transform target, Vector3 center, float radius)
+    {
+        int hitCount = GetOverlappingColliders(center, radius);
+        bool inRange = false;
+        for (int i = 0; i < hitCount; i++)
+        {
+            Collider hit = hitBuffer[i];
+            hitBuffer[i] = null;
+            Health health = hit.GetComponentInParent<Health>();
+            if (health != null && health.transform == target)
+                inRange = true;
+        }
+
+        return inRange;
     }
 
     private void StartParryHitStop()
