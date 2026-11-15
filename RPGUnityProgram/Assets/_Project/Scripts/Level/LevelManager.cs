@@ -318,9 +318,14 @@ public class LevelManager : PersistentMonoSingleton<LevelManager>
 
             enemyRoot.gameObject.SetActive(false);
 
+            GameObject player = CombatTool.GetPlayer();
+            if (player == null)
+                return;
+
             int spawnedCount = enemySpawnService.SpawnGroup(
                 TableSystem.Tables,
                 spawnGroupId,
+                player.transform,
                 enemyRoot,
                 this
             );

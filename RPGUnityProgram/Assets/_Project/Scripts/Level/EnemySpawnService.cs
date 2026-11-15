@@ -11,9 +11,19 @@ public sealed class EnemySpawnService
     public int SpawnGroup(
         cfg.Tables tables,
         int spawnGroupId,
+        Transform playerRoot,
         Transform enemyRoot,
         UnityEngine.Object logContext)
     {
+        if (playerRoot == null)
+        {
+            Debug.LogError(
+                "没有找到玩家，无法以玩家为中心生成敌人。",
+                logContext
+            );
+            return 0;
+        }
+
         int spawnedCount = 0;
         int matchedRows = 0;
 
@@ -23,6 +33,16 @@ public sealed class EnemySpawnService
                 continue;
 
             matchedRows++;
+
+            if (spawn.MinRadius < 0f || spawn.SpawnRadius < spawn.MinRadius)
+            {
+                Debug.LogError(
+                    $"敌人生成配置 Id={spawn.Id} 的半径范围无效：" +
+                    $"MinRadius={spawn.MinRadius}, SpawnRadius={spawn.SpawnRadius}。",
+                    logContext
+                );
+                continue;
+            }
 
             GameObject prefab = FindEnemyPrefab(spawn.EnemyKey);
             if (prefab == null)
@@ -72,7 +92,12 @@ public sealed class EnemySpawnService
 
             for (int i = 0; i < spawn.Count; i++)
             {
-                Vector3 position = GetSpawnPosition(enemyRoot, spawn.SpawnRadius, logContext);
+                Vector3 position = GetSpawnPosition(
+                    playerRoot,
+                    spawn.MinRadius,
+                    spawn.SpawnRadius,
+                    logContext
+                );
                 GameObject enemy = UnityEngine.Object.Instantiate(
                     prefab,
                     position,
@@ -217,40 +242,66 @@ public sealed class EnemySpawnService
     }
 
     private static Vector3 GetSpawnPosition(
-        Transform enemyRoot,
-        float spawnRadius,
+        Transform playerRoot,
+        float minRadius,
+        float maxRadius,
         UnityEngine.Object logContext)
     {
-        Vector2 offset =
-            UnityEngine.Random.insideUnitCircle *
-            Mathf.Max(0f, spawnRadius);
+        const int maxAttempts = 20;
+        Vector3 origin = playerRoot.position;
+        Vector3 candidate = origin;
+        float minRadiusSquared = minRadius * minRadius;
+        float maxRadiusSquared = maxRadius * maxRadius;
 
-        Vector3 candidate = enemyRoot.position +
-            new Vector3(offset.x, 0f, offset.y);
-
-        if (NavMesh.SamplePosition(
-                candidate,
-                out NavMeshHit hit,
-                3f,
-                NavMesh.AllAreas))
+        for (int attempt = 0; attempt < maxAttempts; attempt++)
         {
-            return hit.position;
-        }
+            float angle = UnityEngine.Random.Range(0f, 2f * Mathf.PI);
+            float radius = Mathf.Sqrt(
+                UnityEngine.Random.Range(minRadiusSquared, maxRadiusSquared)
+            );
+            Vector3 offset = new Vector3(
+                Mathf.Cos(angle) * radius,
+                0f,
+                Mathf.Sin(angle) * radius
+            );
+            candidate = origin + offset;
 
-        if (NavMesh.SamplePosition(
-                enemyRoot.position,
-                out hit,
-                5f,
-                NavMesh.AllAreas))
-        {
-            return hit.position;
+            if (NavMesh.SamplePosition(
+                    candidate,
+                    out NavMeshHit hit,
+                    3f,
+                    NavMesh.AllAreas) &&
+                IsWithinSpawnRadii(
+                    hit.position,
+                    origin,
+                    minRadiusSquared,
+                    maxRadiusSquared))
+            {
+                return hit.position;
+            }
         }
 
         Debug.LogWarning(
-            "未找到合适的 NavMesh 生成位置，请检查地图烘焙。",
+            "未找到符合最小/最大生成半径的 NavMesh 位置，" +
+            "将使用半径范围内的候选位置，请检查地图烘焙。",
             logContext
         );
         return candidate;
+    }
+
+    private static bool IsWithinSpawnRadii(
+        Vector3 position,
+        Vector3 origin,
+        float minRadiusSquared,
+        float maxRadiusSquared)
+    {
+        Vector2 offset = new Vector2(
+            position.x - origin.x,
+            position.z - origin.z
+        );
+        float distanceSquared = offset.sqrMagnitude;
+        return distanceSquared >= minRadiusSquared &&
+            distanceSquared <= maxRadiusSquared;
     }
 
     private GameObject FindEnemyPrefab(string key)

@@ -25,6 +25,7 @@ public sealed partial class LevelSpawn : Luban.BeanBase
         { if(!_buf["enemy_key"].IsString) { throw new SerializationException(); }  EnemyKey = _buf["enemy_key"]; }
         { if(!_buf["count"].IsNumber) { throw new SerializationException(); }  Count = _buf["count"]; }
         { if(!_buf["spawn_radius"].IsNumber) { throw new SerializationException(); }  SpawnRadius = _buf["spawn_radius"]; }
+        { if(!_buf["min_radius"].IsNumber) { throw new SerializationException(); }  MinRadius = _buf["min_radius"]; }
     }
 
     public static LevelSpawn DeserializeLevelSpawn(JSONNode _buf)
@@ -37,6 +38,7 @@ public sealed partial class LevelSpawn : Luban.BeanBase
     public readonly string EnemyKey;
     public readonly int Count;
     public readonly float SpawnRadius;
+    public readonly float MinRadius;
    
     public const int __ID__ = -2105616777;
     public override int GetTypeId() => __ID__;
@@ -53,6 +55,7 @@ public sealed partial class LevelSpawn : Luban.BeanBase
         + "enemyKey:" + EnemyKey + ","
         + "count:" + Count + ","
         + "spawnRadius:" + SpawnRadius + ","
+        + "minRadius:" + MinRadius + ","
         + "}";
     }
 }
