@@ -500,11 +500,18 @@ public class Attack : MonoBehaviour
                 return;
             }
 
+            if (float.IsNaN(skill.ProjectileTime) || float.IsInfinity(skill.ProjectileTime) ||
+                skill.ProjectileTime <= 0f)
+            {
+                Debug.LogError($"Attack：远程技能 {skill.SkillId} 的弹幕持续时间必须是大于 0 的有限数值。", this);
+                return;
+            }
+
             if (!suppressDamage)
             {
                 Vector3 start = transform.position + Vector3.up * attackHeight;
                 SkillProjectile.Create(start, transform.forward, ownerFaction.Faction, damage,
-                    hitRadius, skill.ProjectileSpeed, skill.TriggerRange, hitLayers,
+                    hitRadius, skill.ProjectileSpeed, skill.ProjectileTime, hitLayers,
                     skill.CanBlockProjectile);
             }
         }

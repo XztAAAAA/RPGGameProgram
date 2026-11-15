@@ -16,6 +16,7 @@
     "recovery_time": 0.55,
     "stagger_time": 0,
     "can_block_projectile": false,
+    "projectile_time": 0,
     "projectile_speed": 0
   },
   {
@@ -35,6 +36,7 @@
     "recovery_time": 0.8,
     "stagger_time": 0,
     "can_block_projectile": false,
+    "projectile_time": 0,
     "projectile_speed": 0
   },
   {
@@ -54,6 +56,7 @@
     "recovery_time": 1,
     "stagger_time": 2,
     "can_block_projectile": false,
+    "projectile_time": 0,
     "projectile_speed": 0
   },
   {
@@ -73,6 +76,7 @@
     "recovery_time": 0.3,
     "stagger_time": 0,
     "can_block_projectile": true,
+    "projectile_time": 5,
     "projectile_speed": 10
   }
 ]

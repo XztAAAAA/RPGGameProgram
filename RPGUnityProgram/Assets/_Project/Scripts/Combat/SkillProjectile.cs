@@ -18,16 +18,23 @@ public sealed class SkillProjectile : MonoBehaviour
     private float damage;
     private float radius;
     private float speed;
-    private float remainingDistance;
+    private float remainingTime;
     private LayerMask hitLayers;
 
     public static void Create(Vector3 position, Vector3 direction, CombatFaction ownerFaction,
-        float damage, float radius, float speed, float maxDistance, LayerMask hitLayers,
+        float damage, float radius, float speed, float projectileTime, LayerMask hitLayers,
         bool canBlock)
     {
         if (float.IsNaN(radius) || float.IsInfinity(radius) || radius <= 0f)
         {
             Debug.LogError("SkillProjectile：弹幕半径必须是大于 0 的有限数值。");
+            return;
+        }
+
+        if (float.IsNaN(projectileTime) || float.IsInfinity(projectileTime) ||
+            projectileTime <= 0f)
+        {
+            Debug.LogError("SkillProjectile：弹幕持续时间必须是大于 0 的有限数值。");
             return;
         }
 
@@ -89,7 +96,7 @@ public sealed class SkillProjectile : MonoBehaviour
         component.damage = damage;
         component.radius = radius;
         component.speed = speed;
-        component.remainingDistance = maxDistance;
+        component.remainingTime = projectileTime;
         component.hitLayers = hitLayers;
     }
 
@@ -146,7 +153,8 @@ public sealed class SkillProjectile : MonoBehaviour
             }
         }
 
-        float distance = Mathf.Min(speed * Time.deltaTime, remainingDistance);
+        float deltaTime = Mathf.Min(Time.deltaTime, remainingTime);
+        float distance = speed * deltaTime;
         int hitCount = GetSphereCastHits(distance);
         Health closestHealth = null;
         float closestDistance = float.PositiveInfinity;
@@ -170,8 +178,8 @@ public sealed class SkillProjectile : MonoBehaviour
         }
 
         transform.position += direction * distance;
-        remainingDistance -= distance;
-        if (remainingDistance <= 0f)
+        remainingTime -= Time.deltaTime;
+        if (remainingTime <= 0f)
             Destroy(gameObject);
     }
 
