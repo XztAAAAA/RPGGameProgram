@@ -53,9 +53,20 @@ public partial class SelectAvailableSkillAction : Action
             return Status.Failure;
 
         Attack attack = self.GetComponent<Attack>();
-        return attack != null && attack.SelectAvailableSkill(target.transform)
-            ? Status.Success
-            : Status.Failure;
+
+        if (attack == null || !attack.HasConfiguredSkills)
+            return Status.Failure;
+
+        // 没有任何技能进入触发范围，交给追击分支
+        if (!attack.HasSkillInRange(target.transform))
+            return Status.Failure;
+
+        // 找到可用技能
+        if (attack.SelectAvailableSkill(target.transform))
+            return Status.Success;
+
+        // 已经进入技能范围，但技能全部冷却
+        return Status.Running;
     }
 
     protected override void OnEnd()

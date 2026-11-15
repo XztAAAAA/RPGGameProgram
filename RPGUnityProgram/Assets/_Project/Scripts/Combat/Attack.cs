@@ -480,6 +480,12 @@ public class Attack : MonoBehaviour
                 return;
             }
 
+            if (float.IsNaN(skill.HitRadius) || float.IsInfinity(skill.HitRadius))
+            {
+                Debug.LogError($"Attack：远程技能 {skill.SkillId} 的命中半径必须是有限数值。", this);
+                return;
+            }
+
             if (float.IsNaN(skill.TriggerRange) || float.IsInfinity(skill.TriggerRange) ||
                 skill.TriggerRange <= 0f)
             {
@@ -498,7 +504,8 @@ public class Attack : MonoBehaviour
             {
                 Vector3 start = transform.position + Vector3.up * attackHeight;
                 SkillProjectile.Create(start, transform.forward, ownerFaction.Faction, damage,
-                    skill.ProjectileSpeed, skill.TriggerRange, hitLayers, skill.CanBlockProjectile);
+                    hitRadius, skill.ProjectileSpeed, skill.TriggerRange, hitLayers,
+                    skill.CanBlockProjectile);
             }
         }
         else

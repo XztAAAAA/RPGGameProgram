@@ -104,9 +104,11 @@ public partial class ExecuteSelectedSkillAction : Action
 
         float elapsed = Time.time - skillStartTime;
         float startupEnd = Mathf.Max(0f, skill.StartupTime);
-        float telegraphEnd = skill.SkillKind == 2
-            ? startupEnd
-            : startupEnd + Mathf.Max(0f, skill.TelegraphTime);
+        float telegraphDuration = skill.SkillKind == 2
+    ? Mathf.Max(0f, skill.TelegraphTime)
+    : 0f;
+
+        float telegraphEnd = startupEnd + telegraphDuration;
         float activeEnd = telegraphEnd + Mathf.Max(0f, skill.ActiveTime);
         float recoveryEnd = activeEnd + Mathf.Max(0f, skill.RecoveryTime);
 

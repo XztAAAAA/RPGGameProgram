@@ -65,7 +65,7 @@
     "damage": 10,
     "trigger_range": 50,
     "hit_offset": 1,
-    "hit_radius": 2,
+    "hit_radius": 0.2,
     "cooldown": 2,
     "startup_time": 0.5,
     "telegraph_time": 0,

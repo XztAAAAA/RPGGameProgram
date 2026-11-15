@@ -4,7 +4,6 @@ using UnityEngine;
 [UnityEngine.Scripting.Preserve]
 public sealed class SkillProjectile : MonoBehaviour
 {
-    private const float Radius = 0.2f;
     private const int InitialHitBufferSize = 16;
     private const string ProjectileMaterialPath = "Materials/SkillProjectile";
     private static readonly List<SkillProjectile> ActiveProjectiles = new List<SkillProjectile>();
@@ -17,13 +16,21 @@ public sealed class SkillProjectile : MonoBehaviour
     private CombatFaction ownerFaction;
     private bool canBlock;
     private float damage;
+    private float radius;
     private float speed;
     private float remainingDistance;
     private LayerMask hitLayers;
 
     public static void Create(Vector3 position, Vector3 direction, CombatFaction ownerFaction,
-        float damage, float speed, float maxDistance, LayerMask hitLayers, bool canBlock)
+        float damage, float radius, float speed, float maxDistance, LayerMask hitLayers,
+        bool canBlock)
     {
+        if (float.IsNaN(radius) || float.IsInfinity(radius) || radius <= 0f)
+        {
+            Debug.LogError("SkillProjectile：弹幕半径必须是大于 0 的有限数值。");
+            return;
+        }
+
         if (projectileMaterial == null)
         {
             projectileMaterial = Resources.Load<Material>(ProjectileMaterialPath);
@@ -46,7 +53,7 @@ public sealed class SkillProjectile : MonoBehaviour
         GameObject projectile = GameObject.CreatePrimitive(PrimitiveType.Sphere);
         projectile.name = "Skill Projectile";
         projectile.transform.position = position;
-        projectile.transform.localScale = Vector3.one * (Radius * 2f);
+        projectile.transform.localScale = Vector3.one * (radius * 2f);
         MeshFilter meshFilter = projectile.GetComponent<MeshFilter>();
         MeshRenderer meshRenderer = projectile.GetComponent<MeshRenderer>();
         if (meshFilter == null || meshFilter.sharedMesh == null || meshRenderer == null)
@@ -80,6 +87,7 @@ public sealed class SkillProjectile : MonoBehaviour
         component.ownerFaction = ownerFaction;
         component.canBlock = canBlock;
         component.damage = damage;
+        component.radius = radius;
         component.speed = speed;
         component.remainingDistance = maxDistance;
         component.hitLayers = hitLayers;
@@ -87,11 +95,11 @@ public sealed class SkillProjectile : MonoBehaviour
 
     public static void BlockInRange(Vector3 center, float radius, CombatFaction blockingFaction)
     {
-        float reach = radius + Radius;
-        float reachSquared = reach * reach;
         for (int i = ActiveProjectiles.Count - 1; i >= 0; i--)
         {
             SkillProjectile projectile = ActiveProjectiles[i];
+            float reach = radius + projectile.radius;
+            float reachSquared = reach * reach;
             if (!projectile.canBlock || projectile.ownerFaction == blockingFaction ||
                 (projectile.transform.position - center).sqrMagnitude > reachSquared)
             {
@@ -173,7 +181,7 @@ public sealed class SkillProjectile : MonoBehaviour
         {
             int hitCount = Physics.OverlapSphereNonAlloc(
                 transform.position,
-                Radius,
+                radius,
                 overlapBuffer,
                 hitLayers,
                 QueryTriggerInteraction.Ignore
@@ -192,7 +200,7 @@ public sealed class SkillProjectile : MonoBehaviour
         {
             int hitCount = Physics.SphereCastNonAlloc(
                 transform.position,
-                Radius,
+                radius,
                 direction,
                 sphereCastBuffer,
                 distance,
