@@ -6,7 +6,6 @@ using UnityEngine;
 [RequireComponent(typeof(CombatFactionMarker))]
 public class Combatant : MonoBehaviour
 {
-    [SerializeField, Min(0)]
     private int enemyId;
 
     public int EnemyId => enemyId;

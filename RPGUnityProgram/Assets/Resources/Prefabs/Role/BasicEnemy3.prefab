@@ -74,7 +74,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.CanvasScaler
   m_UiScaleMode: 0
   m_ReferencePixelsPerUnit: 100
@@ -136,7 +136,7 @@ GameObject:
   - component: {fileID: 2000836984309619972}
   - component: {fileID: 8101357924680135792}
   m_Layer: 0
-  m_Name: Enemy
+  m_Name: BasicEnemy3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -248,7 +248,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d2eea0e8488b3f41a46a03c924dc109, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Combatant
-  enemyId: 1001
+  enemyId: 0
 --- !u!114 &-892380222198881406
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -275,13 +275,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Attack
   damage: 20
-  attackCooldown: 0.45
-  attackRadius: 0.9
-  attackForwardOffset: 1
+  cooldown: 0
+  hitRadius: 0
+  hitOffset: 0
   attackHeight: 0.1
   hitLayers:
     serializedVersion: 2
     m_Bits: 4294967295
+  rangeDisplayDuration: 0.3
+  parryHitStopDuration: 0.1
 --- !u!114 &-4189563823993112271
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -376,7 +378,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 19f7e4c078c847e19bc587fd91552b2e, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CombatFactionMarker
   faction: 1
 --- !u!1001 &6446054279562103189

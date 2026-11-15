@@ -79,9 +79,7 @@ public sealed class EnemySpawnService
 
             cfg.Enemy enemyConfig = ResolveEnemyConfig(
                 tables,
-                prefabCombatant,
-                prefab,
-                spawn.EnemyKey
+                prefab
             );
             if (enemyConfig == null)
                 continue;
@@ -177,65 +175,38 @@ public sealed class EnemySpawnService
 
     private static cfg.Enemy ResolveEnemyConfig(
         cfg.Tables tables,
-        Combatant prefabCombatant,
-        GameObject prefab,
-        string spawnKey)
+        GameObject prefab)
     {
-        cfg.Enemy enemy = prefabCombatant.EnemyId > 0
-            ? tables.TbEnemy.GetOrDefault(prefabCombatant.EnemyId)
-            : null;
-
-        if (enemy == null && prefabCombatant.EnemyId <= 0)
+        cfg.Enemy enemy = null;
+        foreach (cfg.Enemy candidate in tables.TbEnemy.DataList)
         {
-            foreach (cfg.Enemy candidate in tables.TbEnemy.DataList)
+            if (!string.Equals(
+                    candidate.PrefabKey,
+                    prefab.name,
+                    StringComparison.OrdinalIgnoreCase))
             {
-                if (!string.Equals(
-                        candidate.PrefabKey,
-                        prefab.name,
-                        StringComparison.OrdinalIgnoreCase) &&
-                    !string.Equals(
-                        candidate.PrefabKey,
-                        spawnKey,
-                        StringComparison.OrdinalIgnoreCase))
-                {
-                    continue;
-                }
-
-                if (enemy != null)
-                {
-                    Debug.LogError(
-                        $"敌人 Prefab {prefab.name} 对应多个 TbEnemy 配置，请在 Combatant 上指定 EnemyId。",
-                        prefab
-                    );
-                    return null;
-                }
-
-                enemy = candidate;
+                continue;
             }
+
+            if (enemy != null)
+            {
+                Debug.LogError(
+                    $"TbEnemy 中存在多个 PrefabKey={prefab.name} 的配置，无法唯一确定敌人数据。",
+                    prefab
+                );
+                return null;
+            }
+
+            enemy = candidate;
         }
 
         if (enemy == null)
         {
             Debug.LogError(
-                $"无法为敌人 Prefab {prefab.name} 找到 TbEnemy 配置。" +
-                (prefabCombatant.EnemyId > 0
-                    ? $" Combatant 配置的 EnemyId={prefabCombatant.EnemyId} 不存在。"
-                    : " 请在 Combatant 上设置 EnemyId，或确保 PrefabKey 与 Prefab 名称一致。"),
+                $"TbEnemy 中找不到 PrefabKey={prefab.name} 的敌人配置。",
                 prefab
             );
             return null;
-        }
-
-        if (!string.Equals(
-                enemy.PrefabKey,
-                prefab.name,
-                StringComparison.OrdinalIgnoreCase))
-        {
-            Debug.LogWarning(
-                $"敌人表 PrefabKey={enemy.PrefabKey} 与实际 Prefab={prefab.name} 不一致；" +
-                $"继续使用 Combatant EnemyId={enemy.EnemyId} 配置（关卡生成键：{spawnKey}）。",
-                prefab
-            );
         }
 
         return enemy;
