@@ -11,11 +11,10 @@ public class Combatant : MonoBehaviour
 
     public int EnemyId => enemyId;
     public cfg.Enemy EnemyConfig { get; private set; }
+    public GameObject Player => player;
 
     private BehaviorGraphAgent behaviorAgent;
     private GameObject player;
-    private GameObject target;
-    private float targetOutOfRangeTime = -1f;
     private float attackRange = 1.7f;
 
     private void Awake()
@@ -83,73 +82,5 @@ public class Combatant : MonoBehaviour
         }
 
         behaviorAgent.SetVariableValue("AttackRange", attackRange);
-
-        bool canDetectPlayer = EnemyConfig == null ||
-            Vector3.Distance(transform.position, player.transform.position) <=
-            EnemyConfig.DetectRange;
-        UpdateTarget(canDetectPlayer ? player : null);
-    }
-
-    private void Update()
-    {
-        if (Time.timeScale <= 0f)
-            return;
-
-        CombatFactionMarker factionMarker =
-            GetComponent<CombatFactionMarker>();
-        if (factionMarker == null ||
-            factionMarker.Faction != CombatFaction.Enemy ||
-            EnemyConfig == null)
-        {
-            return;
-        }
-
-        if (player == null || behaviorAgent == null)
-            return;
-
-        Health playerHealth = player.GetComponent<Health>();
-        if (!player.activeInHierarchy ||
-            (playerHealth != null && playerHealth.IsDead))
-        {
-            UpdateTarget(null);
-            return;
-        }
-
-        float distance = Vector3.Distance(transform.position, player.transform.position);
-
-        if (target == null)
-        {
-            if (distance <= EnemyConfig.DetectRange)
-                UpdateTarget(player);
-
-            return;
-        }
-
-        if (distance <= EnemyConfig.LoseTargetRange)
-        {
-            targetOutOfRangeTime = -1f;
-            return;
-        }
-
-        if (targetOutOfRangeTime < 0f)
-            targetOutOfRangeTime = Time.time;
-
-        if (Time.time - targetOutOfRangeTime >= EnemyConfig.LoseTargetDelay)
-            UpdateTarget(null);
-    }
-
-    private void UpdateTarget(GameObject newTarget)
-    {
-        target = newTarget;
-        targetOutOfRangeTime = -1f;
-
-        if (behaviorAgent != null &&
-            !behaviorAgent.SetVariableValue("Target", target))
-        {
-            Debug.LogError(
-                $"{name}：设置行为图 Target 失败，请检查 Blackboard 是否包含 Target 变量。",
-                this
-            );
-        }
     }
 }
