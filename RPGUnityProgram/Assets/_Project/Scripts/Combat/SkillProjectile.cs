@@ -137,20 +137,38 @@ public sealed class SkillProjectile : MonoBehaviour
             return;
 
         int overlapCount = GetOverlappingColliders();
+        Health overlappingEnemy = null;
+        bool overlappingObstacle = false;
         for (int i = 0; i < overlapCount; i++)
         {
             Collider hit = overlapBuffer[i];
             overlapBuffer[i] = null;
+            if (hit == null)
+                continue;
+
             Health health = GetEnemyHealth(hit);
             if (health != null)
             {
-                for (int j = i + 1; j < overlapCount; j++)
-                    overlapBuffer[j] = null;
-
-                health.TakeDamage(damage);
-                Destroy(gameObject);
-                return;
+                if (overlappingEnemy == null)
+                    overlappingEnemy = health;
             }
+            else if (IsObstacle(hit))
+            {
+                overlappingObstacle = true;
+            }
+        }
+
+        if (overlappingObstacle)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        if (overlappingEnemy != null)
+        {
+            overlappingEnemy.TakeDamage(damage);
+            Destroy(gameObject);
+            return;
         }
 
         float deltaTime = Mathf.Min(Time.deltaTime, remainingTime);
@@ -158,6 +176,7 @@ public sealed class SkillProjectile : MonoBehaviour
         int hitCount = GetSphereCastHits(distance);
         Health closestHealth = null;
         float closestDistance = float.PositiveInfinity;
+        float closestObstacleDistance = float.PositiveInfinity;
         for (int i = 0; i < hitCount; i++)
         {
             RaycastHit hit = sphereCastBuffer[i];
@@ -168,6 +187,17 @@ public sealed class SkillProjectile : MonoBehaviour
                 closestHealth = health;
                 closestDistance = hit.distance;
             }
+            else if (health == null && IsObstacle(hit.collider) &&
+                hit.distance < closestObstacleDistance)
+            {
+                closestObstacleDistance = hit.distance;
+            }
+        }
+
+        if (closestObstacleDistance <= closestDistance)
+        {
+            Destroy(gameObject);
+            return;
         }
 
         if (closestHealth != null)
@@ -181,6 +211,11 @@ public sealed class SkillProjectile : MonoBehaviour
         remainingTime -= Time.deltaTime;
         if (remainingTime <= 0f)
             Destroy(gameObject);
+    }
+
+    private bool IsObstacle(Collider hit)
+    {
+        return hit.GetComponentInParent<CombatFactionMarker>() == null;
     }
 
     private int GetOverlappingColliders()
