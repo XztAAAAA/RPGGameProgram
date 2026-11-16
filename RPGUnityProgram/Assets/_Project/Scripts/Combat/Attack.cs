@@ -509,7 +509,11 @@ public class Attack : MonoBehaviour
 
             if (!suppressDamage)
             {
-                Vector3 start = transform.position + Vector3.up * attackHeight;
+                float projectileHeight = Mathf.Max(
+                    attackHeight,
+                    hitRadius + 0.05f
+                );
+                Vector3 start = transform.position + Vector3.up * projectileHeight;
                 SkillProjectile.Create(start, transform.forward, ownerFaction.Faction, damage,
                     hitRadius, skill.ProjectileSpeed, skill.ProjectileTime, hitLayers,
                     skill.CanBlockProjectile);

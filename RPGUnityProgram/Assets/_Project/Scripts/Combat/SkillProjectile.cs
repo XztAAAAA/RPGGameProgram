@@ -5,12 +5,12 @@ using UnityEngine;
 public sealed class SkillProjectile : MonoBehaviour
 {
     private const int InitialHitBufferSize = 16;
-    private const string ProjectileMaterialPath = "Materials/SkillProjectile";
+    private const string ProjectilePrefabPath = "Prefabs/Bullet/Bullet";
     private static readonly List<SkillProjectile> ActiveProjectiles = new List<SkillProjectile>();
     private static Collider[] overlapBuffer = new Collider[InitialHitBufferSize];
     private static RaycastHit[] sphereCastBuffer = new RaycastHit[InitialHitBufferSize];
-    private static Material projectileMaterial;
-    private static bool projectileMaterialLoadFailed;
+    private static GameObject projectilePrefab;
+    private static bool projectilePrefabLoadFailed;
 
     private Vector3 direction;
     private CombatFaction ownerFaction;
@@ -38,66 +38,93 @@ public sealed class SkillProjectile : MonoBehaviour
             return;
         }
 
-        if (projectileMaterial == null)
+        if (projectilePrefab == null)
         {
-            projectileMaterial = Resources.Load<Material>(ProjectileMaterialPath);
-            if (projectileMaterial == null)
+            projectilePrefab = Resources.Load<GameObject>(ProjectilePrefabPath);
+            if (projectilePrefab == null)
             {
-                if (!projectileMaterialLoadFailed)
+                if (!projectilePrefabLoadFailed)
                 {
                     Debug.LogError(
-                        $"无法加载 Resources/{ProjectileMaterialPath} 弹幕材质，未生成弹幕。"
+                        $"无法加载 Resources/{ProjectilePrefabPath}.prefab，未生成弹幕。"
                     );
                 }
 
-                projectileMaterialLoadFailed = true;
+                projectilePrefabLoadFailed = true;
                 return;
             }
-
-            projectileMaterialLoadFailed = false;
         }
 
-        GameObject projectile = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-        projectile.name = "Skill Projectile";
-        projectile.transform.position = position;
-        projectile.transform.localScale = Vector3.one * (radius * 2f);
-        MeshFilter meshFilter = projectile.GetComponent<MeshFilter>();
-        MeshRenderer meshRenderer = projectile.GetComponent<MeshRenderer>();
-        if (meshFilter == null || meshFilter.sharedMesh == null || meshRenderer == null)
+        SkillProjectile prefabComponent =
+            projectilePrefab.GetComponent<SkillProjectile>();
+        MeshFilter prefabMesh = projectilePrefab.GetComponent<MeshFilter>();
+        MeshRenderer prefabRenderer = projectilePrefab.GetComponent<MeshRenderer>();
+        if (prefabComponent == null ||
+            prefabMesh == null ||
+            prefabMesh.sharedMesh == null ||
+            prefabRenderer == null ||
+            prefabRenderer.sharedMaterial == null)
         {
-            Debug.LogError("SkillProjectile：无法创建弹幕的网格或渲染组件。");
-            Destroy(projectile);
+            Debug.LogError(
+                $"Resources/{ProjectilePrefabPath}.prefab 必须包含 SkillProjectile、" +
+                "MeshFilter、有效网格和带材质的 MeshRenderer。"
+            );
             return;
         }
 
-        meshRenderer.sharedMaterial = projectileMaterial;
-        SphereCollider projectileCollider = projectile.GetComponent<SphereCollider>();
-        if (projectileCollider != null)
+        GameObject projectile = Instantiate(
+            projectilePrefab,
+            position,
+            Quaternion.identity
+        );
+        if (projectile == null)
         {
-            projectileCollider.enabled = false;
-            Destroy(projectileCollider);
-        }
-        else
-        {
-            Debug.LogWarning("SkillProjectile：球体碰撞体缺失，弹幕仍将使用物理查询检测命中。");
+            Debug.LogError($"实例化 Resources/{ProjectilePrefabPath}.prefab 失败。");
+            return;
         }
 
-        SkillProjectile component = projectile.AddComponent<SkillProjectile>();
+        projectile.name = "Skill Projectile";
+        projectile.transform.localScale = Vector3.one * (radius * 2f);
+        SkillProjectile component = projectile.GetComponent<SkillProjectile>();
         if (component == null)
         {
-            Debug.LogError("SkillProjectile：无法添加弹幕移动组件。");
+            Debug.LogError(
+                $"Resources/{ProjectilePrefabPath}.prefab 实例缺少 SkillProjectile 组件。"
+            );
             Destroy(projectile);
             return;
         }
 
-        component.direction = direction.normalized;
-        component.ownerFaction = ownerFaction;
-        component.canBlock = canBlock;
-        component.damage = damage;
-        component.radius = radius;
-        component.speed = speed;
-        component.remainingTime = projectileTime;
-        component.hitLayers = hitLayers;
+        component.Initialize(
+            direction,
+            ownerFaction,
+            canBlock,
+            damage,
+            radius,
+            speed,
+            projectileTime,
+            hitLayers
+        );
+    }
+
+    private void Initialize(
+        Vector3 projectileDirection,
+        CombatFaction projectileOwnerFaction,
+        bool projectileCanBlock,
+        float projectileDamage,
+        float projectileRadius,
+        float projectileSpeed,
+        float projectileTime,
+        LayerMask projectileHitLayers)
+    {
+        direction = projectileDirection.normalized;
+        ownerFaction = projectileOwnerFaction;
+        canBlock = projectileCanBlock;
+        damage = projectileDamage;
+        radius = projectileRadius;
+        speed = projectileSpeed;
+        remainingTime = projectileTime;
+        hitLayers = projectileHitLayers;
     }
 
     public static void BlockInRange(Vector3 center, float radius, CombatFaction blockingFaction)
