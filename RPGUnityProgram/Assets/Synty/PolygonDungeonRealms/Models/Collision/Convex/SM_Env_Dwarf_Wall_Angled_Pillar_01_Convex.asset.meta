@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 970755be11ffe1f4c96b675750803dad
+timeCreated: 1613084022
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 43344729027474268
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 189093
+  packageName: POLYGON - Dungeon Realms Pack - Art by Synty
+  packageVersion: 1.4.5
+  assetPath: Assets/Synty/PolygonDungeonRealms/Models/Collision/Convex/SM_Env_Dwarf_Wall_Angled_Pillar_01_Convex.asset
+  uploadId: 974044

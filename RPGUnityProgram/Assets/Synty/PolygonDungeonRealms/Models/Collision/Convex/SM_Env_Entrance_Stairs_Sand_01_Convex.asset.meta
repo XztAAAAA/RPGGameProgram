@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 482a32ea021ad5049bf0741238ddc8a4
+timeCreated: 1613084201
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 43795013193677730
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 189093
+  packageName: POLYGON - Dungeon Realms Pack - Art by Synty
+  packageVersion: 1.4.5
+  assetPath: Assets/Synty/PolygonDungeonRealms/Models/Collision/Convex/SM_Env_Entrance_Stairs_Sand_01_Convex.asset
+  uploadId: 974044

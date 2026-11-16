@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: c5097f3c210592d4e856911d430486df
+timeCreated: 1613081675
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 43411564763608090
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 189093
+  packageName: POLYGON - Dungeon Realms Pack - Art by Synty
+  packageVersion: 1.4.5
+  assetPath: Assets/Synty/PolygonDungeonRealms/Models/Collision/Convex/SM_Prop_Camp_Wood_Fence_01_Convex.asset
+  uploadId: 974044

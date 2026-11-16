@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 2a8b97d33e8a7a5489de58fe58e97f56
+timeCreated: 1613081891
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 43771919675580078
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 189093
+  packageName: POLYGON - Dungeon Realms Pack - Art by Synty
+  packageVersion: 1.4.5
+  assetPath: Assets/Synty/PolygonDungeonRealms/Models/Collision/Convex/SM_Prop_Dwarf_Chair_Bench_Broken_01_Convex.asset
+  uploadId: 974044

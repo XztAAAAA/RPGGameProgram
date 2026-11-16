@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: cef7598e62b8d7d4bb55a5030c48522a
+timeCreated: 1604981271
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 100100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 189093
+  packageName: POLYGON - Dungeon Realms Pack - Art by Synty
+  packageVersion: 1.4.5
+  assetPath: Assets/Synty/PolygonDungeonRealms/Prefabs/Buildings/SM_Bld_Ruin_Pillar_Arch_Broken_01.prefab
+  uploadId: 974044

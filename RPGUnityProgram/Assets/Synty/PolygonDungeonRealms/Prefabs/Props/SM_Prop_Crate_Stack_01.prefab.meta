@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: e9302c39661650345bddbc8f0c99c3c6
+timeCreated: 1611019575
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 100100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 189093
+  packageName: POLYGON - Dungeon Realms Pack - Art by Synty
+  packageVersion: 1.4.5
+  assetPath: Assets/Synty/PolygonDungeonRealms/Prefabs/Props/SM_Prop_Crate_Stack_01.prefab
+  uploadId: 974044

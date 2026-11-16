@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 2d32b29440e0c8c4791dff52a4599e86
+timeCreated: 1613082341
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 43025119213831138
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 189093
+  packageName: POLYGON - Dungeon Realms Pack - Art by Synty
+  packageVersion: 1.4.5
+  assetPath: Assets/Synty/PolygonDungeonRealms/Models/Collision/Convex/SM_Wep_Shield_03_Convex.asset
+  uploadId: 974044

@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 120e7c533d0ee0a46b3843220c28361d
+timeCreated: 1613081663
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 43488092667452076
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 189093
+  packageName: POLYGON - Dungeon Realms Pack - Art by Synty
+  packageVersion: 1.4.5
+  assetPath: Assets/Synty/PolygonDungeonRealms/Models/Collision/Convex/SM_Prop_Barrel_Shelf_Large_Broken_02_Convex.asset
+  uploadId: 974044

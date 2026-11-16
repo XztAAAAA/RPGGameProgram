@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: d7e9205643e161b439d5921d3ec0ae7e
+timeCreated: 1613081648
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 43107389825920978
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 189093
+  packageName: POLYGON - Dungeon Realms Pack - Art by Synty
+  packageVersion: 1.4.5
+  assetPath: Assets/Synty/PolygonDungeonRealms/Models/Collision/Convex/SM_Prop_Crate_01_Convex.asset
+  uploadId: 974044

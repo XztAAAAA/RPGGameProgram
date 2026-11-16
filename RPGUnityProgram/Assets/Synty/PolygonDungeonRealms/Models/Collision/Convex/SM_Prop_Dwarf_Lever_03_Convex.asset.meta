@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 6b87f8beeaaaa7246aba16e8dcc2238e
+timeCreated: 1613081750
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 43178628481882982
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 189093
+  packageName: POLYGON - Dungeon Realms Pack - Art by Synty
+  packageVersion: 1.4.5
+  assetPath: Assets/Synty/PolygonDungeonRealms/Models/Collision/Convex/SM_Prop_Dwarf_Lever_03_Convex.asset
+  uploadId: 974044

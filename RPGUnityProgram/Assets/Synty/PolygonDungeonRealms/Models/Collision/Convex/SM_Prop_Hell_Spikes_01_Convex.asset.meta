@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 40917c22f540f4d43a095bc54daa4d85
+timeCreated: 1613081876
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 43879381302755824
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 189093
+  packageName: POLYGON - Dungeon Realms Pack - Art by Synty
+  packageVersion: 1.4.5
+  assetPath: Assets/Synty/PolygonDungeonRealms/Models/Collision/Convex/SM_Prop_Hell_Spikes_01_Convex.asset
+  uploadId: 974044

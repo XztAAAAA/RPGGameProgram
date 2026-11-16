@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 03a8cee20fafda543a1a340fe5184d31
+timeCreated: 1613083946
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 43436772902189588
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 189093
+  packageName: POLYGON - Dungeon Realms Pack - Art by Synty
+  packageVersion: 1.4.5
+  assetPath: Assets/Synty/PolygonDungeonRealms/Models/Collision/Convex/SM_Env_Rock_Peak_01_Convex.asset
+  uploadId: 974044

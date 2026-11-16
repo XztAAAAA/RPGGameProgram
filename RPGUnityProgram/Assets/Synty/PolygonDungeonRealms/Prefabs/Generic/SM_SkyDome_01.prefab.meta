@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 7d914c544d792d946b045590b6f42adb
+timeCreated: 1613013544
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 100100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 189093
+  packageName: POLYGON - Dungeon Realms Pack - Art by Synty
+  packageVersion: 1.4.5
+  assetPath: Assets/Synty/PolygonDungeonRealms/Prefabs/Generic/SM_SkyDome_01.prefab
+  uploadId: 974044

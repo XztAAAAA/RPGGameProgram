@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 43ea8b3ba90a2f2499590b9d7f9bf4b0
+timeCreated: 1613082378
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 43883195075586342
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 189093
+  packageName: POLYGON - Dungeon Realms Pack - Art by Synty
+  packageVersion: 1.4.5
+  assetPath: Assets/Synty/PolygonDungeonRealms/Models/Collision/Convex/SM_Wep_Knife_Medium_01_Convex.asset
+  uploadId: 974044

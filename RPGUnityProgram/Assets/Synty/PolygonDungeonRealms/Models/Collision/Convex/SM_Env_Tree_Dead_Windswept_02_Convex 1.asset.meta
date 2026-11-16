@@ -1,0 +1,17 @@
+fileFormatVersion: 2
+guid: 25fb6fbf374c13a4ca70b7f94c8fd3f9
+timeCreated: 1613094591
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 43219131565938954
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 189093
+  packageName: POLYGON - Dungeon Realms Pack - Art by Synty
+  packageVersion: 1.4.5
+  assetPath: Assets/Synty/PolygonDungeonRealms/Models/Collision/Convex/SM_Env_Tree_Dead_Windswept_02_Convex
+    1.asset
+  uploadId: 974044

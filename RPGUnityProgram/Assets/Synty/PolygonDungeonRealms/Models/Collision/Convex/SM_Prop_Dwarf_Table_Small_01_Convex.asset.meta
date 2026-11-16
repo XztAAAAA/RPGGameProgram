@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: afabdfa5eb44dc845b2491691b70fbae
+timeCreated: 1613081721
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 43269365705701760
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 189093
+  packageName: POLYGON - Dungeon Realms Pack - Art by Synty
+  packageVersion: 1.4.5
+  assetPath: Assets/Synty/PolygonDungeonRealms/Models/Collision/Convex/SM_Prop_Dwarf_Table_Small_01_Convex.asset
+  uploadId: 974044

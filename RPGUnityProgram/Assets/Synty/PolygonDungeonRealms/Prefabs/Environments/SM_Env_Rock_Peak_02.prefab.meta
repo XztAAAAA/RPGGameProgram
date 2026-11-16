@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 42e59e52ccf127a41a92cf3cd3cdd98a
+timeCreated: 1604461875
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 100100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 189093
+  packageName: POLYGON - Dungeon Realms Pack - Art by Synty
+  packageVersion: 1.4.5
+  assetPath: Assets/Synty/PolygonDungeonRealms/Prefabs/Environments/SM_Env_Rock_Peak_02.prefab
+  uploadId: 974044

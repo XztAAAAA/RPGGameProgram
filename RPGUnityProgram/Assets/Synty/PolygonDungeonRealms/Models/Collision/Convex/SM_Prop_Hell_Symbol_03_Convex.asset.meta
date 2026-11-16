@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 97012e0e9ce08604a9ddd94baadcbd26
+timeCreated: 1613081684
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 43483975011309972
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 189093
+  packageName: POLYGON - Dungeon Realms Pack - Art by Synty
+  packageVersion: 1.4.5
+  assetPath: Assets/Synty/PolygonDungeonRealms/Models/Collision/Convex/SM_Prop_Hell_Symbol_03_Convex.asset
+  uploadId: 974044

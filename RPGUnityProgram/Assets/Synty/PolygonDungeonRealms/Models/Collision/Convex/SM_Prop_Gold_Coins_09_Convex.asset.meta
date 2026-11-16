@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: cebff91d6da959048938b190d07a214a
+timeCreated: 1613081670
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 43186141501370668
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 189093
+  packageName: POLYGON - Dungeon Realms Pack - Art by Synty
+  packageVersion: 1.4.5
+  assetPath: Assets/Synty/PolygonDungeonRealms/Models/Collision/Convex/SM_Prop_Gold_Coins_09_Convex.asset
+  uploadId: 974044

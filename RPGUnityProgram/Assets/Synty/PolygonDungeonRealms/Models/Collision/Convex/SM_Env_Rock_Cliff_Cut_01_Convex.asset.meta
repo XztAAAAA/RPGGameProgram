@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: defd6f84560959a46966cb696df093bf
+timeCreated: 1613084191
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 43650614941084674
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 189093
+  packageName: POLYGON - Dungeon Realms Pack - Art by Synty
+  packageVersion: 1.4.5
+  assetPath: Assets/Synty/PolygonDungeonRealms/Models/Collision/Convex/SM_Env_Rock_Cliff_Cut_01_Convex.asset
+  uploadId: 974044

@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 97191ec88877c1647bb177260d9a7684
+timeCreated: 1613081787
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 43707161644641340
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 189093
+  packageName: POLYGON - Dungeon Realms Pack - Art by Synty
+  packageVersion: 1.4.5
+  assetPath: Assets/Synty/PolygonDungeonRealms/Models/Collision/Convex/SM_Prop_Barrel_03_Convex.asset
+  uploadId: 974044

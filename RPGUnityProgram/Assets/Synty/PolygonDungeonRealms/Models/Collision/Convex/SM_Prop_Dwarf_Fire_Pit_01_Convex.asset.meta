@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 494b984af6724b74796370ff92ea895a
+timeCreated: 1613081664
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 43236365331542094
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 189093
+  packageName: POLYGON - Dungeon Realms Pack - Art by Synty
+  packageVersion: 1.4.5
+  assetPath: Assets/Synty/PolygonDungeonRealms/Models/Collision/Convex/SM_Prop_Dwarf_Fire_Pit_01_Convex.asset
+  uploadId: 974044

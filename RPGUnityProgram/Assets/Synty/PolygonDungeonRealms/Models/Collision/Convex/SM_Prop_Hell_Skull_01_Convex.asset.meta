@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 0c45f0c8e5090f64fae97563e156c141
+timeCreated: 1613081700
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 43751029388909654
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 189093
+  packageName: POLYGON - Dungeon Realms Pack - Art by Synty
+  packageVersion: 1.4.5
+  assetPath: Assets/Synty/PolygonDungeonRealms/Models/Collision/Convex/SM_Prop_Hell_Skull_01_Convex.asset
+  uploadId: 974044

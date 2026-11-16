@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 9d18dd52d2bc665499a935425e292545
+timeCreated: 1613082343
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 43972650747201580
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 189093
+  packageName: POLYGON - Dungeon Realms Pack - Art by Synty
+  packageVersion: 1.4.5
+  assetPath: Assets/Synty/PolygonDungeonRealms/Models/Collision/Convex/SM_Wep_Sword_Large_11_Convex.asset
+  uploadId: 974044

@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: ea975eb7221b0ba4b8a5c4f7a3a04e3d
+timeCreated: 1611628807
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 100100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 189093
+  packageName: POLYGON - Dungeon Realms Pack - Art by Synty
+  packageVersion: 1.4.5
+  assetPath: Assets/Synty/PolygonDungeonRealms/Prefabs/Characters/Attachments/BR/SM_Chr_Attach_Dwarf_Hair_Afro_01.prefab
+  uploadId: 974044

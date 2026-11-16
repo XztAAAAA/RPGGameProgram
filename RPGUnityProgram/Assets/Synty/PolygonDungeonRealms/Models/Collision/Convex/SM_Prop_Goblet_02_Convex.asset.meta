@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 0d219c74669411b40a29ef724416fec4
+timeCreated: 1613081651
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 43475466890823180
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 189093
+  packageName: POLYGON - Dungeon Realms Pack - Art by Synty
+  packageVersion: 1.4.5
+  assetPath: Assets/Synty/PolygonDungeonRealms/Models/Collision/Convex/SM_Prop_Goblet_02_Convex.asset
+  uploadId: 974044

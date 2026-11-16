@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: ff19450fca7dc8047840a8947343e429
+timeCreated: 1611200651
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 100100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 189093
+  packageName: POLYGON - Dungeon Realms Pack - Art by Synty
+  packageVersion: 1.4.5
+  assetPath: Assets/Synty/PolygonDungeonRealms/Prefabs/Characters/Chr_BR_Dwarf_Worker_01.prefab
+  uploadId: 974044

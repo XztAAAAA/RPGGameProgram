@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 8ce8d008203b43044aaf332b0571f508
+timeCreated: 1613082357
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 43279502663354382
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 189093
+  packageName: POLYGON - Dungeon Realms Pack - Art by Synty
+  packageVersion: 1.4.5
+  assetPath: Assets/Synty/PolygonDungeonRealms/Models/Collision/Convex/SM_Wep_WarHammer_Large_01_Convex.asset
+  uploadId: 974044

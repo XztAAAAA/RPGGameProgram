@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 95871ff9f452d0940b584816821573f3
+timeCreated: 1611630007
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 100100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 189093
+  packageName: POLYGON - Dungeon Realms Pack - Art by Synty
+  packageVersion: 1.4.5
+  assetPath: Assets/Synty/PolygonDungeonRealms/Prefabs/Characters/Attachments/SM_Chr_Attach_Headwrap_03.prefab
+  uploadId: 974044

@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 433f21a8d5fa2d94b80bf8dc5fe4adc3
+timeCreated: 1613084019
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 43055869647474228
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 189093
+  packageName: POLYGON - Dungeon Realms Pack - Art by Synty
+  packageVersion: 1.4.5
+  assetPath: Assets/Synty/PolygonDungeonRealms/Models/Collision/Convex/SM_Env_Hell_Obelisk_01_Convex.asset
+  uploadId: 974044

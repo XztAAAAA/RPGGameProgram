@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 67178561759c27d49b20e767c7a46791
+timeCreated: 1613081682
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 43544839193456868
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 189093
+  packageName: POLYGON - Dungeon Realms Pack - Art by Synty
+  packageVersion: 1.4.5
+  assetPath: Assets/Synty/PolygonDungeonRealms/Models/Collision/Convex/SM_Prop_DeadBody_Dwarf_03_Convex.asset
+  uploadId: 974044

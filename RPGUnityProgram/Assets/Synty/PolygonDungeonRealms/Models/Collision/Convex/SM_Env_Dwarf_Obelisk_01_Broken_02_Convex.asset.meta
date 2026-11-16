@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: d386d574d147c0641959c687da7973a8
+timeCreated: 1613083792
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 43421561681147200
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 189093
+  packageName: POLYGON - Dungeon Realms Pack - Art by Synty
+  packageVersion: 1.4.5
+  assetPath: Assets/Synty/PolygonDungeonRealms/Models/Collision/Convex/SM_Env_Dwarf_Obelisk_01_Broken_02_Convex.asset
+  uploadId: 974044

@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 49861bdc4ee2dd544b19a340b871619c
+timeCreated: 1606271848
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 100100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 189093
+  packageName: POLYGON - Dungeon Realms Pack - Art by Synty
+  packageVersion: 1.4.5
+  assetPath: Assets/Synty/PolygonDungeonRealms/Prefabs/Weapons/SM_Wep_Spear_01.prefab
+  uploadId: 974044

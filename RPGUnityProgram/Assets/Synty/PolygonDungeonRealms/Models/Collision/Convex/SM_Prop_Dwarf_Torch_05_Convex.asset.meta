@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: ff28c7ccfcb938040a0f033308b8d4ea
+timeCreated: 1613081714
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 43099369046412192
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 189093
+  packageName: POLYGON - Dungeon Realms Pack - Art by Synty
+  packageVersion: 1.4.5
+  assetPath: Assets/Synty/PolygonDungeonRealms/Models/Collision/Convex/SM_Prop_Dwarf_Torch_05_Convex.asset
+  uploadId: 974044

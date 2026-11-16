@@ -1,0 +1,17 @@
+fileFormatVersion: 2
+guid: 5a3555bf30b447845808c2a8c5164853
+timeCreated: 1613083469
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 43734903934870060
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 189093
+  packageName: POLYGON - Dungeon Realms Pack - Art by Synty
+  packageVersion: 1.4.5
+  assetPath: Assets/Synty/PolygonDungeonRealms/Models/Collision/Convex/SM_Veh_SandBoat_01_Convex
+    1.asset
+  uploadId: 974044

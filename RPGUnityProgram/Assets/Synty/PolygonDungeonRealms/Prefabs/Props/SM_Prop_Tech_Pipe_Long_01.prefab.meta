@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 31ff7a649f5f7e54394b8e59e1739375
+timeCreated: 1611093365
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 100100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 189093
+  packageName: POLYGON - Dungeon Realms Pack - Art by Synty
+  packageVersion: 1.4.5
+  assetPath: Assets/Synty/PolygonDungeonRealms/Prefabs/Props/SM_Prop_Tech_Pipe_Long_01.prefab
+  uploadId: 974044

@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: e995271b15e6724499c0f9070eaa17e5
+timeCreated: 1613088396
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 43890039424510220
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 189093
+  packageName: POLYGON - Dungeon Realms Pack - Art by Synty
+  packageVersion: 1.4.5
+  assetPath: Assets/Synty/PolygonDungeonRealms/Models/Collision/Convex/SM_Bld_Ruin_Tower_Round_Short_01_Convex.asset
+  uploadId: 974044

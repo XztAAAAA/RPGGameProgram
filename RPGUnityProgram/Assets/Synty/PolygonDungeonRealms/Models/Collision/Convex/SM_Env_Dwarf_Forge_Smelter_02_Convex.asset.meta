@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: fe25cf6c5b100384bba36881128b9b7b
+timeCreated: 1613083890
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 43329873094145792
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 189093
+  packageName: POLYGON - Dungeon Realms Pack - Art by Synty
+  packageVersion: 1.4.5
+  assetPath: Assets/Synty/PolygonDungeonRealms/Models/Collision/Convex/SM_Env_Dwarf_Forge_Smelter_02_Convex.asset
+  uploadId: 974044

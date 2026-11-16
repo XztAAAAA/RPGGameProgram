@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 8263c4bc79ac1564c8b56ddc57d1b73f
+timeCreated: 1611093366
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 100100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 189093
+  packageName: POLYGON - Dungeon Realms Pack - Art by Synty
+  packageVersion: 1.4.5
+  assetPath: Assets/Synty/PolygonDungeonRealms/Prefabs/Props/SM_Prop_Tech_Coil_Tall_01.prefab
+  uploadId: 974044

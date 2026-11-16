@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 09172bd18fa825740baf3ae7d657f1cf
+timeCreated: 1613081688
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 43207394535551306
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 189093
+  packageName: POLYGON - Dungeon Realms Pack - Art by Synty
+  packageVersion: 1.4.5
+  assetPath: Assets/Synty/PolygonDungeonRealms/Models/Collision/Convex/SM_Prop_Tech_Pipe_Long_01_Convex.asset
+  uploadId: 974044

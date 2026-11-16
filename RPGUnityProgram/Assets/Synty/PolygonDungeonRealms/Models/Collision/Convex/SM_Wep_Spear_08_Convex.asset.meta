@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: c8e3c3a6c40fef1428b8cb5e0a93c199
+timeCreated: 1613082339
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 43266379454608428
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 189093
+  packageName: POLYGON - Dungeon Realms Pack - Art by Synty
+  packageVersion: 1.4.5
+  assetPath: Assets/Synty/PolygonDungeonRealms/Models/Collision/Convex/SM_Wep_Spear_08_Convex.asset
+  uploadId: 974044

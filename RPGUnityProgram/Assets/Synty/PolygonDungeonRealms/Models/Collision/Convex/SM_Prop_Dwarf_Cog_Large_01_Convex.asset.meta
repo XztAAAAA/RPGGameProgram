@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: f8688bae9a1e42149a8dba69435fe3a0
+timeCreated: 1613081655
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 43771832708999550
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 189093
+  packageName: POLYGON - Dungeon Realms Pack - Art by Synty
+  packageVersion: 1.4.5
+  assetPath: Assets/Synty/PolygonDungeonRealms/Models/Collision/Convex/SM_Prop_Dwarf_Cog_Large_01_Convex.asset
+  uploadId: 974044

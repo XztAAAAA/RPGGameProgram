@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: c37eb4366739af544b9df382b1d20cad
+timeCreated: 1613081629
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 43855370687528552
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 189093
+  packageName: POLYGON - Dungeon Realms Pack - Art by Synty
+  packageVersion: 1.4.5
+  assetPath: Assets/Synty/PolygonDungeonRealms/Models/Collision/Convex/SM_Prop_Rug_Stairs_02_Convex.asset
+  uploadId: 974044

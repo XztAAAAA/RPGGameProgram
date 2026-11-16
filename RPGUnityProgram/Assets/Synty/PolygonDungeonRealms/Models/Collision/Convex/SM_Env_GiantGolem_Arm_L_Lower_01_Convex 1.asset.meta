@@ -1,0 +1,17 @@
+fileFormatVersion: 2
+guid: 53dfbcc53a1ea9e4c8b334a6d234cf91
+timeCreated: 1613340483
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 43559050373418862
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 189093
+  packageName: POLYGON - Dungeon Realms Pack - Art by Synty
+  packageVersion: 1.4.5
+  assetPath: Assets/Synty/PolygonDungeonRealms/Models/Collision/Convex/SM_Env_GiantGolem_Arm_L_Lower_01_Convex
+    1.asset
+  uploadId: 974044

@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 8bd0af702ba0a9b449749815c399d5aa
+timeCreated: 1613083844
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 43545269412206380
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 189093
+  packageName: POLYGON - Dungeon Realms Pack - Art by Synty
+  packageVersion: 1.4.5
+  assetPath: Assets/Synty/PolygonDungeonRealms/Models/Collision/Convex/SM_Env_Dwarf_Pillar_Top_02_Extension_Convex.asset
+  uploadId: 974044

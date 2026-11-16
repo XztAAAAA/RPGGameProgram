@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: cae99f956226a814aa37b8aa2111c66a
+timeCreated: 1613081744
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 43427733762759250
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 189093
+  packageName: POLYGON - Dungeon Realms Pack - Art by Synty
+  packageVersion: 1.4.5
+  assetPath: Assets/Synty/PolygonDungeonRealms/Models/Collision/Convex/SM_Prop_Tech_Liquid_02_Convex.asset
+  uploadId: 974044

@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 2ad818f48c7d8df47947300792b21e8e
+timeCreated: 1613081930
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 43112504849224638
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 189093
+  packageName: POLYGON - Dungeon Realms Pack - Art by Synty
+  packageVersion: 1.4.5
+  assetPath: Assets/Synty/PolygonDungeonRealms/Models/Collision/Convex/SM_Prop_Crystal_Rock_D_02_Convex.asset
+  uploadId: 974044

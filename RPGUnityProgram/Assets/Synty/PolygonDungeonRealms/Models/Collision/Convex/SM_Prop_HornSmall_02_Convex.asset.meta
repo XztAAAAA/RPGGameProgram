@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 74258da7bdf2e82458a4ea39ee68927b
+timeCreated: 1613081883
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 43406747179749372
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 189093
+  packageName: POLYGON - Dungeon Realms Pack - Art by Synty
+  packageVersion: 1.4.5
+  assetPath: Assets/Synty/PolygonDungeonRealms/Models/Collision/Convex/SM_Prop_HornSmall_02_Convex.asset
+  uploadId: 974044

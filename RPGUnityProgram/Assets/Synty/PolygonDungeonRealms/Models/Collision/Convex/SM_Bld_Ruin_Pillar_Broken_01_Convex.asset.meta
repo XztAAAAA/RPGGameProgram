@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 42a0e7f9428a4d848a47cf09ea332757
+timeCreated: 1613088404
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 43950813164045970
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 189093
+  packageName: POLYGON - Dungeon Realms Pack - Art by Synty
+  packageVersion: 1.4.5
+  assetPath: Assets/Synty/PolygonDungeonRealms/Models/Collision/Convex/SM_Bld_Ruin_Pillar_Broken_01_Convex.asset
+  uploadId: 974044

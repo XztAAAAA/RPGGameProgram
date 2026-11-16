@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 8d1aa88405d365c4baa21bac5e7f303f
+timeCreated: 1613081772
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 43921776380576204
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 189093
+  packageName: POLYGON - Dungeon Realms Pack - Art by Synty
+  packageVersion: 1.4.5
+  assetPath: Assets/Synty/PolygonDungeonRealms/Models/Collision/Convex/SM_Prop_Hell_Pillar_01_Convex.asset
+  uploadId: 974044

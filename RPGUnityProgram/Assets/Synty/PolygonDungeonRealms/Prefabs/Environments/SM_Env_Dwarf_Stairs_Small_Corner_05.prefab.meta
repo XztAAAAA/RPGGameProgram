@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 07c09238347662d459084d3b42f4aa9f
+timeCreated: 1610928790
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 100100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 189093
+  packageName: POLYGON - Dungeon Realms Pack - Art by Synty
+  packageVersion: 1.4.5
+  assetPath: Assets/Synty/PolygonDungeonRealms/Prefabs/Environments/SM_Env_Dwarf_Stairs_Small_Corner_05.prefab
+  uploadId: 974044

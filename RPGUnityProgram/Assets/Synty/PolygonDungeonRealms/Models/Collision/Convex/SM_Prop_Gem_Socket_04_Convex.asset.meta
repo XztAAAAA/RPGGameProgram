@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 8e13267ae3c5c7f47860e1371238c40d
+timeCreated: 1613081758
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 43551748370742532
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 189093
+  packageName: POLYGON - Dungeon Realms Pack - Art by Synty
+  packageVersion: 1.4.5
+  assetPath: Assets/Synty/PolygonDungeonRealms/Models/Collision/Convex/SM_Prop_Gem_Socket_04_Convex.asset
+  uploadId: 974044

@@ -1,0 +1,17 @@
+fileFormatVersion: 2
+guid: e7e2b0ad3f716224e81cd704017f704f
+timeCreated: 1613092547
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 43219282350735288
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 189093
+  packageName: POLYGON - Dungeon Realms Pack - Art by Synty
+  packageVersion: 1.4.5
+  assetPath: Assets/Synty/PolygonDungeonRealms/Models/Collision/Convex/SM_Env_Statue_03_Convex
+    1.asset
+  uploadId: 974044

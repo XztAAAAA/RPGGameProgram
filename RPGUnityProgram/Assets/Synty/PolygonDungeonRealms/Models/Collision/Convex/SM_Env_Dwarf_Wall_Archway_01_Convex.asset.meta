@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 7a6c7d08a854cbd4598b1d215c6a4466
+timeCreated: 1613083882
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 43070347563810158
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 189093
+  packageName: POLYGON - Dungeon Realms Pack - Art by Synty
+  packageVersion: 1.4.5
+  assetPath: Assets/Synty/PolygonDungeonRealms/Models/Collision/Convex/SM_Env_Dwarf_Wall_Archway_01_Convex.asset
+  uploadId: 974044

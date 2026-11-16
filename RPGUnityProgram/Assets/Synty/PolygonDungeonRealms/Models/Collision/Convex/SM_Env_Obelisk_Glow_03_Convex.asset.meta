@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: d96cfb3e2262b3c438d1f1d79dd08cd4
+timeCreated: 1613083999
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 43982816642226738
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 189093
+  packageName: POLYGON - Dungeon Realms Pack - Art by Synty
+  packageVersion: 1.4.5
+  assetPath: Assets/Synty/PolygonDungeonRealms/Models/Collision/Convex/SM_Env_Obelisk_Glow_03_Convex.asset
+  uploadId: 974044

@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: bad3f82cec91e5943a11506bd8f2bc0b
+timeCreated: 1613081689
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 43650703038915282
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 189093
+  packageName: POLYGON - Dungeon Realms Pack - Art by Synty
+  packageVersion: 1.4.5
+  assetPath: Assets/Synty/PolygonDungeonRealms/Models/Collision/Convex/SM_Prop_Ore_Insert_Large_01_Convex.asset
+  uploadId: 974044

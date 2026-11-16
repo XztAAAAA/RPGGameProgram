@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 58cef07c56851be40a3bd64093d112ad
+timeCreated: 1613083951
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 43192533483579042
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 189093
+  packageName: POLYGON - Dungeon Realms Pack - Art by Synty
+  packageVersion: 1.4.5
+  assetPath: Assets/Synty/PolygonDungeonRealms/Models/Collision/Convex/SM_Env_Rock_Round_06_Convex.asset
+  uploadId: 974044

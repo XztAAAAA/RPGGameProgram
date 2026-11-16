@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 98d2899b62799074e9afafa3253a022d
+timeCreated: 1613081926
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 43377273639938016
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 189093
+  packageName: POLYGON - Dungeon Realms Pack - Art by Synty
+  packageVersion: 1.4.5
+  assetPath: Assets/Synty/PolygonDungeonRealms/Models/Collision/Convex/SM_Prop_Tankard_01_Convex.asset
+  uploadId: 974044

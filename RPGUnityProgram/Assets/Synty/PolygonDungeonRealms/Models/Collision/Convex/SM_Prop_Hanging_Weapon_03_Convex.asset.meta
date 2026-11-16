@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 4efc8aaf194a2b54fb4ce6a48c185612
+timeCreated: 1613081728
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 43411484052054346
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 189093
+  packageName: POLYGON - Dungeon Realms Pack - Art by Synty
+  packageVersion: 1.4.5
+  assetPath: Assets/Synty/PolygonDungeonRealms/Models/Collision/Convex/SM_Prop_Hanging_Weapon_03_Convex.asset
+  uploadId: 974044

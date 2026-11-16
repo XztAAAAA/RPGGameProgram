@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: c9c68b59740123d418a24914eea74417
+timeCreated: 1613081798
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 43900270984358610
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 189093
+  packageName: POLYGON - Dungeon Realms Pack - Art by Synty
+  packageVersion: 1.4.5
+  assetPath: Assets/Synty/PolygonDungeonRealms/Models/Collision/Convex/SM_Prop_Camp_Rug_04_Convex.asset
+  uploadId: 974044

@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 64c73c6fe6d961949b00b00a1567ee9a
+timeCreated: 1611612280
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 189093
+  packageName: POLYGON - Dungeon Realms Pack - Art by Synty
+  packageVersion: 1.4.5
+  assetPath: Assets/Synty/PolygonDungeonRealms/Materials/Misc/Dust_01.mat
+  uploadId: 974044

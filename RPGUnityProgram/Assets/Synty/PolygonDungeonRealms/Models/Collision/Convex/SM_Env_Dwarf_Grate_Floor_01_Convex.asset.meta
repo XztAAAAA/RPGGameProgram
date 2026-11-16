@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: c746f504ad5859f4ca92d681e93a5c1f
+timeCreated: 1613084183
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 43239899299483346
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 189093
+  packageName: POLYGON - Dungeon Realms Pack - Art by Synty
+  packageVersion: 1.4.5
+  assetPath: Assets/Synty/PolygonDungeonRealms/Models/Collision/Convex/SM_Env_Dwarf_Grate_Floor_01_Convex.asset
+  uploadId: 974044

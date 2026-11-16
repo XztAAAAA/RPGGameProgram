@@ -1,0 +1,17 @@
+fileFormatVersion: 2
+guid: 6a9f7f82fb12e3a44b7bcfa6545b2982
+timeCreated: 1613340484
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 43743389779098082
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 189093
+  packageName: POLYGON - Dungeon Realms Pack - Art by Synty
+  packageVersion: 1.4.5
+  assetPath: Assets/Synty/PolygonDungeonRealms/Models/Collision/Convex/SM_Env_GiantGolem_Leg_L_Upper_01_Convex
+    1.asset
+  uploadId: 974044

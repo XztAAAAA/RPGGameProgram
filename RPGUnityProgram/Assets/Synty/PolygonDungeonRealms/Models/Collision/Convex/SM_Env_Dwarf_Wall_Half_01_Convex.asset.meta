@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: b8edc8371b218e14b877431f18401142
+timeCreated: 1613083936
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 43288575736610122
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 189093
+  packageName: POLYGON - Dungeon Realms Pack - Art by Synty
+  packageVersion: 1.4.5
+  assetPath: Assets/Synty/PolygonDungeonRealms/Models/Collision/Convex/SM_Env_Dwarf_Wall_Half_01_Convex.asset
+  uploadId: 974044

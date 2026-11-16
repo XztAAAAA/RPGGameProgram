@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: d434f1f0bbc035845867f772d3a167cb
+timeCreated: 1613083840
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 43285546189875640
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 189093
+  packageName: POLYGON - Dungeon Realms Pack - Art by Synty
+  packageVersion: 1.4.5
+  assetPath: Assets/Synty/PolygonDungeonRealms/Models/Collision/Convex/SM_Env_Hell_Rock_02_Convex.asset
+  uploadId: 974044

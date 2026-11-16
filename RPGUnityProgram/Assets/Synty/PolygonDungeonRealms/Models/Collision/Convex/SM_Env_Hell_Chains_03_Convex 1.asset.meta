@@ -1,0 +1,17 @@
+fileFormatVersion: 2
+guid: 04da11fde50ca114c8bb8368c60bdf7f
+timeCreated: 1613092047
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 43023745479533932
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 189093
+  packageName: POLYGON - Dungeon Realms Pack - Art by Synty
+  packageVersion: 1.4.5
+  assetPath: Assets/Synty/PolygonDungeonRealms/Models/Collision/Convex/SM_Env_Hell_Chains_03_Convex
+    1.asset
+  uploadId: 974044

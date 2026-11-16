@@ -1,0 +1,17 @@
+fileFormatVersion: 2
+guid: 376d302c931a4394eb4cc9f7263153ef
+timeCreated: 1613088480
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 43197162057194400
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 189093
+  packageName: POLYGON - Dungeon Realms Pack - Art by Synty
+  packageVersion: 1.4.5
+  assetPath: Assets/Synty/PolygonDungeonRealms/Models/Collision/Convex/SM_Bld_Ruin_Arch_01_Convex
+    1.asset
+  uploadId: 974044

@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 3d85079bd826517418fc6600fe7322d1
+timeCreated: 1613081636
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 43824249152021292
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 189093
+  packageName: POLYGON - Dungeon Realms Pack - Art by Synty
+  packageVersion: 1.4.5
+  assetPath: Assets/Synty/PolygonDungeonRealms/Models/Collision/Convex/SM_Prop_Caliper_01_Convex.asset
+  uploadId: 974044

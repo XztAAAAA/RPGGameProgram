@@ -1,0 +1,17 @@
+fileFormatVersion: 2
+guid: 5286d6ddc7634ff4498a37f3102e416f
+timeCreated: 1613088757
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 43097198953105582
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 189093
+  packageName: POLYGON - Dungeon Realms Pack - Art by Synty
+  packageVersion: 1.4.5
+  assetPath: Assets/Synty/PolygonDungeonRealms/Models/Collision/Convex/SM_Bld_Ruin_Bridge_02_Convex
+    1.asset
+  uploadId: 974044

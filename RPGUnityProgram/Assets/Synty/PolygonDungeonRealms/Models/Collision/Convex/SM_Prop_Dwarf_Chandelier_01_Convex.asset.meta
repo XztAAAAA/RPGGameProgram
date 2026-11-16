@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 2cf4316461f2dab4aafb6cc7a3a1eb2f
+timeCreated: 1613081657
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 43486009336859628
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 189093
+  packageName: POLYGON - Dungeon Realms Pack - Art by Synty
+  packageVersion: 1.4.5
+  assetPath: Assets/Synty/PolygonDungeonRealms/Models/Collision/Convex/SM_Prop_Dwarf_Chandelier_01_Convex.asset
+  uploadId: 974044

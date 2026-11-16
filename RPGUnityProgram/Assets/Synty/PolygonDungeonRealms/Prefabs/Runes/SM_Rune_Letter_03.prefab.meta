@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: bd89dae6dba8b5b4bacfeb71d087243c
+timeCreated: 1604875893
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 100100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 189093
+  packageName: POLYGON - Dungeon Realms Pack - Art by Synty
+  packageVersion: 1.4.5
+  assetPath: Assets/Synty/PolygonDungeonRealms/Prefabs/Runes/SM_Rune_Letter_03.prefab
+  uploadId: 974044

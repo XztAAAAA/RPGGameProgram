@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: d03a0cf65e30e884ea7ce557da116330
+timeCreated: 1613081921
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 43854494864700902
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 189093
+  packageName: POLYGON - Dungeon Realms Pack - Art by Synty
+  packageVersion: 1.4.5
+  assetPath: Assets/Synty/PolygonDungeonRealms/Models/Collision/Convex/SM_Prop_Charm_Hanging_03_Convex.asset
+  uploadId: 974044

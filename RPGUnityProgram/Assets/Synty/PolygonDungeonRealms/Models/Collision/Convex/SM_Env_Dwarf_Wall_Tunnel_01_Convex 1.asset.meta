@@ -1,0 +1,17 @@
+fileFormatVersion: 2
+guid: 823ef652e6495164ca700001c98e14c8
+timeCreated: 1613093195
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 43041175248999220
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 189093
+  packageName: POLYGON - Dungeon Realms Pack - Art by Synty
+  packageVersion: 1.4.5
+  assetPath: Assets/Synty/PolygonDungeonRealms/Models/Collision/Convex/SM_Env_Dwarf_Wall_Tunnel_01_Convex
+    1.asset
+  uploadId: 974044

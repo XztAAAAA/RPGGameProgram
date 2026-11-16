@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 379d5aed78adc2242a6f8480674cf23a
+timeCreated: 1613081914
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 43444103301089352
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 189093
+  packageName: POLYGON - Dungeon Realms Pack - Art by Synty
+  packageVersion: 1.4.5
+  assetPath: Assets/Synty/PolygonDungeonRealms/Models/Collision/Convex/SM_Prop_Banner_Damaged_02_Convex.asset
+  uploadId: 974044

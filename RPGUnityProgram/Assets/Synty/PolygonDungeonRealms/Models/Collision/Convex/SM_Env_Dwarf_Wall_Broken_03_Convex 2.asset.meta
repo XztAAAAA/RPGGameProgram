@@ -1,0 +1,17 @@
+fileFormatVersion: 2
+guid: 75a0b52aa0062894eb333decb1721dca
+timeCreated: 1613089444
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 43373023675317618
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 189093
+  packageName: POLYGON - Dungeon Realms Pack - Art by Synty
+  packageVersion: 1.4.5
+  assetPath: Assets/Synty/PolygonDungeonRealms/Models/Collision/Convex/SM_Env_Dwarf_Wall_Broken_03_Convex
+    2.asset
+  uploadId: 974044

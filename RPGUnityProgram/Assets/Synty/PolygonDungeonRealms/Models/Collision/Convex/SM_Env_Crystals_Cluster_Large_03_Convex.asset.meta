@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: b9e776a018fe3834091c6a5925295e27
+timeCreated: 1613083830
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 43890990031130188
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 189093
+  packageName: POLYGON - Dungeon Realms Pack - Art by Synty
+  packageVersion: 1.4.5
+  assetPath: Assets/Synty/PolygonDungeonRealms/Models/Collision/Convex/SM_Env_Crystals_Cluster_Large_03_Convex.asset
+  uploadId: 974044

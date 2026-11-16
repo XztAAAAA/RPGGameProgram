@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 02e0501f48ad27f40bc31bdd19f5b5ff
+timeCreated: 1613082736
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 43023038472504868
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 189093
+  packageName: POLYGON - Dungeon Realms Pack - Art by Synty
+  packageVersion: 1.4.5
+  assetPath: Assets/Synty/PolygonDungeonRealms/Models/Collision/Convex/SM_Generic_Tree_01_Convex.asset
+  uploadId: 974044

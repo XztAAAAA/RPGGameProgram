@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 7a50523ae5d13274c8146a4fa51fd52d
+timeCreated: 1613081877
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 43753242884011810
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 189093
+  packageName: POLYGON - Dungeon Realms Pack - Art by Synty
+  packageVersion: 1.4.5
+  assetPath: Assets/Synty/PolygonDungeonRealms/Models/Collision/Convex/SM_Prop_Chair_Broken_01_Convex.asset
+  uploadId: 974044

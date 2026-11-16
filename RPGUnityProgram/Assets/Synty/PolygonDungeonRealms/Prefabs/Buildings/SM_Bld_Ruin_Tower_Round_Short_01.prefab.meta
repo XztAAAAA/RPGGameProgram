@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: e103b1c966fcf13479527d947d425a35
+timeCreated: 1604896054
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 100100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 189093
+  packageName: POLYGON - Dungeon Realms Pack - Art by Synty
+  packageVersion: 1.4.5
+  assetPath: Assets/Synty/PolygonDungeonRealms/Prefabs/Buildings/SM_Bld_Ruin_Tower_Round_Short_01.prefab
+  uploadId: 974044

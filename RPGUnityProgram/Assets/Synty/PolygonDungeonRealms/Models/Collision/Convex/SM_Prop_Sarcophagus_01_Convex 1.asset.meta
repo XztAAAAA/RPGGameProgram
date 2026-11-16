@@ -1,0 +1,17 @@
+fileFormatVersion: 2
+guid: 2e693f3135b53fc438efbdb785ae861b
+timeCreated: 1613348811
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 43416156459983016
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 189093
+  packageName: POLYGON - Dungeon Realms Pack - Art by Synty
+  packageVersion: 1.4.5
+  assetPath: Assets/Synty/PolygonDungeonRealms/Models/Collision/Convex/SM_Prop_Sarcophagus_01_Convex
+    1.asset
+  uploadId: 974044

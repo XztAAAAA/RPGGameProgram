@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: f21ee12c5edd0a143b664a1e01401408
+timeCreated: 1608066501
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 100100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 189093
+  packageName: POLYGON - Dungeon Realms Pack - Art by Synty
+  packageVersion: 1.4.5
+  assetPath: Assets/Synty/PolygonDungeonRealms/Prefabs/Props/SM_Prop_Camp_String_01.prefab
+  uploadId: 974044

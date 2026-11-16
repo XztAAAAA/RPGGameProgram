@@ -1,0 +1,17 @@
+fileFormatVersion: 2
+guid: f1c13fca36b5e12498aad64e8bd41b38
+timeCreated: 1613337843
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 43255306490723128
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 189093
+  packageName: POLYGON - Dungeon Realms Pack - Art by Synty
+  packageVersion: 1.4.5
+  assetPath: Assets/Synty/PolygonDungeonRealms/Models/Collision/Convex/SM_Env_Bramble_03_Convex
+    1.asset
+  uploadId: 974044

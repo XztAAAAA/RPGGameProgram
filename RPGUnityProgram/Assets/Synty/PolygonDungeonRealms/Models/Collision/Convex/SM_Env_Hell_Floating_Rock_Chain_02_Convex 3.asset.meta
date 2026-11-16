@@ -1,0 +1,17 @@
+fileFormatVersion: 2
+guid: 39bba323422148f4ab244166453d85c2
+timeCreated: 1613091676
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 43028444788399266
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 189093
+  packageName: POLYGON - Dungeon Realms Pack - Art by Synty
+  packageVersion: 1.4.5
+  assetPath: Assets/Synty/PolygonDungeonRealms/Models/Collision/Convex/SM_Env_Hell_Floating_Rock_Chain_02_Convex
+    3.asset
+  uploadId: 974044

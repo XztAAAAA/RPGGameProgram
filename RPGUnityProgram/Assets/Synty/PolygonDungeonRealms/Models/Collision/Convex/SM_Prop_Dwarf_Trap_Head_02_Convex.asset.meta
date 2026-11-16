@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 77782985315498f47a9ab473acbf8df0
+timeCreated: 1613081772
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 43916164190097540
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 189093
+  packageName: POLYGON - Dungeon Realms Pack - Art by Synty
+  packageVersion: 1.4.5
+  assetPath: Assets/Synty/PolygonDungeonRealms/Models/Collision/Convex/SM_Prop_Dwarf_Trap_Head_02_Convex.asset
+  uploadId: 974044

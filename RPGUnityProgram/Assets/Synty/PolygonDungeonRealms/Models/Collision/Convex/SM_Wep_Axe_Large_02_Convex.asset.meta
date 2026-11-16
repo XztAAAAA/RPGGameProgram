@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 8986617dbc70ea54c867be98a7cef85a
+timeCreated: 1613082364
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 43811368885667274
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 189093
+  packageName: POLYGON - Dungeon Realms Pack - Art by Synty
+  packageVersion: 1.4.5
+  assetPath: Assets/Synty/PolygonDungeonRealms/Models/Collision/Convex/SM_Wep_Axe_Large_02_Convex.asset
+  uploadId: 974044

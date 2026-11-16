@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: fb5961921b0810f4080b92d50e8c3d39
+timeCreated: 1613083897
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 43983747233859904
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 189093
+  packageName: POLYGON - Dungeon Realms Pack - Art by Synty
+  packageVersion: 1.4.5
+  assetPath: Assets/Synty/PolygonDungeonRealms/Models/Collision/Convex/SM_Env_Rubble_Rocks_01_Convex.asset
+  uploadId: 974044

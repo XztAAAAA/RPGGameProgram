@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 5f6269442f3b77e4ab72d3908e5e8250
+timeCreated: 1613081758
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 43833737213200144
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 189093
+  packageName: POLYGON - Dungeon Realms Pack - Art by Synty
+  packageVersion: 1.4.5
+  assetPath: Assets/Synty/PolygonDungeonRealms/Models/Collision/Convex/SM_Prop_Hell_Spike_Skull_02_Convex.asset
+  uploadId: 974044

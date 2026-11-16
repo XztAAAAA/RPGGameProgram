@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: c20f45e06be0ebe43aa33b74913eba10
+timeCreated: 1611203106
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 100100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 189093
+  packageName: POLYGON - Dungeon Realms Pack - Art by Synty
+  packageVersion: 1.4.5
+  assetPath: Assets/Synty/PolygonDungeonRealms/Prefabs/Environments/SM_Env_Crystals_Cluster_Large_02.prefab
+  uploadId: 974044

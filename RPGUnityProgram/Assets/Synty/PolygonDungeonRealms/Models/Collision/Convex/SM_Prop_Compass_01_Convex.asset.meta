@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: ad25229f069ea1f4db2cbd864c9401b2
+timeCreated: 1613081773
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 43770741493498834
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 189093
+  packageName: POLYGON - Dungeon Realms Pack - Art by Synty
+  packageVersion: 1.4.5
+  assetPath: Assets/Synty/PolygonDungeonRealms/Models/Collision/Convex/SM_Prop_Compass_01_Convex.asset
+  uploadId: 974044

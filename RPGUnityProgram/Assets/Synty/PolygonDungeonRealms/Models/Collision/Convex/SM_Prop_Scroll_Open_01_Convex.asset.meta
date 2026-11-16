@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 4af37e5dbd7deca4994adb9bd84f1905
+timeCreated: 1613081783
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 43149312004479774
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 189093
+  packageName: POLYGON - Dungeon Realms Pack - Art by Synty
+  packageVersion: 1.4.5
+  assetPath: Assets/Synty/PolygonDungeonRealms/Models/Collision/Convex/SM_Prop_Scroll_Open_01_Convex.asset
+  uploadId: 974044

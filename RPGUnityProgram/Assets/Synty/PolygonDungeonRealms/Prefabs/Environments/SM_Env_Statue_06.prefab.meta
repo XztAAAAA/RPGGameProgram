@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 24baa4f5a0725b04eafa88eaab74c6d6
+timeCreated: 1611711621
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 100100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 189093
+  packageName: POLYGON - Dungeon Realms Pack - Art by Synty
+  packageVersion: 1.4.5
+  assetPath: Assets/Synty/PolygonDungeonRealms/Prefabs/Environments/SM_Env_Statue_06.prefab
+  uploadId: 974044

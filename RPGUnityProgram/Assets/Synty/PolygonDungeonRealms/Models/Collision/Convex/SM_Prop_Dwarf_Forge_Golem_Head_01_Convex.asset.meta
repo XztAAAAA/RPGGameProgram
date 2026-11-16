@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 7815663b4d6b6f944a373770c98ef9dc
+timeCreated: 1613081777
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 43566633052542292
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 189093
+  packageName: POLYGON - Dungeon Realms Pack - Art by Synty
+  packageVersion: 1.4.5
+  assetPath: Assets/Synty/PolygonDungeonRealms/Models/Collision/Convex/SM_Prop_Dwarf_Forge_Golem_Head_01_Convex.asset
+  uploadId: 974044

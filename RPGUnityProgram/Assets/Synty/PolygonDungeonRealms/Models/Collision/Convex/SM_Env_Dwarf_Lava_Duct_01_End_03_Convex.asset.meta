@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: e1813ce855b63704d86036e68d57b6ef
+timeCreated: 1613084315
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 43876320993944174
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 189093
+  packageName: POLYGON - Dungeon Realms Pack - Art by Synty
+  packageVersion: 1.4.5
+  assetPath: Assets/Synty/PolygonDungeonRealms/Models/Collision/Convex/SM_Env_Dwarf_Lava_Duct_01_End_03_Convex.asset
+  uploadId: 974044

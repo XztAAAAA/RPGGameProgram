@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 206b5f91b6bcd264e8456fee7f2dacad
+timeCreated: 1613083781
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 43625781587006002
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 189093
+  packageName: POLYGON - Dungeon Realms Pack - Art by Synty
+  packageVersion: 1.4.5
+  assetPath: Assets/Synty/PolygonDungeonRealms/Models/Collision/Convex/SM_Env_Dwarf_Stairs_Pillar_03_Convex.asset
+  uploadId: 974044
