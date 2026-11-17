@@ -45,6 +45,14 @@ public class DeathHandler : MonoBehaviour
 
         deathHandled = true;
 
+        CombatFactionMarker faction = GetComponent<CombatFactionMarker>();
+        if (faction != null && faction.Faction == CombatFaction.Enemy)
+        {
+            HealthBar healthBar = GetComponentInChildren<HealthBar>(true);
+            if (healthBar != null)
+                healthBar.gameObject.SetActive(false);
+        }
+
         // 死亡后不能继续攻击
         Attack attack = GetComponent<Attack>();
 
