@@ -70,6 +70,8 @@ public class Attack : MonoBehaviour
     public float Damage => damage;
     public event Action AttackStarted;
     public event Action MeleeParried;
+    public event Action<cfg.Skill> SkillExecutionStarted;
+    public event Action SkillParried;
     public int LastMeleeParryFacingFrame { get; private set; } = -1;
     public bool IsStaggered => Time.time < staggerEndTime;
     public bool IsCurrentSkillParried => specialSkillParried;
@@ -214,6 +216,7 @@ public class Attack : MonoBehaviour
     public void BeginSkillExecution(cfg.Skill skill, Transform target, float startTime)
     {
         EndSkillExecution();
+        SkillExecutionStarted?.Invoke(skill);
         if (skill.SkillKind != 2 || ownerFaction == null ||
             ownerFaction.Faction != CombatFaction.Enemy)
         {
@@ -278,6 +281,7 @@ public class Attack : MonoBehaviour
                 continue;
 
             enemy.specialSkillParried = true;
+            enemy.SkillParried?.Invoke();
             parried = true;
             meleeParried |= skill.AttackType == 1;
             if (skill.AttackType == 1)

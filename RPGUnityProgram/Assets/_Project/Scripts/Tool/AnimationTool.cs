@@ -2,26 +2,46 @@ using UnityEngine;
 
 public static class AnimationTool
 {
-    private static readonly int PlayerMoveAmount = Animator.StringToHash("MoveAmount");
-    private static readonly int PlayerAttack = Animator.StringToHash("Attack");
+    private static readonly int MoveAmount = Animator.StringToHash("MoveAmount");
+    private static readonly int Attack = Animator.StringToHash("Attack");
+    private static readonly int HeavyAttack = Animator.StringToHash("HeavyAttack");
     private static readonly int PlayerBlock = Animator.StringToHash("Block");
     private static readonly int PlayerDodge = Animator.StringToHash("Dodge");
-    private static readonly int PlayerHit = Animator.StringToHash("Hit");
-    private static readonly int PlayerDead = Animator.StringToHash("Dead");
+    private static readonly int Hit = Animator.StringToHash("Hit");
+    private static readonly int Dead = Animator.StringToHash("Dead");
 
-    public static void SetPlayerMovement(Animator animator, float amount)
+    public static void SetMovement(Animator animator, float amount)
     {
-        animator.SetFloat(PlayerMoveAmount, amount);
+        animator.SetFloat(MoveAmount, amount);
     }
 
-    public static void PlayPlayerAttack(Animator animator)
+    public static void PlayAttack(Animator animator)
     {
-        animator.SetTrigger(PlayerAttack);
+        animator.SetTrigger(Attack);
+    }
+
+    public static void PlayHeavyAttack(Animator animator)
+    {
+        animator.ResetTrigger(Attack);
+        animator.SetTrigger(HeavyAttack);
+    }
+
+    public static void PlayEnemyAttack(Animator animator)
+    {
+        animator.ResetTrigger(HeavyAttack);
+        PlayAttack(animator);
+    }
+
+    public static void PlayEnemyHit(Animator animator)
+    {
+        animator.ResetTrigger(Attack);
+        animator.ResetTrigger(HeavyAttack);
+        PlayHit(animator);
     }
 
     public static void PlayPlayerBlock(Animator animator)
     {
-        animator.ResetTrigger(PlayerAttack);
+        animator.ResetTrigger(Attack);
         animator.SetTrigger(PlayerBlock);
     }
 
@@ -30,14 +50,14 @@ public static class AnimationTool
         animator.SetTrigger(PlayerDodge);
     }
 
-    public static void PlayPlayerHit(Animator animator)
+    public static void PlayHit(Animator animator)
     {
-        animator.SetTrigger(PlayerHit);
+        animator.SetTrigger(Hit);
     }
 
-    public static void PlayPlayerDeath(Animator animator)
+    public static void PlayDeath(Animator animator)
     {
-        animator.SetBool(PlayerDead, true);
+        animator.SetBool(Dead, true);
         animator.updateMode = AnimatorUpdateMode.UnscaledTime;
     }
 }

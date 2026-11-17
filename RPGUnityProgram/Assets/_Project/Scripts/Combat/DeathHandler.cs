@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 [RequireComponent(typeof(Health))]
@@ -71,8 +72,21 @@ public class DeathHandler : MonoBehaviour
         // 敌人通常销毁；玩家通常保留并进入失败流程
         if (destroyOnDeath)
         {
+            EnemyAnimation enemyAnimation = GetComponent<EnemyAnimation>();
+            if (enemyAnimation != null && enemyAnimation.isActiveAndEnabled)
+            {
+                StartCoroutine(DestroyAfterAnimation(enemyAnimation.DeathAnimationDuration));
+                return;
+            }
+
             gameObject.SetActive(false);
             Destroy(gameObject, destroyDelay);
         }
+    }
+
+    private IEnumerator DestroyAfterAnimation(float duration)
+    {
+        yield return new WaitForSecondsRealtime(duration);
+        Destroy(gameObject);
     }
 }

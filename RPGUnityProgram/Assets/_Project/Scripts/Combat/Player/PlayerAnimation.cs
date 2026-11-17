@@ -59,14 +59,14 @@ public sealed class PlayerAnimation : MonoBehaviour
 
     private void LateUpdate()
     {
-        AnimationTool.SetPlayerMovement(
+        AnimationTool.SetMovement(
             animator, movement.isActiveAndEnabled ? movement.MovementAmount : 0f);
     }
 
     private void HandleAttack()
     {
         if (meleeParryFrame != Time.frameCount)
-            AnimationTool.PlayPlayerAttack(animator);
+            AnimationTool.PlayAttack(animator);
     }
 
     private void HandleMeleeParry()
@@ -75,10 +75,10 @@ public sealed class PlayerAnimation : MonoBehaviour
         AnimationTool.PlayPlayerBlock(animator);
     }
     private void HandleDodge() => AnimationTool.PlayPlayerDodge(animator);
-    private void HandleHit() => AnimationTool.PlayPlayerHit(animator);
+    private void HandleHit() => AnimationTool.PlayHit(animator);
 
     private void HandleDeath()
     {
-        AnimationTool.PlayPlayerDeath(animator);
+        AnimationTool.PlayDeath(animator);
     }
 }
