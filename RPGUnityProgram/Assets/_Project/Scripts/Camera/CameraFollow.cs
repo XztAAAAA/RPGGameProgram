@@ -34,7 +34,8 @@ public class CameraFollow : MonoBehaviour
 
     private void Awake()
     {
-        target = CombatTool.GetPlayer().transform;
+        GameObject player = CombatTool.GetPlayer();
+        target = player != null ? player.transform : null;
         cameraBounds = GameObject.Find("CameraBounds").GetComponent<BoxCollider>();
     }
 

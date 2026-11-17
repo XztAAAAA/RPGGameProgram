@@ -199,7 +199,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 4294967295
   rangeDisplayDuration: 0.3
-  parryHitStopDuration: 0.1
+  parryHitStopDuration: 0.35
 --- !u!114 &2296885714713628031
 MonoBehaviour:
   m_ObjectHideFlags: 0
