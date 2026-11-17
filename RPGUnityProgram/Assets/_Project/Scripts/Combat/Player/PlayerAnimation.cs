@@ -75,7 +75,11 @@ public sealed class PlayerAnimation : MonoBehaviour
         AnimationTool.PlayPlayerBlock(animator);
     }
     private void HandleDodge() => AnimationTool.PlayPlayerDodge(animator);
-    private void HandleHit() => AnimationTool.PlayHit(animator);
+    private void HandleHit()
+    {
+        if (!movement.IsDodging)
+            AnimationTool.PlayHit(animator);
+    }
 
     private void HandleDeath()
     {

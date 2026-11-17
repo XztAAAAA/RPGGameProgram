@@ -391,6 +391,20 @@ public class Attack : MonoBehaviour
         ownerFaction = GetComponent<CombatFactionMarker>();
     }
 
+    public bool TryParry()
+    {
+        if (!isActiveAndEnabled || ownerFaction == null ||
+            ownerFaction.Faction != CombatFaction.Player || IsStaggered || Time.timeScale <= 0f)
+            return false;
+
+        if (!TryParrySpecialSkills(hitRadius, hitOffset))
+            return false;
+
+        EndMeleeSkillHitbox();
+        HideAttackRange();
+        return true;
+    }
+
     /// <summary>
     /// 尝试执行一次攻击。
     /// 玩家输入和敌人 AI 都调用这个方法。
@@ -401,18 +415,6 @@ public class Attack : MonoBehaviour
             return false;
 
         int skillIndex = configuredSkills != null ? FindReadySkill(target) : -1;
-        cfg.Skill attackSkill = skillIndex >= 0 ? configuredSkills[skillIndex] : null;
-        float parryRadius = attackSkill != null ? Mathf.Max(0.1f, attackSkill.HitRadius) : hitRadius;
-        float parryOffset = attackSkill != null ? Mathf.Max(0f, attackSkill.HitOffset) : hitOffset;
-        bool parried = ownerFaction.Faction == CombatFaction.Player &&
-            TryParrySpecialSkills(parryRadius, parryOffset);
-
-        if (parried)
-        {
-            EndMeleeSkillHitbox();
-            HideAttackRange();
-        }
-
         if (configuredSkills == null)
         {
             if (Time.time < nextAttackTime)
@@ -439,7 +441,7 @@ public class Attack : MonoBehaviour
             nextSkillAttackTimes[skillIndex] = Time.time + cooldown;
             nextSkillIndex = (skillIndex + 1) % configuredSkills.Length;
             AttackStarted?.Invoke();
-            ApplySkillDamage(skill, target, parried);
+            ApplySkillDamage(skill, target);
             return true;
         }
 
@@ -447,7 +449,7 @@ public class Attack : MonoBehaviour
             ? GetMeleeActiveTime(basicAttackSkill)
             : (float?)null;
         AttackStarted?.Invoke();
-        ApplyAttack(damage, hitRadius, hitOffset, parried, displayDuration: displayDuration);
+        ApplyAttack(damage, hitRadius, hitOffset, false, displayDuration: displayDuration);
         return true;
     }
 

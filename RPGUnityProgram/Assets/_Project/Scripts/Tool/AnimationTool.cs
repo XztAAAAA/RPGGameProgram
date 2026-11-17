@@ -58,6 +58,7 @@ public static class AnimationTool
 
     public static void PlayPlayerDodge(Animator animator)
     {
+        animator.ResetTrigger(Hit);
         animator.SetTrigger(PlayerDodge);
     }
 

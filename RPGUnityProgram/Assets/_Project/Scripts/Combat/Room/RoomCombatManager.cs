@@ -162,6 +162,9 @@ public class RoomCombatManager : MonoSingleton<RoomCombatManager>
         if (playerHealth == null || playerHealth.IsDead)
             return;
 
+        if (playerAttackInput != null && playerAttackInput.IsParryPressedThisFrame)
+            return;
+
         if (playerAttack == null)
         {
             Debug.LogError(
