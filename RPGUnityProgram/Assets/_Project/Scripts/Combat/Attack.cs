@@ -69,6 +69,7 @@ public class Attack : MonoBehaviour
 
     public float Damage => damage;
     public event Action AttackStarted;
+    public event Action MeleeParried;
     public int LastMeleeParryFacingFrame { get; private set; } = -1;
     public bool IsStaggered => Time.time < staggerEndTime;
     public bool IsCurrentSkillParried => specialSkillParried;
@@ -306,6 +307,7 @@ public class Attack : MonoBehaviour
                 LastMeleeParryFacingFrame = Time.frameCount;
             }
 
+            MeleeParried?.Invoke();
             StartParryHitStop();
             Camera mainCamera = Camera.main;
             CameraFollow cameraFollow = mainCamera != null

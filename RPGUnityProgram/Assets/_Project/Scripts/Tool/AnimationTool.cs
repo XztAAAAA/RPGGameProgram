@@ -4,6 +4,7 @@ public static class AnimationTool
 {
     private static readonly int PlayerMoveAmount = Animator.StringToHash("MoveAmount");
     private static readonly int PlayerAttack = Animator.StringToHash("Attack");
+    private static readonly int PlayerBlock = Animator.StringToHash("Block");
     private static readonly int PlayerDodge = Animator.StringToHash("Dodge");
     private static readonly int PlayerHit = Animator.StringToHash("Hit");
     private static readonly int PlayerDead = Animator.StringToHash("Dead");
@@ -16,6 +17,12 @@ public static class AnimationTool
     public static void PlayPlayerAttack(Animator animator)
     {
         animator.SetTrigger(PlayerAttack);
+    }
+
+    public static void PlayPlayerBlock(Animator animator)
+    {
+        animator.ResetTrigger(PlayerAttack);
+        animator.SetTrigger(PlayerBlock);
     }
 
     public static void PlayPlayerDodge(Animator animator)

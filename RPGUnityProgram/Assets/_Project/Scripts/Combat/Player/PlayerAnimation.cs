@@ -7,6 +7,7 @@ public sealed class PlayerAnimation : MonoBehaviour
     private PlayerMovement movement;
     private Attack attack;
     private Health health;
+    private int meleeParryFrame = -1;
 
     private void Awake()
     {
@@ -31,6 +32,7 @@ public sealed class PlayerAnimation : MonoBehaviour
             return;
 
         attack.AttackStarted += HandleAttack;
+        attack.MeleeParried += HandleMeleeParry;
         movement.DodgeStarted += HandleDodge;
         health.Damaged += HandleHit;
         health.Died += HandleDeath;
@@ -42,7 +44,10 @@ public sealed class PlayerAnimation : MonoBehaviour
     private void OnDisable()
     {
         if (attack != null)
+        {
             attack.AttackStarted -= HandleAttack;
+            attack.MeleeParried -= HandleMeleeParry;
+        }
         if (movement != null)
             movement.DodgeStarted -= HandleDodge;
         if (health != null)
@@ -58,7 +63,17 @@ public sealed class PlayerAnimation : MonoBehaviour
             animator, movement.isActiveAndEnabled ? movement.MovementAmount : 0f);
     }
 
-    private void HandleAttack() => AnimationTool.PlayPlayerAttack(animator);
+    private void HandleAttack()
+    {
+        if (meleeParryFrame != Time.frameCount)
+            AnimationTool.PlayPlayerAttack(animator);
+    }
+
+    private void HandleMeleeParry()
+    {
+        meleeParryFrame = Time.frameCount;
+        AnimationTool.PlayPlayerBlock(animator);
+    }
     private void HandleDodge() => AnimationTool.PlayPlayerDodge(animator);
     private void HandleHit() => AnimationTool.PlayPlayerHit(animator);
 
