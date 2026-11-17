@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -67,6 +68,7 @@ public class Attack : MonoBehaviour
     private bool parryWarningFailed;
 
     public float Damage => damage;
+    public event Action AttackStarted;
     public int LastMeleeParryFacingFrame { get; private set; } = -1;
     public bool IsStaggered => Time.time < staggerEndTime;
     public bool IsCurrentSkillParried => specialSkillParried;
@@ -430,6 +432,7 @@ public class Attack : MonoBehaviour
             hitOffset = Mathf.Max(0f, skill.HitOffset);
             nextSkillAttackTimes[skillIndex] = Time.time + cooldown;
             nextSkillIndex = (skillIndex + 1) % configuredSkills.Length;
+            AttackStarted?.Invoke();
             ApplySkillDamage(skill, target, parried);
             return true;
         }
@@ -437,6 +440,7 @@ public class Attack : MonoBehaviour
         float? displayDuration = basicAttackSkill != null && basicAttackSkill.AttackType == 1
             ? GetMeleeActiveTime(basicAttackSkill)
             : (float?)null;
+        AttackStarted?.Invoke();
         ApplyAttack(damage, hitRadius, hitOffset, parried, displayDuration: displayDuration);
         return true;
     }

@@ -38,7 +38,9 @@ public class PlayerMovement : MonoBehaviour
     private bool dodgeConfigured;
 
     public event Action MobileAttackRequested;
+    public event Action DodgeStarted;
     public bool IsDodging { get; private set; }
+    public float MovementAmount { get; private set; }
 
     private void Awake()
     {
@@ -125,6 +127,7 @@ public class PlayerMovement : MonoBehaviour
         mobileAttackAction?.Disable();
         dodgeAction?.Disable();
         IsDodging = false;
+        MovementAmount = 0f;
     }
 
     private void Update()
@@ -136,6 +139,7 @@ public class PlayerMovement : MonoBehaviour
         if (health != null && health.IsDead)
         {
             IsDodging = false;
+            MovementAmount = 0f;
             return;
         }
 
@@ -143,6 +147,7 @@ public class PlayerMovement : MonoBehaviour
         if (controller == null || !controller.enabled)
         {
             IsDodging = false;
+            MovementAmount = 0f;
             return;
         }
 
@@ -195,11 +200,13 @@ public class PlayerMovement : MonoBehaviour
                 IsDodging = true;
                 dodgeElapsed = 0f;
                 nextDodgeTime = Time.time + dodgeCooldown;
+                DodgeStarted?.Invoke();
             }
         }
 
         if (IsDodging)
         {
+            MovementAmount = 0f;
             float stepTime = Mathf.Min(Time.deltaTime, dodgeDuration - dodgeElapsed);
             float stepDistance = dodgeDistance * stepTime / dodgeDuration;
             Vector3 startPosition = transform.position;
@@ -229,7 +236,13 @@ public class PlayerMovement : MonoBehaviour
         }
 
         // 执行移动
+        Vector3 positionBeforeMove = transform.position;
         controller.Move(move * moveSpeed * Time.deltaTime);
+        Vector3 displacement = transform.position - positionBeforeMove;
+        displacement.y = 0f;
+        MovementAmount = moveSpeed > 0f && Time.deltaTime > 0f
+            ? Mathf.Clamp01(displacement.magnitude / (moveSpeed * Time.deltaTime))
+            : 0f;
     }
 
     private void OnDestroy()

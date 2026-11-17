@@ -17,6 +17,7 @@ public class Health : MonoBehaviour
 
     // 死亡事件
     public event Action Died;
+    public event Action Damaged;
 
     private bool initializedFromConfig;
     private PlayerMovement playerMovement;
@@ -71,6 +72,10 @@ public class Health : MonoBehaviour
             Died?.Invoke();
 
             Debug.Log($"{gameObject.name} 已死亡");
+        }
+        else
+        {
+            Damaged?.Invoke();
         }
     }
 

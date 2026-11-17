@@ -21,6 +21,7 @@ GameObject:
   - component: {fileID: 6628730890488640694}
   - component: {fileID: 7473695238001234567}
   - component: {fileID: 8101357924680135792}
+  - component: {fileID: 3334821873642198761}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -272,6 +273,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CombatFactionMarker
   faction: 0
+--- !u!114 &3334821873642198761
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 138172803367824895}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1c749fb112bb4fd69d4aa63e881fd704, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerAnimation
 --- !u!1 &4670012172917635185
 GameObject:
   m_ObjectHideFlags: 0
@@ -326,7 +339,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4672501942270680, guid: 30f2ee1f6338c464bbbd30981b3da3f4, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -0.9
       objectReference: {fileID: 0}
     - target: {fileID: 4672501942270680, guid: 30f2ee1f6338c464bbbd30981b3da3f4, type: 3}
       propertyPath: m_LocalPosition.z
