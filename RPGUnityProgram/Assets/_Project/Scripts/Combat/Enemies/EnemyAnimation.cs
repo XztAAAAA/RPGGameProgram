@@ -85,7 +85,9 @@ public sealed class EnemyAnimation : MonoBehaviour
 
     private void HandleSkillStarted(cfg.Skill skill)
     {
-        if (skill.AttackType == 1 && skill.SkillKind == 2)
+        if (skill.AttackType == 2)
+            AnimationTool.PlayEnemySpell(animator);
+        else if (skill.AttackType == 1 && skill.SkillKind == 2)
             AnimationTool.PlayHeavyAttack(animator);
         else
             AnimationTool.PlayEnemyAttack(animator);
