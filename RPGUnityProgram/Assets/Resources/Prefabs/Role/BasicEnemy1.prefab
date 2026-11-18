@@ -392,7 +392,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1c406458db90455cbbd3555d819ed481, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyAnimation
   deathAnimationDuration: 2.7
 --- !u!1 &6888482347090650050
@@ -621,7 +621,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1824469593983728697, guid: e2ce24430419ef140a5028ef4a5a74e3, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 20
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1824469593983728697, guid: e2ce24430419ef140a5028ef4a5a74e3, type: 3}
       propertyPath: m_LocalScale.x
