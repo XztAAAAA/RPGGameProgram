@@ -35,6 +35,7 @@ public partial class Tables
     /// </summary>
     public TbSkill TbSkill {get; }
     public TbEnemy TbEnemy {get; }
+    public TbUpgrade TbUpgrade {get; }
 
     public Tables(System.Func<string, JSONNode> loader)
     {
@@ -44,6 +45,7 @@ public partial class Tables
         TbRole = new TbRole(loader("tbrole"));
         TbSkill = new TbSkill(loader("tbskill"));
         TbEnemy = new TbEnemy(loader("tbenemy"));
+        TbUpgrade = new TbUpgrade(loader("tbupgrade"));
         ResolveRef();
     }
     
@@ -55,6 +57,7 @@ public partial class Tables
         TbRole.ResolveRef(this);
         TbSkill.ResolveRef(this);
         TbEnemy.ResolveRef(this);
+        TbUpgrade.ResolveRef(this);
     }
 }
 
