@@ -96,6 +96,31 @@ public class PlayerMovement : MonoBehaviour
         rotationSpeed = Mathf.Max(0f, configuredRotationSpeed);
     }
 
+    public void ApplyUpgrade(
+        cfg.upgradeEnum effectType,
+        float value,
+        int stacks)
+    {
+        float totalValue = value * stacks;
+        switch (effectType)
+        {
+            case cfg.upgradeEnum.dodge_cooldown:
+                dodgeCooldown *= Mathf.Max(0.1f, 1f - totalValue);
+                break;
+
+            case cfg.upgradeEnum.move_speed:
+                moveSpeed *= 1f + totalValue;
+                break;
+
+            default:
+                Debug.LogError(
+                    $"PlayerMovement：不支持应用强化效果 {effectType}。",
+                    this
+                );
+                break;
+        }
+    }
+
     public void ConfigureDodge(float configuredDistance, float configuredCooldown, float configuredDuration)
     {
         dodgeConfigured = false;

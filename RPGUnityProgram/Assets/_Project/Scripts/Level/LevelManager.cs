@@ -64,6 +64,7 @@ public class LevelManager : PersistentMonoSingleton<LevelManager>
 
     public void StartNewRun(int levelId)
     {
+        PlayerUpgradeSystem.ResetRun();
         LoadLevelById(levelId);
     }
 
@@ -100,6 +101,7 @@ public class LevelManager : PersistentMonoSingleton<LevelManager>
         if (CurrentLevelId <= 0)
             CurrentLevelId = firstLevelId;
 
+        PlayerUpgradeSystem.ResetRun();
         LoadLevelById(CurrentLevelId);
     }
 
@@ -122,6 +124,7 @@ public class LevelManager : PersistentMonoSingleton<LevelManager>
             return;
         }
 
+        PlayerUpgradeSystem.ResetRun();
         isLoadingScene = true;
 
         try

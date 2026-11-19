@@ -17,12 +17,15 @@ public class CombatPanel : MonoBehaviour
     [Header("动态面板资源路径")]
     [SerializeField] private string clearPanelPath = "UI/RoomWinPanel";
     [SerializeField] private string failedPanelPath = "UI/RoomFailedPanel";
+    [SerializeField] private string upgradePanelPath = "UI/UpgradePanel";
 
     [SerializeField] private GameObject MobileControls;
     [SerializeField] private GameObject JoystickBase;
 
     private GameObject clearPanel;
     private GameObject failedPanel;
+    private GameObject upgradePanel;
+    private UpgradePanelController upgradePanelController;
 
     private RoomState lastState = (RoomState)(-1);
 
@@ -55,12 +58,24 @@ public class CombatPanel : MonoBehaviour
 
         // 动态加载并创建两个面板
         clearPanel = LoadPanel(clearPanelPath, canvas.transform);
-        clearPanel.SetActive(false);
+        if (clearPanel != null)
+            clearPanel.SetActive(false);
         failedPanel = LoadPanel(failedPanelPath, canvas.transform);
-        failedPanel.SetActive(false);
+        if (failedPanel != null)
+            failedPanel.SetActive(false);
+        upgradePanel = LoadPanel(upgradePanelPath, canvas.transform);
+        if (upgradePanel != null)
+        {
+            upgradePanelController =
+                upgradePanel.AddComponent<UpgradePanelController>();
+            upgradePanel.SetActive(false);
+        }
 
-        roomManager.onRoomCleared.AddListener(() => clearPanel.SetActive(roomManager.State == RoomState.Cleared));
-        roomManager.onRoomFailed.AddListener(() => failedPanel.SetActive(roomManager.State == RoomState.Failed));
+        if (roomManager != null)
+        {
+            roomManager.onRoomCleared.AddListener(HandleRoomCleared);
+            roomManager.onRoomFailed.AddListener(HandleRoomFailed);
+        }
 
 #if UNITY_ANDROID || UNITY_IOS
             MobileControls?.SetActive(true);
@@ -94,6 +109,70 @@ public class CombatPanel : MonoBehaviour
     {
         InitializePlayerHealthBar();
         RefreshRoomState();
+    }
+
+    private void HandleRoomCleared()
+    {
+        if (roomManager == null || roomManager.State != RoomState.Cleared)
+            return;
+
+        int currentLevel = LevelManager.Instance != null
+            ? LevelManager.Instance.CurrentLevelId
+            : 0;
+        if (!PlayerUpgradeSystem.TryRollOffers(
+                currentLevel,
+                out System.Collections.Generic.List<cfg.Upgrade> offers,
+                this))
+        {
+            return;
+        }
+
+        if (offers.Count == 0)
+        {
+            if (clearPanel != null)
+                clearPanel.SetActive(true);
+            return;
+        }
+
+        if (upgradePanelController == null)
+        {
+            Debug.LogError(
+                "CombatPanel：无法加载强化技能面板，不能继续通关流程。",
+                this
+            );
+            return;
+        }
+
+        if (clearPanel != null)
+            clearPanel.SetActive(false);
+
+        if (!upgradePanelController.ShowOffers(offers, HandleUpgradeSelected))
+        {
+            Debug.LogError(
+                "CombatPanel：强化技能候选项无法显示，不能继续通关流程。",
+                this
+            );
+        }
+    }
+
+    private bool HandleUpgradeSelected(cfg.Upgrade upgrade)
+    {
+        GameObject player = CombatTool.GetPlayer();
+        if (!PlayerUpgradeSystem.TryAcquire(upgrade, player, this))
+            return false;
+
+        if (clearPanel != null)
+            clearPanel.SetActive(true);
+        return true;
+    }
+
+    private void HandleRoomFailed()
+    {
+        if (upgradePanel != null)
+            upgradePanel.SetActive(false);
+        if (failedPanel != null)
+            failedPanel.SetActive(roomManager != null &&
+                roomManager.State == RoomState.Failed);
     }
 
     private void Update()
@@ -193,5 +272,14 @@ public class CombatPanel : MonoBehaviour
                 statusText.text = "挑战失败";
                 break;
         }
+    }
+
+    private void OnDestroy()
+    {
+        if (roomManager == null)
+            return;
+
+        roomManager.onRoomCleared.RemoveListener(HandleRoomCleared);
+        roomManager.onRoomFailed.RemoveListener(HandleRoomFailed);
     }
 }

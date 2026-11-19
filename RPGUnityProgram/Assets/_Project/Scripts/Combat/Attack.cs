@@ -56,6 +56,7 @@ public class Attack : MonoBehaviour
     private cfg.Skill executingSpecialSkill;
     private Transform specialSkillTarget;
     private float specialSkillStartTime;
+    private float parryWindowBonus;
     private float staggerEndTime;
     private bool specialSkillParried;
     private cfg.Skill activeMeleeSkill;
@@ -75,18 +76,27 @@ public class Attack : MonoBehaviour
     public int LastMeleeParryFacingFrame { get; private set; } = -1;
     public bool IsStaggered => Time.time < staggerEndTime;
     public bool IsCurrentSkillParried => specialSkillParried;
-    public bool IsParryWindowOpen
-    {
-        get
-        {
-            if (!isActiveAndEnabled || executingSpecialSkill == null || specialSkillParried)
-                return false;
+    public bool IsParryWindowOpen => IsParryWindowOpenFor(0f);
 
-            float elapsed = Time.time - specialSkillStartTime;
-            float windowStart = Mathf.Max(0f, executingSpecialSkill.StartupTime - executingSpecialSkill.TelegraphTime);
-            return executingSpecialSkill.TelegraphTime > 0f &&
-                elapsed >= windowStart && elapsed < executingSpecialSkill.StartupTime;
+    public bool IsParryWindowOpenFor(float additionalWindow)
+    {
+        if (!isActiveAndEnabled || executingSpecialSkill == null ||
+            specialSkillParried || float.IsNaN(additionalWindow) ||
+            float.IsInfinity(additionalWindow))
+        {
+            return false;
         }
+
+        float elapsed = Time.time - specialSkillStartTime;
+        float windowStart = Mathf.Max(
+            0f,
+            executingSpecialSkill.StartupTime -
+                executingSpecialSkill.TelegraphTime
+        );
+        return executingSpecialSkill.TelegraphTime > 0f &&
+            elapsed >= windowStart &&
+            elapsed < executingSpecialSkill.StartupTime +
+                Mathf.Max(0f, additionalWindow);
     }
     public bool HasConfiguredSkills =>
         configuredSkills != null && configuredSkills.Length > 0;
@@ -114,6 +124,45 @@ public class Attack : MonoBehaviour
     public void InitializeDamage(float configuredDamage)
     {
         damage = Mathf.Max(0f, configuredDamage);
+    }
+
+    public void ApplyUpgrade(
+        cfg.upgradeEnum effectType,
+        float value,
+        int stacks)
+    {
+        float totalValue = value * stacks;
+        switch (effectType)
+        {
+            case cfg.upgradeEnum.sword_damage:
+                damage *= 1f + totalValue;
+                break;
+
+            case cfg.upgradeEnum.sword_speed:
+                cooldown = Mathf.Max(
+                    0.1f,
+                    cooldown * Mathf.Max(0.1f, 1f - totalValue)
+                );
+                break;
+
+            case cfg.upgradeEnum.sword_range:
+                hitRadius = Mathf.Max(
+                    0.1f,
+                    hitRadius * (1f + totalValue)
+                );
+                break;
+
+            case cfg.upgradeEnum.parry_window:
+                parryWindowBonus += totalValue;
+                break;
+
+            default:
+                Debug.LogError(
+                    $"Attack：不支持应用强化效果 {effectType}。",
+                    this
+                );
+                break;
+        }
     }
 
     public void InitializeFromConfig(cfg.Skill skill)
@@ -257,7 +306,7 @@ public class Attack : MonoBehaviour
         Vector3 attackCenter = GetAttackCenter(attackOffset);
         foreach (Attack enemy in ActiveSpecialSkills)
         {
-            if (!enemy.IsParryWindowOpen ||
+            if (!enemy.IsParryWindowOpenFor(parryWindowBonus) ||
                 enemy.specialSkillTarget != transform)
             {
                 continue;
@@ -794,7 +843,15 @@ public class Attack : MonoBehaviour
 
         UpdateMeleeSkillHitbox();
 
-        if (IsParryWindowOpen)
+        float targetParryWindowBonus = 0f;
+        if (specialSkillTarget != null)
+        {
+            Attack targetAttack = specialSkillTarget.GetComponent<Attack>();
+            if (targetAttack != null)
+                targetParryWindowBonus = targetAttack.parryWindowBonus;
+        }
+
+        if (IsParryWindowOpenFor(targetParryWindowBonus))
         {
             if (parryWarning == null && !parryWarningFailed)
             {

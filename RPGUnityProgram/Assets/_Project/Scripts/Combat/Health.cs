@@ -7,6 +7,8 @@ public class Health : MonoBehaviour
     [SerializeField, Min(1f)]
     private float maxHealth = 100f;
 
+    private float damageReduction;
+
     public float MaxHealth => maxHealth;
     public float CurrentHealth { get; private set; }
 
@@ -34,6 +36,42 @@ public class Health : MonoBehaviour
         HealthChanged?.Invoke(CurrentHealth, MaxHealth);
     }
 
+    public void ApplyMaxHealthMultiplier(float multiplier)
+    {
+        if (float.IsNaN(multiplier) || float.IsInfinity(multiplier) ||
+            multiplier < 1f)
+        {
+            Debug.LogError(
+                $"Health：最大生命值倍率必须是大于等于 1 的有限数值：{multiplier}。",
+                this
+            );
+            return;
+        }
+
+        float previousMaxHealth = maxHealth;
+        maxHealth *= multiplier;
+        CurrentHealth = Mathf.Min(
+            maxHealth,
+            CurrentHealth + maxHealth - previousMaxHealth
+        );
+        HealthChanged?.Invoke(CurrentHealth, MaxHealth);
+    }
+
+    public void ApplyDamageReduction(float reduction)
+    {
+        if (float.IsNaN(reduction) || float.IsInfinity(reduction) ||
+            reduction < 0f || reduction >= 1f)
+        {
+            Debug.LogError(
+                $"Health：伤害减免必须是 [0, 1) 范围内的有限数值：{reduction}。",
+                this
+            );
+            return;
+        }
+
+        damageReduction = reduction;
+    }
+
     private void Awake()
     {
         playerMovement = GetComponent<PlayerMovement>();
@@ -49,6 +87,10 @@ public class Health : MonoBehaviour
     {
         if (IsDead || amount <= 0f ||
             (playerMovement != null && playerMovement.IsDodging))
+            return;
+
+        amount *= 1f - damageReduction;
+        if (amount <= 0f)
             return;
 
         CurrentHealth = Mathf.Max(

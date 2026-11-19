@@ -54,5 +54,6 @@ public sealed class PlayerConfigInitializer : MonoBehaviour
         movement.Configure(role.MoveSpeed, role.RotationSpeed);
         movement.ConfigureDodge(role.DodgeDistance, role.DodgeTime, role.DodgeDuration);
         attack.InitializeFromConfig(basicAttack);
+        PlayerUpgradeSystem.ApplyToPlayer(gameObject, this);
     }
 }
