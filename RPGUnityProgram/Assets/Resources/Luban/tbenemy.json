@@ -13,7 +13,7 @@
     "detect_range": 8,
     "lose_target_range": 12,
     "lose_target_delay": 3,
-    "attack_preference": "none"
+    "attack_preference": "melee"
   },
   {
     "enemy_id": 1002,
@@ -28,14 +28,14 @@
     "detect_range": 50,
     "lose_target_range": 55,
     "lose_target_delay": 3,
-    "attack_preference": "none"
+    "attack_preference": "ranged"
   },
   {
     "enemy_id": 1003,
     "enemy_name": "BasicEnemy3",
     "prefab_key": "BasicEnemy3",
-    "max_health": 100,
-    "move_speed": 4,
+    "max_health": 200,
+    "move_speed": 8.5,
     "rotation_speed": 720,
     "skill_ids": [
       10001,

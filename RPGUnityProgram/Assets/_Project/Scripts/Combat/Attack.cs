@@ -286,6 +286,38 @@ public class Attack : MonoBehaviour
             FindReadySkill(target) >= 0;
     }
 
+    public bool TryGetRangedSpacing(out float minDistance, out float maxDistance)
+    {
+        minDistance = 0f;
+        maxDistance = 0f;
+        if (preferredAttackType != 2 || !HasConfiguredSkills)
+            return false;
+
+        float meleeRange = 0f;
+        float rangedRange = 0f;
+        foreach (cfg.Skill skill in configuredSkills)
+        {
+            if (skill == null || float.IsNaN(skill.TriggerRange) ||
+                float.IsInfinity(skill.TriggerRange) || skill.TriggerRange <= 0f)
+                continue;
+
+            if (skill.AttackType == 1)
+                meleeRange = Mathf.Max(meleeRange, skill.TriggerRange);
+            else if (skill.AttackType == 2)
+                rangedRange = Mathf.Max(rangedRange, skill.TriggerRange);
+        }
+
+        if (rangedRange <= 0f)
+            return false;
+
+        float desiredMin = meleeRange > 0f
+            ? meleeRange * 2f
+            : Mathf.Min(4f, rangedRange * 0.2f);
+        minDistance = Mathf.Min(desiredMin, rangedRange * 0.65f);
+        maxDistance = Mathf.Min(minDistance * 1.5f, rangedRange * 0.9f);
+        return true;
+    }
+
     public bool IsSkillInRange(cfg.Skill skill, Transform target)
     {
         return skill != null &&
@@ -850,6 +882,13 @@ public class Attack : MonoBehaviour
         float targetDistance = target != null
             ? GetHorizontalDistance(target)
             : 0f;
+
+        if (preferredAttackType == 2 && target != null)
+        {
+            int meleeIndex = FindReadySkill(target, targetDistance, 1);
+            if (meleeIndex >= 0)
+                return meleeIndex;
+        }
 
         if (preferredAttackType != 0)
         {
