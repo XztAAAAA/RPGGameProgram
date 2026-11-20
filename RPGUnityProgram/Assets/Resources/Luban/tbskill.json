@@ -13,7 +13,7 @@
     "startup_time": 0.25,
     "telegraph_time": 0,
     "active_time": 0.5,
-    "recovery_time": 0.55,
+    "recovery_time": 0.1,
     "stagger_time": 0,
     "can_block_projectile": false,
     "projectile_time": 0,

@@ -4,6 +4,7 @@ public static class AnimationTool
 {
     private static readonly int MoveAmount = Animator.StringToHash("MoveAmount");
     private static readonly int Attack = Animator.StringToHash("Attack");
+    private static readonly int AttackSpeed = Animator.StringToHash("AttackSpeed");
     private static readonly int HeavyAttack = Animator.StringToHash("HeavyAttack");
     private static readonly int Spell = Animator.StringToHash("Spell");
     private static readonly int PlayerBlock = Animator.StringToHash("Block");
@@ -14,6 +15,41 @@ public static class AnimationTool
     public static void SetMovement(Animator animator, float amount)
     {
         animator.SetFloat(MoveAmount, amount);
+    }
+
+    public static AnimationClip FindClip(Animator animator, string name)
+    {
+        foreach (AnimationClip clip in animator.runtimeAnimatorController.animationClips)
+        {
+            if (clip != null && clip.name == name)
+                return clip;
+        }
+
+        Debug.LogError($"AnimationTool：动画状态机缺少 {name} 动画。", animator);
+        return null;
+    }
+
+    public static bool SetAttackSpeed(Animator animator, AnimationClip clip, float duration)
+    {
+        if (clip == null)
+            return false;
+
+        if (float.IsNaN(duration) || float.IsInfinity(duration) || duration <= 0f ||
+            float.IsNaN(clip.length) || float.IsInfinity(clip.length) || clip.length <= 0f)
+        {
+            Debug.LogError($"AnimationTool：无法根据时长 {duration} 播放攻击动画 {clip.name}。", animator);
+            return false;
+        }
+
+        float speed = clip.length / duration;
+        if (float.IsInfinity(speed) || speed <= 0f)
+        {
+            Debug.LogError($"AnimationTool：攻击动画 {clip.name} 的播放速度无效。", animator);
+            return false;
+        }
+
+        animator.SetFloat(AttackSpeed, speed);
+        return true;
     }
 
     public static void PlayAttack(Animator animator)

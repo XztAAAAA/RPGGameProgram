@@ -79,6 +79,7 @@ public class Attack : MonoBehaviour
     public int LastMeleeParryFacingFrame { get; private set; } = -1;
     public bool IsStaggered => Time.time < staggerEndTime;
     public bool IsAttacking => isExecutingSkill || Time.time < attackMovementLockEndTime;
+    public float CurrentAttackDuration { get; private set; }
     public bool IsCurrentSkillParried => specialSkillParried;
     public bool IsParryWindowOpen => IsParryWindowOpenFor(0f);
 
@@ -270,6 +271,9 @@ public class Attack : MonoBehaviour
     {
         EndSkillExecution();
         isExecutingSkill = true;
+        CurrentAttackDuration = TryGetMovementLockDuration(skill, out float duration)
+            ? duration
+            : 0f;
         SkillExecutionStarted?.Invoke(skill);
         if (skill.SkillKind != 2 || ownerFaction == null ||
             ownerFaction.Faction != CombatFaction.Enemy)
@@ -485,6 +489,7 @@ public class Attack : MonoBehaviour
 
             nextAttackTime = Time.time + cooldown;
             attackMovementLockEndTime = Mathf.Max(attackMovementLockEndTime, Time.time + duration);
+            CurrentAttackDuration = duration;
         }
         else
         {
@@ -508,6 +513,7 @@ public class Attack : MonoBehaviour
             nextSkillAttackTimes[skillIndex] = Time.time + cooldown;
             nextSkillIndex = (skillIndex + 1) % configuredSkills.Length;
             attackMovementLockEndTime = Mathf.Max(attackMovementLockEndTime, Time.time + duration);
+            CurrentAttackDuration = duration;
             StopMovingAgent();
             AttackStarted?.Invoke();
             ApplySkillDamage(skill, target);

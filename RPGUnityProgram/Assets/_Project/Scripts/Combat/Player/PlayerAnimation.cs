@@ -11,6 +11,7 @@ public sealed class PlayerAnimation : MonoBehaviour
     private PlayerMovement movement;
     private Attack attack;
     private Health health;
+    private AnimationClip attackClip;
     private float dodgeClipLength;
     private int meleeParryFrame = -1;
 
@@ -44,6 +45,7 @@ public sealed class PlayerAnimation : MonoBehaviour
             return;
         }
 
+        attackClip = AnimationTool.FindClip(animator, "Armature|Sword_Attack");
         animator.applyRootMotion = false;
     }
 
@@ -90,7 +92,8 @@ public sealed class PlayerAnimation : MonoBehaviour
 
     private void HandleAttack()
     {
-        if (meleeParryFrame != Time.frameCount)
+        if (meleeParryFrame != Time.frameCount &&
+            AnimationTool.SetAttackSpeed(animator, attackClip, attack.CurrentAttackDuration))
             AnimationTool.PlayAttack(animator);
     }
 

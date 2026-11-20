@@ -13,6 +13,9 @@ public sealed class EnemyAnimation : MonoBehaviour
     private Attack attack;
     private Health health;
     private BehaviorGraphAgent behaviorAgent;
+    private AnimationClip attackClip;
+    private AnimationClip heavyAttackClip;
+    private AnimationClip spellClip;
 
     public float DeathAnimationDuration => deathAnimationDuration;
 
@@ -39,6 +42,9 @@ public sealed class EnemyAnimation : MonoBehaviour
             return;
         }
 
+        attackClip = AnimationTool.FindClip(animator, "Armature|Sword_Attack");
+        heavyAttackClip = AnimationTool.FindClip(animator, "Armature|Sword_Heavy_Combo");
+        spellClip = AnimationTool.FindClip(animator, "Armature|Spell_Simple_Shoot");
         animator.applyRootMotion = false;
     }
 
@@ -81,10 +87,22 @@ public sealed class EnemyAnimation : MonoBehaviour
         AnimationTool.SetMovement(animator, amount);
     }
 
-    private void HandleAttack() => AnimationTool.PlayEnemyAttack(animator);
+    private void HandleAttack()
+    {
+        if (AnimationTool.SetAttackSpeed(animator, attackClip, attack.CurrentAttackDuration))
+            AnimationTool.PlayEnemyAttack(animator);
+    }
 
     private void HandleSkillStarted(cfg.Skill skill)
     {
+        AnimationClip clip = skill.AttackType == 2
+            ? spellClip
+            : skill.AttackType == 1 && skill.SkillKind == 2
+                ? heavyAttackClip
+                : attackClip;
+        if (!AnimationTool.SetAttackSpeed(animator, clip, attack.CurrentAttackDuration))
+            return;
+
         if (skill.AttackType == 2)
             AnimationTool.PlayEnemySpell(animator);
         else if (skill.AttackType == 1 && skill.SkillKind == 2)
