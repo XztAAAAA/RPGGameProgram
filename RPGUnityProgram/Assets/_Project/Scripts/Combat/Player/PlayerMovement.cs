@@ -41,6 +41,7 @@ public class PlayerMovement : MonoBehaviour
     public event Action DodgeStarted;
     public bool IsDodging { get; private set; }
     public float MovementAmount { get; private set; }
+    public float MovementSpeed { get; private set; }
     public float DodgeDuration => dodgeDuration;
 
     private void Awake()
@@ -154,10 +155,12 @@ public class PlayerMovement : MonoBehaviour
         dodgeAction?.Disable();
         IsDodging = false;
         MovementAmount = 0f;
+        MovementSpeed = 0f;
     }
 
     private void Update()
     {
+        MovementSpeed = 0f;
         if (Time.timeScale <= 0f)
             return;
 
@@ -272,8 +275,9 @@ public class PlayerMovement : MonoBehaviour
         controller.Move(move * moveSpeed * Time.deltaTime);
         Vector3 displacement = transform.position - positionBeforeMove;
         displacement.y = 0f;
+        MovementSpeed = Time.deltaTime > 0f ? displacement.magnitude / Time.deltaTime : 0f;
         MovementAmount = moveSpeed > 0f && Time.deltaTime > 0f
-            ? Mathf.Clamp01(displacement.magnitude / (moveSpeed * Time.deltaTime))
+            ? Mathf.Clamp01(MovementSpeed / moveSpeed)
             : 0f;
     }
 

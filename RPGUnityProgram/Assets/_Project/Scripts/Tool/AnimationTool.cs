@@ -2,7 +2,13 @@ using UnityEngine;
 
 public static class AnimationTool
 {
+    // Estimated world speeds for 1x playback of the shared locomotion clips.
+    private const float WalkReferenceSpeed = 2f;
+    private const float JogReferenceSpeed = 4f;
+
     private static readonly int MoveAmount = Animator.StringToHash("MoveAmount");
+    private static readonly int WalkSpeed = Animator.StringToHash("WalkSpeed");
+    private static readonly int JogSpeed = Animator.StringToHash("JogSpeed");
     private static readonly int Attack = Animator.StringToHash("Attack");
     private static readonly int AttackSpeed = Animator.StringToHash("AttackSpeed");
     private static readonly int HeavyAttack = Animator.StringToHash("HeavyAttack");
@@ -12,9 +18,11 @@ public static class AnimationTool
     private static readonly int Hit = Animator.StringToHash("Hit");
     private static readonly int Dead = Animator.StringToHash("Dead");
 
-    public static void SetMovement(Animator animator, float amount)
+    public static void SetMovement(Animator animator, float amount, float speed)
     {
         animator.SetFloat(MoveAmount, amount);
+        animator.SetFloat(WalkSpeed, speed / WalkReferenceSpeed);
+        animator.SetFloat(JogSpeed, speed / JogReferenceSpeed);
     }
 
     public static AnimationClip FindClip(Animator animator, string name)

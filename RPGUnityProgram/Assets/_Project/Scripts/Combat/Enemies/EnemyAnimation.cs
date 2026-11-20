@@ -84,7 +84,9 @@ public sealed class EnemyAnimation : MonoBehaviour
         float amount = agent.enabled && agent.isOnNavMesh && agent.speed > 0f
             ? Mathf.Clamp01(agent.velocity.magnitude / agent.speed)
             : 0f;
-        AnimationTool.SetMovement(animator, amount);
+        Vector3 velocity = agent.enabled && agent.isOnNavMesh ? agent.velocity : Vector3.zero;
+        velocity.y = 0f;
+        AnimationTool.SetMovement(animator, amount, velocity.magnitude);
     }
 
     private void HandleAttack()

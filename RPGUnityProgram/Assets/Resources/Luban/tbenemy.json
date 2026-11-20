@@ -35,7 +35,7 @@
     "enemy_name": "BasicEnemy3",
     "prefab_key": "BasicEnemy3",
     "max_health": 200,
-    "move_speed": 8.5,
+    "move_speed": 6.5,
     "rotation_speed": 720,
     "skill_ids": [
       10001,

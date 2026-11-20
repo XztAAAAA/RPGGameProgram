@@ -83,7 +83,9 @@ public sealed class PlayerAnimation : MonoBehaviour
     private void LateUpdate()
     {
         AnimationTool.SetMovement(
-            animator, movement.isActiveAndEnabled ? movement.MovementAmount : 0f);
+            animator,
+            movement.isActiveAndEnabled ? movement.MovementAmount : 0f,
+            movement.isActiveAndEnabled ? movement.MovementSpeed : 0f);
         bool isDodging = movement.isActiveAndEnabled && movement.IsDodging;
         animator.SetBool(Dodging, isDodging);
         if (!isDodging)
