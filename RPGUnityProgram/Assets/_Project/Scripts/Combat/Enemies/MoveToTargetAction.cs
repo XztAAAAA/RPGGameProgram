@@ -52,7 +52,7 @@ public partial class MoveToTargetAction : Action
             return Status.Running;
         }
 
-        if (attack != null && attack.IsStaggered)
+        if (attack != null && (attack.IsStaggered || attack.IsAttacking))
         {
             agent.isStopped = true;
             hasDestination = false;

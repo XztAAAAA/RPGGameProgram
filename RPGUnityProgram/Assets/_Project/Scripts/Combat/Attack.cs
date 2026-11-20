@@ -42,7 +42,10 @@ public class Attack : MonoBehaviour
     private readonly HashSet<Health> meleeSkillHitTargets = new HashSet<Health>();
     private Collider[] hitBuffer = new Collider[16];
     private CombatFactionMarker ownerFaction;
+    private PlayerMovement playerMovement;
     private float nextAttackTime;
+    private float attackMovementLockEndTime;
+    private bool isExecutingSkill;
     private cfg.Skill basicAttackSkill;
     private cfg.Skill[] configuredSkills;
     private float[] nextSkillAttackTimes;
@@ -75,6 +78,7 @@ public class Attack : MonoBehaviour
     public event Action SkillParried;
     public int LastMeleeParryFacingFrame { get; private set; } = -1;
     public bool IsStaggered => Time.time < staggerEndTime;
+    public bool IsAttacking => isExecutingSkill || Time.time < attackMovementLockEndTime;
     public bool IsCurrentSkillParried => specialSkillParried;
     public bool IsParryWindowOpen => IsParryWindowOpenFor(0f);
 
@@ -265,6 +269,7 @@ public class Attack : MonoBehaviour
     public void BeginSkillExecution(cfg.Skill skill, Transform target, float startTime)
     {
         EndSkillExecution();
+        isExecutingSkill = true;
         SkillExecutionStarted?.Invoke(skill);
         if (skill.SkillKind != 2 || ownerFaction == null ||
             ownerFaction.Faction != CombatFaction.Enemy)
@@ -289,6 +294,7 @@ public class Attack : MonoBehaviour
 
     public void EndSkillExecution()
     {
+        isExecutingSkill = false;
         EndMeleeSkillHitbox();
         ActiveSpecialSkills.Remove(this);
         executingSpecialSkill = null;
@@ -438,6 +444,7 @@ public class Attack : MonoBehaviour
     private void Awake()
     {
         ownerFaction = GetComponent<CombatFactionMarker>();
+        playerMovement = GetComponent<PlayerMovement>();
     }
 
     public bool TryParry()
@@ -460,16 +467,24 @@ public class Attack : MonoBehaviour
     /// </summary>
     public bool TryAttack(Transform target = null)
     {
-        if (!isActiveAndEnabled || ownerFaction == null || IsStaggered || Time.timeScale <= 0f)
+        if (!isActiveAndEnabled || ownerFaction == null || IsStaggered || Time.timeScale <= 0f ||
+            (playerMovement != null && playerMovement.IsDodging))
             return false;
 
         int skillIndex = configuredSkills != null ? FindReadySkill(target) : -1;
+        cfg.Skill attackSkill = configuredSkills != null && skillIndex >= 0
+            ? configuredSkills[skillIndex]
+            : basicAttackSkill;
         if (configuredSkills == null)
         {
             if (Time.time < nextAttackTime)
                 return false;
 
+            if (!TryGetMovementLockDuration(attackSkill, out float duration))
+                return false;
+
             nextAttackTime = Time.time + cooldown;
+            attackMovementLockEndTime = Mathf.Max(attackMovementLockEndTime, Time.time + duration);
         }
         else
         {
@@ -483,12 +498,17 @@ public class Attack : MonoBehaviour
                 return false;
             }
 
+            if (!TryGetMovementLockDuration(skill, out float duration))
+                return false;
+
             damage = Mathf.Max(0f, skill.Damage);
             cooldown = Mathf.Max(0.1f, skill.Cooldown);
             hitRadius = Mathf.Max(0.1f, skill.HitRadius);
             hitOffset = Mathf.Max(0f, skill.HitOffset);
             nextSkillAttackTimes[skillIndex] = Time.time + cooldown;
             nextSkillIndex = (skillIndex + 1) % configuredSkills.Length;
+            attackMovementLockEndTime = Mathf.Max(attackMovementLockEndTime, Time.time + duration);
+            StopMovingAgent();
             AttackStarted?.Invoke();
             ApplySkillDamage(skill, target);
             return true;
@@ -497,9 +517,35 @@ public class Attack : MonoBehaviour
         float? displayDuration = basicAttackSkill != null && basicAttackSkill.AttackType == 1
             ? GetMeleeActiveTime(basicAttackSkill)
             : (float?)null;
+        StopMovingAgent();
         AttackStarted?.Invoke();
         ApplyAttack(damage, hitRadius, hitOffset, false, displayDuration: displayDuration);
         return true;
+    }
+
+    private bool TryGetMovementLockDuration(cfg.Skill skill, out float duration)
+    {
+        duration = skill != null
+            ? skill.StartupTime + (skill.SkillKind == 2 ? skill.TelegraphTime : 0f) +
+                skill.ActiveTime + skill.RecoveryTime
+            : cooldown;
+
+        if (float.IsNaN(duration) || float.IsInfinity(duration) || duration < 0f ||
+            (skill != null && (skill.StartupTime < 0f || skill.ActiveTime < 0f ||
+                skill.RecoveryTime < 0f || (skill.SkillKind == 2 && skill.TelegraphTime < 0f))))
+        {
+            Debug.LogError("Attack：攻击阶段的时长必须是非负有限数值。", this);
+            return false;
+        }
+
+        return true;
+    }
+
+    private void StopMovingAgent()
+    {
+        UnityEngine.AI.NavMeshAgent agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
+        if (agent != null && agent.enabled && agent.isOnNavMesh)
+            agent.isStopped = true;
     }
 
     public void ApplySkillDamage(
@@ -884,6 +930,7 @@ public class Attack : MonoBehaviour
             StopCoroutine(parryHitStop);
         EndParryHitStop();
         EndSkillExecution();
+        attackMovementLockEndTime = 0f;
         HideAttackRange();
     }
 

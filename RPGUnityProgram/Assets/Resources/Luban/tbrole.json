@@ -7,7 +7,7 @@
     "move_speed": 8,
     "rotation_speed": 720,
     "basic_attack_skill_id": 20001,
-    "dodge_distance": 4,
+    "dodge_distance": 5,
     "dodge_time": 1,
     "dodge_duration": 0.5
   }

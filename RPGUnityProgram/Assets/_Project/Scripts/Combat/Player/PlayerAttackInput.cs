@@ -5,6 +5,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.OnScreen;
 
 [RequireComponent(typeof(Attack))]
+[DefaultExecutionOrder(-50)]
 public class PlayerAttackInput : MonoBehaviour
 {
     private const string ParryGamepadControl = "<Gamepad>/buttonNorth";

@@ -187,6 +187,12 @@ public class PlayerMovement : MonoBehaviour
                 return;
         }
 
+        if (attack != null && attack.isActiveAndEnabled && attack.IsAttacking)
+        {
+            MovementAmount = 0f;
+            return;
+        }
+
         Vector2 input = moveAction != null
             ? moveAction.ReadValue<Vector2>()
             : Vector2.zero;
