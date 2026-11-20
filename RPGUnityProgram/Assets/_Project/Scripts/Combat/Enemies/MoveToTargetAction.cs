@@ -19,6 +19,8 @@ public partial class MoveToTargetAction : Action
     private bool hasDestination;
     private NavMeshPath spacingPath;
     private int orbitDirection;
+    private float spacingDistanceFactor;
+    private float nextSpacingVariation;
     private bool spacingPathWarningLogged;
     protected override Status OnStart()
     {
@@ -36,7 +38,7 @@ public partial class MoveToTargetAction : Action
         hasDestination = false;
         if (spacingPath == null)
             spacingPath = new NavMeshPath();
-        orbitDirection = (self.GetHashCode() & 2) == 0 ? 1 : -1;
+        nextSpacingVariation = 0f;
         spacingPathWarningLogged = false;
 
         return Status.Running;
@@ -149,6 +151,13 @@ public partial class MoveToTargetAction : Action
             return;
 
         nextPathUpdate = Time.time + 0.4f;
+        if (Time.time >= nextSpacingVariation)
+        {
+            orbitDirection = UnityEngine.Random.Range(0, 2) == 0 ? -1 : 1;
+            spacingDistanceFactor = UnityEngine.Random.Range(0.2f, 0.8f);
+            nextSpacingVariation = Time.time + UnityEngine.Random.Range(2f, 4f);
+        }
+
         Vector3 away = self.position - target.position;
         away.y = 0f;
         float distance = away.magnitude;
@@ -185,10 +194,23 @@ public partial class MoveToTargetAction : Action
         float step = Mathf.Max(2f, agent.stoppingDistance + 1f);
         for (int i = 0; i < (retreat ? 3 : 2); i++)
         {
-            Vector3 moveDirection = retreat
-                ? (i == 0 ? away : (away + tangent * (i == 1 ? 1f : -1f)).normalized)
-                : tangent * (i == 0 ? 1f : -1f);
-            Vector3 desiredPosition = self.position + moveDirection * step;
+            Vector3 desiredPosition;
+            if (retreat)
+            {
+                Vector3 moveDirection = i == 0
+                    ? away
+                    : (away + tangent * (i == 1 ? 1f : -1f)).normalized;
+                desiredPosition = self.position + moveDirection * step;
+            }
+            else
+            {
+                Vector3 orbitOffset = (away + tangent * (i == 0 ? 1f : -1f) *
+                    (step / Mathf.Max(distance, 0.001f))).normalized;
+                float desiredDistance = Mathf.Lerp(minDistance, maxDistance, spacingDistanceFactor);
+                desiredPosition = target.position + orbitOffset * desiredDistance;
+                desiredPosition.y = self.position.y;
+            }
+
             if (!NavMesh.SamplePosition(desiredPosition, out NavMeshHit hit, 1f, agent.areaMask))
                 continue;
 
@@ -200,8 +222,9 @@ public partial class MoveToTargetAction : Action
 
             Vector3 candidateOffset = hit.position - target.position;
             candidateOffset.y = 0f;
-            if ((retreat && candidateOffset.magnitude <= distance + 0.1f) ||
-                (!retreat && candidateOffset.magnitude < minDistance))
+            float candidateDistance = candidateOffset.magnitude;
+            if ((retreat && candidateDistance <= distance + 0.1f) ||
+                (!retreat && (candidateDistance < minDistance || candidateDistance > maxDistance)))
                 continue;
 
             if (!agent.CalculatePath(hit.position, spacingPath) ||
