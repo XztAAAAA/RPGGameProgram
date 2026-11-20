@@ -41,6 +41,7 @@ public class PlayerMovement : MonoBehaviour
     public event Action DodgeStarted;
     public bool IsDodging { get; private set; }
     public float MovementAmount { get; private set; }
+    public float DodgeDuration => dodgeDuration;
 
     private void Awake()
     {

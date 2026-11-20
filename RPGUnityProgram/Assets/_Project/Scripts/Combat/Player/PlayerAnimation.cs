@@ -3,10 +3,15 @@ using UnityEngine;
 [RequireComponent(typeof(PlayerMovement), typeof(Attack), typeof(Health))]
 public sealed class PlayerAnimation : MonoBehaviour
 {
+    private static readonly int DodgeSpeed = Animator.StringToHash("DodgeSpeed");
+    private static readonly int Dodging = Animator.StringToHash("Dodging");
+    private static readonly int Dodge = Animator.StringToHash("Dodge");
+
     private Animator animator;
     private PlayerMovement movement;
     private Attack attack;
     private Health health;
+    private float dodgeClipLength;
     private int meleeParryFrame = -1;
 
     private void Awake()
@@ -19,6 +24,22 @@ public sealed class PlayerAnimation : MonoBehaviour
         if (animator == null || animator.runtimeAnimatorController == null)
         {
             Debug.LogError("PlayerAnimation：玩家模型缺少 Animator 或动画状态机。", this);
+            enabled = false;
+            return;
+        }
+
+        foreach (AnimationClip clip in animator.runtimeAnimatorController.animationClips)
+        {
+            if (clip.name == "Armature|Roll")
+            {
+                dodgeClipLength = clip.length;
+                break;
+            }
+        }
+
+        if (dodgeClipLength <= 0f)
+        {
+            Debug.LogError("PlayerAnimation：动画状态机缺少有效的 Armature|Roll 动画。", this);
             enabled = false;
             return;
         }
@@ -61,6 +82,10 @@ public sealed class PlayerAnimation : MonoBehaviour
     {
         AnimationTool.SetMovement(
             animator, movement.isActiveAndEnabled ? movement.MovementAmount : 0f);
+        bool isDodging = movement.isActiveAndEnabled && movement.IsDodging;
+        animator.SetBool(Dodging, isDodging);
+        if (!isDodging)
+            animator.ResetTrigger(Dodge);
     }
 
     private void HandleAttack()
@@ -74,7 +99,12 @@ public sealed class PlayerAnimation : MonoBehaviour
         meleeParryFrame = Time.frameCount;
         AnimationTool.PlayPlayerBlock(animator);
     }
-    private void HandleDodge() => AnimationTool.PlayPlayerDodge(animator);
+    private void HandleDodge()
+    {
+        animator.SetFloat(DodgeSpeed, dodgeClipLength / movement.DodgeDuration);
+        animator.SetBool(Dodging, true);
+        AnimationTool.PlayPlayerDodge(animator);
+    }
     private void HandleHit()
     {
         if (!movement.IsDodging)

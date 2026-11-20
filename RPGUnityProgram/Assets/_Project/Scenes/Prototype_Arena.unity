@@ -427,6 +427,7 @@ MonoBehaviour:
   statusText: {fileID: 2126059675}
   clearPanelPath: UI/RoomWinPanel
   failedPanelPath: UI/RoomFailedPanel
+  upgradePanelPath: UI/UpgradePanel
   MobileControls: {fileID: 1978740615}
   JoystickBase: {fileID: 216458949}
 --- !u!1 &646112397
