@@ -12,7 +12,8 @@
     ],
     "detect_range": 8,
     "lose_target_range": 12,
-    "lose_target_delay": 3
+    "lose_target_delay": 3,
+    "attack_preference": "none"
   },
   {
     "enemy_id": 1002,
@@ -26,7 +27,8 @@
     ],
     "detect_range": 50,
     "lose_target_range": 55,
-    "lose_target_delay": 3
+    "lose_target_delay": 3,
+    "attack_preference": "none"
   },
   {
     "enemy_id": 1003,
@@ -41,6 +43,7 @@
     ],
     "detect_range": 50,
     "lose_target_range": 55,
-    "lose_target_delay": 3
+    "lose_target_delay": 3,
+    "attack_preference": "melee"
   }
 ]

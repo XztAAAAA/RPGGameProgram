@@ -85,11 +85,13 @@ public partial class MoveToTargetAction : Action
 
         direction.y = 0f;
 
-        // 进入攻击距离后，让行为树重新选择攻击分支
-        bool targetWithinAttackRange = attack != null &&
-            attack.HasConfiguredSkills
-                ? attack.HasSkillInRange(target.transform)
-                : direction.sqrMagnitude <= range * range;
+        bool targetWithinAttackRange = direction.sqrMagnitude <= range * range;
+        if (attack != null && attack.HasConfiguredSkills)
+        {
+            targetWithinAttackRange = attack.ShouldChaseForMelee(target.transform)
+                ? attack.HasReadySkillInRange(target.transform)
+                : attack.HasSkillInRange(target.transform);
+        }
 
         if (targetWithinAttackRange)
         {

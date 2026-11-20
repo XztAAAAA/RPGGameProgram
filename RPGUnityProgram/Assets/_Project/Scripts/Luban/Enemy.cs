@@ -27,6 +27,7 @@ public sealed partial class Enemy : Luban.BeanBase
         { if(!_buf["detect_range"].IsNumber) { throw new SerializationException(); }  DetectRange = _buf["detect_range"]; }
         { if(!_buf["lose_target_range"].IsNumber) { throw new SerializationException(); }  LoseTargetRange = _buf["lose_target_range"]; }
         { if(!_buf["lose_target_delay"].IsNumber) { throw new SerializationException(); }  LoseTargetDelay = _buf["lose_target_delay"]; }
+        { if(!_buf["attack_preference"].IsString) { throw new SerializationException(); }  AttackPreference = _buf["attack_preference"]; }
     }
 
     public static Enemy DeserializeEnemy(JSONNode _buf)
@@ -44,6 +45,7 @@ public sealed partial class Enemy : Luban.BeanBase
     public readonly float DetectRange;
     public readonly float LoseTargetRange;
     public readonly float LoseTargetDelay;
+    public readonly string AttackPreference;
    
     public const int __ID__ = 67100520;
     public override int GetTypeId() => __ID__;
@@ -65,6 +67,7 @@ public sealed partial class Enemy : Luban.BeanBase
         + "detectRange:" + DetectRange + ","
         + "loseTargetRange:" + LoseTargetRange + ","
         + "loseTargetDelay:" + LoseTargetDelay + ","
+        + "attackPreference:" + AttackPreference + ","
         + "}";
     }
 }

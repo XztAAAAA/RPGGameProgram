@@ -65,7 +65,10 @@ public partial class SelectAvailableSkillAction : Action
         if (attack.SelectAvailableSkill(target.transform))
             return Status.Success;
 
-        // 已经进入技能范围，但技能全部冷却
+        if (attack.ShouldChaseForMelee(target.transform))
+            return Status.Failure;
+
+        // 已经进入合适的技能范围，但技能全部冷却
         return Status.Running;
     }
 

@@ -122,7 +122,11 @@ public sealed class EnemySpawnService
                     continue;
                 }
 
-                combatant.InitializeFromConfig(enemyConfig, skills);
+                if (!combatant.InitializeFromConfig(enemyConfig, skills))
+                {
+                    UnityEngine.Object.Destroy(enemy);
+                    continue;
+                }
                 health.InitializeFromConfig(enemyConfig.MaxHealth);
                 agent.speed = Mathf.Max(0.1f, enemyConfig.MoveSpeed);
                 spawnedCount++;

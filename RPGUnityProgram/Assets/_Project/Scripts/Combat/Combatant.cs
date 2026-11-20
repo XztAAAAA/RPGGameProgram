@@ -25,12 +25,12 @@ public class Combatant : MonoBehaviour
             healthBar.Initialize(health);
     }
 
-    public void InitializeFromConfig(cfg.Enemy enemy, cfg.Skill[] skills)
+    public bool InitializeFromConfig(cfg.Enemy enemy, cfg.Skill[] skills)
     {
         if (enemy == null)
         {
             Debug.LogError("Combatant：敌人配置为空，无法初始化。", this);
-            return;
+            return false;
         }
 
         enemyId = enemy.EnemyId;
@@ -47,8 +47,11 @@ public class Combatant : MonoBehaviour
                 $"{name}：敌人 Prefab 必须包含 Health、NavMeshAgent 和 Attack 组件。",
                 this
             );
-            return;
+            return false;
         }
+
+        if (!attack.ConfigureSkillPreference(enemy.AttackPreference))
+            return false;
 
         health.InitializeFromConfig(enemy.MaxHealth);
         agent.speed = Mathf.Max(0.1f, enemy.MoveSpeed);
@@ -64,6 +67,8 @@ public class Combatant : MonoBehaviour
                     attackRange = Mathf.Max(attackRange, skill.TriggerRange);
             }
         }
+
+        return true;
     }
 
     private void Start()

@@ -50,6 +50,8 @@ public class Attack : MonoBehaviour
     private cfg.Skill[] configuredSkills;
     private float[] nextSkillAttackTimes;
     private int nextSkillIndex;
+    private int preferredAttackType;
+    private bool hasMeleeAndRangedSkills;
     private int selectedSkillIndex = -1;
     private LineRenderer[] rangeLines;
     private Material rangeMaterial;
@@ -179,6 +181,8 @@ public class Attack : MonoBehaviour
         }
 
         configuredSkills = null;
+        hasMeleeAndRangedSkills = false;
+        preferredAttackType = 0;
         basicAttackSkill = skill;
         nextSkillAttackTimes = null;
         selectedSkillIndex = -1;
@@ -201,6 +205,35 @@ public class Attack : MonoBehaviour
         nextSkillAttackTimes = new float[skills.Length];
         nextSkillIndex = 0;
         selectedSkillIndex = -1;
+        bool hasMelee = false;
+        bool hasRanged = false;
+        foreach (cfg.Skill skill in skills)
+        {
+            if (skill == null)
+                continue;
+            hasMelee |= skill.AttackType == 1;
+            hasRanged |= skill.AttackType == 2;
+        }
+        hasMeleeAndRangedSkills = hasMelee && hasRanged;
+    }
+
+    public bool ConfigureSkillPreference(string preference)
+    {
+        switch (preference)
+        {
+            case "none":
+                preferredAttackType = 0;
+                return true;
+            case "melee":
+                preferredAttackType = 1;
+                return true;
+            case "ranged":
+                preferredAttackType = 2;
+                return true;
+            default:
+                Debug.LogError($"Attack：无效的攻击偏好 '{preference}'，请使用 none、melee 或 ranged。", this);
+                return false;
+        }
     }
 
     public bool SelectAvailableSkill(Transform target)
@@ -229,6 +262,28 @@ public class Attack : MonoBehaviour
         }
 
         return false;
+    }
+
+    public bool ShouldChaseForMelee(Transform target)
+    {
+        if (!hasMeleeAndRangedSkills || target == null)
+            return false;
+
+        float distance = GetHorizontalDistance(target);
+        foreach (cfg.Skill skill in configuredSkills)
+        {
+            if (skill != null && skill.AttackType == 1 && distance <= skill.TriggerRange)
+                return false;
+        }
+
+        return true;
+    }
+
+    public bool HasReadySkillInRange(Transform target)
+    {
+        return isActiveAndEnabled && !IsStaggered && target != null &&
+            HasConfiguredSkills && nextSkillAttackTimes != null &&
+            FindReadySkill(target) >= 0;
     }
 
     public bool IsSkillInRange(cfg.Skill skill, Transform target)
@@ -796,11 +851,24 @@ public class Attack : MonoBehaviour
             ? GetHorizontalDistance(target)
             : 0f;
 
+        if (preferredAttackType != 0)
+        {
+            int preferredIndex = FindReadySkill(target, targetDistance, preferredAttackType);
+            if (preferredIndex >= 0)
+                return preferredIndex;
+        }
+
+        return FindReadySkill(target, targetDistance, 0);
+    }
+
+    private int FindReadySkill(Transform target, float targetDistance, int attackType)
+    {
         for (int offset = 0; offset < configuredSkills.Length; offset++)
         {
             int index = (nextSkillIndex + offset) % configuredSkills.Length;
             cfg.Skill skill = configuredSkills[index];
             if (skill == null ||
+                (attackType != 0 && skill.AttackType != attackType) ||
                 Time.time < nextSkillAttackTimes[index] ||
                 (target != null && targetDistance > skill.TriggerRange))
             {
