@@ -79,6 +79,7 @@ public class Attack : MonoBehaviour
     public event Action<cfg.Skill> SkillExecutionStarted;
     public event Action SkillParried;
     public int LastMeleeParryFacingFrame { get; private set; } = -1;
+    public int LastAttackFacingFrame { get; private set; } = -1;
     public bool IsStaggered => Time.time < staggerEndTime;
     public bool IsAttacking => isExecutingSkill || Time.time < attackMovementLockEndTime;
     public float CurrentAttackDuration { get; private set; }
@@ -605,6 +606,7 @@ public class Attack : MonoBehaviour
             attackMovementLockEndTime = Mathf.Max(attackMovementLockEndTime, Time.time + duration);
             CurrentAttackDuration = duration;
             StopMovingAgent();
+            FaceNearestEnemy();
             AttackStarted?.Invoke();
             ApplySkillDamage(skill, target);
             return true;
@@ -614,9 +616,44 @@ public class Attack : MonoBehaviour
             ? GetMeleeActiveTime(basicAttackSkill)
             : (float?)null;
         StopMovingAgent();
+        FaceNearestEnemy();
         AttackStarted?.Invoke();
         ApplyAttack(damage, hitRadius, hitOffset, false, displayDuration: displayDuration);
         return true;
+    }
+
+    private void FaceNearestEnemy()
+    {
+        if (ownerFaction.Faction != CombatFaction.Player)
+            return;
+
+        Health[] candidates = FindObjectsByType<Health>();
+        float nearestDistanceSquared = float.PositiveInfinity;
+        Vector3 nearestDirection = Vector3.zero;
+        foreach (Health candidate in candidates)
+        {
+            if (candidate == null || candidate.IsDead || !candidate.gameObject.activeInHierarchy)
+                continue;
+
+            CombatFactionMarker faction = candidate.GetComponentInParent<CombatFactionMarker>();
+            if (faction == null || faction.Faction != CombatFaction.Enemy)
+                continue;
+
+            Vector3 direction = candidate.transform.position - transform.position;
+            direction.y = 0f;
+            float distanceSquared = direction.sqrMagnitude;
+            if (distanceSquared < nearestDistanceSquared)
+            {
+                nearestDistanceSquared = distanceSquared;
+                nearestDirection = direction;
+            }
+        }
+
+        if (nearestDirection.sqrMagnitude <= 0.000001f)
+            return;
+
+        transform.rotation = Quaternion.LookRotation(nearestDirection);
+        LastAttackFacingFrame = Time.frameCount;
     }
 
     private bool TryGetMovementLockDuration(cfg.Skill skill, out float duration)

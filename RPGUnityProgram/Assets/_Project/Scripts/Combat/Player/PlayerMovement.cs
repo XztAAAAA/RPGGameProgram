@@ -265,7 +265,9 @@ public class PlayerMovement : MonoBehaviour
 
         // 让角色朝移动方向转身
         if (move.sqrMagnitude > 0.001f &&
-            (attack == null || attack.LastMeleeParryFacingFrame != Time.frameCount))
+            (attack == null ||
+                (attack.LastMeleeParryFacingFrame != Time.frameCount &&
+                    attack.LastAttackFacingFrame != Time.frameCount)))
         {
             Quaternion targetRotation = Quaternion.LookRotation(move);
             transform.rotation = Quaternion.RotateTowards(
