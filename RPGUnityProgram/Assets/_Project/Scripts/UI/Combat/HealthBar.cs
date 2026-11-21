@@ -1,13 +1,18 @@
 using UnityEngine;
 using UnityEngine.UI;
 
+[DefaultExecutionOrder(105)]
 public class HealthBar : MonoBehaviour
 {
+    private const float EnemyScreenGap = 0.1f;
+
     [Header("UI 组件")]
     [SerializeField] private Slider slider;
 
     private Health targetHealth;
     private bool isSubscribed;
+    private CombatOverlayPositioning enemyPositioning;
+    private RectTransform enemyRect;
 
     private void Awake()
     {
@@ -44,6 +49,8 @@ public class HealthBar : MonoBehaviour
         Unsubscribe();
 
         targetHealth = health;
+        enemyPositioning = null;
+        enemyRect = null;
 
         if (slider == null)
             slider = GetComponent<Slider>();
@@ -63,6 +70,18 @@ public class HealthBar : MonoBehaviour
         slider.minValue = 0f;
         slider.maxValue = 1f;
 
+        CombatFactionMarker faction = targetHealth.GetComponentInParent<CombatFactionMarker>();
+        Canvas canvas = GetComponentInParent<Canvas>();
+        if (faction != null && faction.Faction == CombatFaction.Enemy &&
+            canvas != null && canvas.renderMode == RenderMode.WorldSpace)
+        {
+            enemyRect = transform as RectTransform;
+            if (enemyRect == null)
+                Debug.LogError("HealthBar：敌人血条缺少 RectTransform，无法调整位置。", this);
+            else
+                enemyPositioning = new CombatOverlayPositioning(targetHealth.transform);
+        }
+
         // 立即刷新，避免开场血条显示错误
         Refresh(
             targetHealth.CurrentHealth,
@@ -70,6 +89,16 @@ public class HealthBar : MonoBehaviour
         );
 
         Subscribe();
+    }
+
+    private void LateUpdate()
+    {
+        if (enemyPositioning == null)
+            return;
+
+        Camera camera = Camera.main;
+        float top = enemyPositioning.GetModelTop(camera);
+        enemyPositioning.PlaceAbove(enemyRect, camera, top, EnemyScreenGap);
     }
 
     private void Subscribe()

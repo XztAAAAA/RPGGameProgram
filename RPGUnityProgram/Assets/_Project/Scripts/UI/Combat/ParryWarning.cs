@@ -2,8 +2,16 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public static class ParryWarning
+[DefaultExecutionOrder(110)]
+public sealed class ParryWarning : MonoBehaviour
 {
+    private const float ScreenGap = 0.15f;
+
+    private CombatOverlayPositioning positioning;
+    private RectTransform healthBar;
+    private RectTransform warningRect;
+    private readonly Vector3[] corners = new Vector3[4];
+
     public static GameObject Create(Transform owner)
     {
         TMP_FontAsset font = Resources.Load<TMP_FontAsset>("Fonts/Source/NotoSansSC-VariableFont_wght SDF");
@@ -19,17 +27,19 @@ public static class ParryWarning
             return null;
         }
 
+        HealthBar healthBar = owner.GetComponentInChildren<HealthBar>(true);
+
         GameObject warning = new GameObject("Parry Warning", typeof(RectTransform), typeof(Canvas),
-            typeof(WorldSpaceBillboard));
+            typeof(WorldSpaceBillboard), typeof(ParryWarning));
         RectTransform root = warning.GetComponent<RectTransform>();
         root.SetParent(owner, false);
         root.localScale = Vector3.one * 0.01f;
         root.sizeDelta = new Vector2(180f, 50f);
-        Renderer ownerRenderer = owner.GetComponent<Renderer>();
-        float height = ownerRenderer != null
-            ? owner.InverseTransformPoint(ownerRenderer.transform.TransformPoint(ownerRenderer.localBounds.max)).y + 0.9f
-            : 1.5f;
-        root.localPosition = Vector3.up * height;
+        ParryWarning warningComponent = warning.GetComponent<ParryWarning>();
+        warningComponent.positioning = new CombatOverlayPositioning(owner);
+        warningComponent.healthBar = healthBar != null ? healthBar.transform as RectTransform : null;
+        warningComponent.warningRect = root;
+        warningComponent.UpdatePosition();
 
         Canvas canvas = warning.GetComponent<Canvas>();
         canvas.renderMode = RenderMode.WorldSpace;
@@ -56,5 +66,25 @@ public static class ParryWarning
         outline.effectColor = new Color(0f, 0f, 0f, 0.9f);
         outline.effectDistance = new Vector2(2f, -2f);
         return warning;
+    }
+
+    private void LateUpdate()
+    {
+        UpdatePosition();
+    }
+
+    private void UpdatePosition()
+    {
+        Camera camera = Camera.main;
+        float top = positioning.GetModelTop(camera);
+
+        if (healthBar != null && healthBar.gameObject.activeInHierarchy)
+        {
+            healthBar.GetWorldCorners(corners);
+            foreach (Vector3 corner in corners)
+                top = Mathf.Max(top, CombatOverlayPositioning.ProjectHeight(corner, camera));
+        }
+
+        positioning.PlaceAbove(warningRect, camera, top, ScreenGap);
     }
 }
