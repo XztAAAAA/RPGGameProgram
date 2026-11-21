@@ -5,6 +5,8 @@ public class CameraFollow : MonoBehaviour
     private const float ParryShakeDuration = 0.18f;
     private const float ParryShakeStrength = 0.14f;
     private const float ParryShakeFrequency = 25f;
+    private const float HitShakeDuration = 0.12f;
+    private const float HitShakeStrength = 0.045f;
 
     [Header("跟随目标")]
     [SerializeField] private Transform target;
@@ -24,12 +26,29 @@ public class CameraFollow : MonoBehaviour
     // SmoothDamp 内部使用的速度
     private Vector3 currentVelocity = Vector3.zero;
 
-    private float parryShakeRemaining;
+    private float shakeRemaining;
+    private float shakeDuration;
+    private float shakeStrength;
     private Vector3 appliedShakeOffset;
 
     public void ShakeForMeleeParry()
     {
-        parryShakeRemaining = ParryShakeDuration;
+        StartShake(ParryShakeDuration, ParryShakeStrength);
+    }
+
+    public void ShakeForMeleeHit()
+    {
+        StartShake(HitShakeDuration, HitShakeStrength);
+    }
+
+    private void StartShake(float duration, float strength)
+    {
+        if (shakeRemaining > 0f && shakeStrength > strength)
+            return;
+
+        shakeRemaining = duration;
+        shakeDuration = duration;
+        shakeStrength = strength;
     }
 
     private void Awake()
@@ -107,11 +126,11 @@ public class CameraFollow : MonoBehaviour
             );
         }
 
-        if (parryShakeRemaining > 0f)
+        if (shakeRemaining > 0f)
         {
-            parryShakeRemaining = Mathf.Max(0f, parryShakeRemaining - Time.unscaledDeltaTime);
-            float elapsed = ParryShakeDuration - parryShakeRemaining;
-            float strength = ParryShakeStrength * (parryShakeRemaining / ParryShakeDuration);
+            shakeRemaining = Mathf.Max(0f, shakeRemaining - Time.unscaledDeltaTime);
+            float elapsed = shakeDuration - shakeRemaining;
+            float strength = shakeStrength * (shakeRemaining / shakeDuration);
             float phase = elapsed * ParryShakeFrequency * 2f * Mathf.PI;
             appliedShakeOffset = (transform.right * Mathf.Sin(phase) +
                 transform.up * Mathf.Cos(phase)) * strength;
@@ -123,6 +142,6 @@ public class CameraFollow : MonoBehaviour
     {
         transform.position -= appliedShakeOffset;
         appliedShakeOffset = Vector3.zero;
-        parryShakeRemaining = 0f;
+        shakeRemaining = 0f;
     }
 }

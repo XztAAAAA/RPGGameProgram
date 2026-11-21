@@ -449,6 +449,9 @@ public class Attack : MonoBehaviour
                 agent.isStopped = true;
         }
 
+        if (parried)
+            CombatFeedback.ShowParry(attackCenter);
+
         if (meleeParried)
         {
             if (nearestMeleeDistanceSquared < float.PositiveInfinity)
@@ -818,6 +821,7 @@ public class Attack : MonoBehaviour
         if (hitTargets == null)
             damagedTargets.Clear();
 
+        bool playerHit = false;
         for (int i = 0; i < hitCount; i++)
         {
             Collider hit = hitBuffer[i];
@@ -848,8 +852,26 @@ public class Attack : MonoBehaviour
 
             if (damagedTargets.Add(targetHealth))
             {
+                float previousHealth = targetHealth.CurrentHealth;
+                Vector3 hitPosition = hit.ClosestPoint(attackCenter);
                 targetHealth.TakeDamage(attackDamage);
+                if (ownerFaction.Faction == CombatFaction.Player &&
+                    targetHealth.CurrentHealth < previousHealth)
+                {
+                    CombatFeedback.ShowHit(hitPosition);
+                    playerHit = true;
+                }
             }
+        }
+
+        if (playerHit)
+        {
+            Camera mainCamera = Camera.main;
+            CameraFollow cameraFollow = mainCamera != null
+                ? mainCamera.GetComponent<CameraFollow>()
+                : null;
+            if (cameraFollow != null && cameraFollow.isActiveAndEnabled)
+                cameraFollow.ShakeForMeleeHit();
         }
     }
 

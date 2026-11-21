@@ -162,7 +162,15 @@ public class CombatPanel : MonoBehaviour
             return false;
 
         if (clearPanel != null)
+        {
+            RoomWinPanel winPanel = clearPanel.GetComponent<RoomWinPanel>();
+            if (winPanel != null)
+                winPanel.ShowUpgrade(upgrade, PlayerUpgradeSystem.GetUpgradeLevel(upgrade.Id));
+            else
+                Debug.LogError("CombatPanel：通关面板缺少 RoomWinPanel，无法显示强化结果。", clearPanel);
+
             clearPanel.SetActive(true);
+        }
         return true;
     }
 
