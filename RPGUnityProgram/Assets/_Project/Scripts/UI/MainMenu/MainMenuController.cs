@@ -9,6 +9,7 @@ public class MainMenuController : MonoBehaviour
     {
         if (startButton == null)
             startButton = GetComponentInChildren<Button>(true);
+        FrameRateSettings.Configure();
     }
 
     private void OnEnable()
@@ -27,5 +28,15 @@ public class MainMenuController : MonoBehaviour
     {
         LevelManager.Instance.StartNewRun();
     }
+
+    public static class FrameRateSettings
+{
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+    public static void Configure()
+    {
+        QualitySettings.vSyncCount = 0;
+        Application.targetFrameRate = 120;
+    }
+}
 }
 

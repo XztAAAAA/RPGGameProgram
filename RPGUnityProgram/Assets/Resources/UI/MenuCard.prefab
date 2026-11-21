@@ -65,9 +65,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'ENTER
-
-'
+  m_text: "\u5F00\u59CB\u6E38\u620F"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: e4164d6fc30f7a14888a9820426110c5, type: 2}
   m_sharedMaterial: {fileID: -3155477582524537593, guid: e4164d6fc30f7a14888a9820426110c5, type: 2}
@@ -100,7 +98,7 @@ MonoBehaviour:
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 0
+  m_fontStyle: 1
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535
@@ -204,7 +202,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: RPG PROTOTYPE
+  m_text: RPG GAME
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 114ca6dca8b714b4a81229e269475db2, type: 2}
   m_sharedMaterial: {fileID: -8444926416709569892, guid: 114ca6dca8b714b4a81229e269475db2, type: 2}
