@@ -27,7 +27,7 @@ public class CombatPanel : MonoBehaviour
     private GameObject upgradePanel;
     private UpgradePanelController upgradePanelController;
 
-    private RoomState lastState = (RoomState)(-1);
+    private int displayedEnemyCount = -1;
 
     private void Awake()
     {
@@ -108,7 +108,7 @@ public class CombatPanel : MonoBehaviour
     private void Start()
     {
         InitializePlayerHealthBar();
-        RefreshRoomState();
+        RefreshEnemyCount();
     }
 
     private void HandleRoomCleared()
@@ -193,23 +193,9 @@ public class CombatPanel : MonoBehaviour
 
     private void Update()
     {
-        if (roomManager == null)
-            return;
-
-        RoomState currentState = roomManager.State;
-
-        if (currentState != lastState)
-        {
-            UpdateRoomStateUI(currentState);
-            lastState = currentState;
-        }
-
-        if (currentState == RoomState.InProgress &&
-            statusText != null)
-        {
-            statusText.text =
-                $"战斗中 | 剩余敌人：{roomManager.RemainingEnemies}";
-        }
+        if (roomManager != null && statusText != null &&
+            displayedEnemyCount != roomManager.RemainingEnemies)
+            UpdateEnemyCount();
     }
 
     private void InitializePlayerHealthBar()
@@ -249,7 +235,7 @@ public class CombatPanel : MonoBehaviour
         Debug.Log("CombatPanel：主角血条初始化成功。");
     }
 
-    private void RefreshRoomState()
+    private void RefreshEnemyCount()
     {
         if (roomManager == null)
         {
@@ -260,34 +246,16 @@ public class CombatPanel : MonoBehaviour
             return;
         }
 
-        lastState = roomManager.State;
-        UpdateRoomStateUI(lastState);
+        UpdateEnemyCount();
     }
 
-    private void UpdateRoomStateUI(RoomState state)
+    private void UpdateEnemyCount()
     {
         if (statusText == null)
             return;
 
-        switch (state)
-        {
-            case RoomState.Ready:
-                statusText.text = "准备战斗";
-                break;
-
-            case RoomState.InProgress:
-                statusText.text =
-                    $"战斗中 | 剩余敌人：{roomManager.RemainingEnemies}";
-                break;
-
-            case RoomState.Cleared:
-                statusText.text = "房间已清空！";
-                break;
-
-            case RoomState.Failed:
-                statusText.text = "挑战失败";
-                break;
-        }
+        displayedEnemyCount = roomManager.RemainingEnemies;
+        statusText.text = $"剩余敌人：{displayedEnemyCount}";
     }
 
     private void OnDestroy()
