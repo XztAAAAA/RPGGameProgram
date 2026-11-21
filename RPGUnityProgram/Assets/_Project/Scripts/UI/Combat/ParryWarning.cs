@@ -1,4 +1,3 @@
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -6,71 +5,103 @@ using UnityEngine.UI;
 public sealed class ParryWarning : MonoBehaviour
 {
     private const float ScreenGap = 0.15f;
+    private const float FlashFrequency = 3f;
 
     private CombatOverlayPositioning positioning;
     private RectTransform healthBar;
     private RectTransform warningRect;
+    private CanvasGroup flashGroup;
+    private float flashStartTime;
     private readonly Vector3[] corners = new Vector3[4];
 
     public static GameObject Create(Transform owner)
     {
-        TMP_FontAsset font = Resources.Load<TMP_FontAsset>("Fonts/Source/NotoSansSC-VariableFont_wght SDF");
-        if (font == null)
-        {
-            Debug.LogError("ParryWarning：无法加载格挡提示的中文字体。", owner);
-            return null;
-        }
-
-        if (!font.HasCharacters("格挡！", out uint[] missingCharacters, true, true))
-        {
-            Debug.LogError("ParryWarning：中文字体缺少格挡提示所需的字符。", owner);
-            return null;
-        }
-
         HealthBar healthBar = owner.GetComponentInChildren<HealthBar>(true);
 
-        GameObject warning = new GameObject("Parry Warning", typeof(RectTransform), typeof(Canvas),
+        GameObject warning = new GameObject("Parry Warning", typeof(RectTransform), typeof(Canvas), typeof(CanvasGroup),
             typeof(WorldSpaceBillboard), typeof(ParryWarning));
         RectTransform root = warning.GetComponent<RectTransform>();
         root.SetParent(owner, false);
         root.localScale = Vector3.one * 0.01f;
-        root.sizeDelta = new Vector2(180f, 50f);
+        root.sizeDelta = new Vector2(56f, 52f);
         ParryWarning warningComponent = warning.GetComponent<ParryWarning>();
         warningComponent.positioning = new CombatOverlayPositioning(owner);
         warningComponent.healthBar = healthBar != null ? healthBar.transform as RectTransform : null;
         warningComponent.warningRect = root;
+        warningComponent.flashGroup = warning.GetComponent<CanvasGroup>();
+        warningComponent.flashGroup.blocksRaycasts = false;
+        warningComponent.flashGroup.interactable = false;
         warningComponent.UpdatePosition();
 
         Canvas canvas = warning.GetComponent<Canvas>();
         canvas.renderMode = RenderMode.WorldSpace;
         canvas.sortingOrder = 10;
 
-        GameObject textObject = new GameObject("Text", typeof(RectTransform), typeof(TextMeshProUGUI));
-        RectTransform textRect = textObject.GetComponent<RectTransform>();
-        textRect.SetParent(root, false);
-        textRect.anchorMin = Vector2.zero;
-        textRect.anchorMax = Vector2.one;
-        textRect.offsetMin = Vector2.zero;
-        textRect.offsetMax = Vector2.zero;
-        textRect.localRotation = Quaternion.Euler(0f, 180f, 0f);
+        GameObject flashObject = new GameObject("Flash", typeof(RectTransform));
+        RectTransform flashRect = flashObject.GetComponent<RectTransform>();
+        flashRect.SetParent(root, false);
+        flashRect.anchorMin = Vector2.zero;
+        flashRect.anchorMax = Vector2.one;
+        flashRect.offsetMin = Vector2.zero;
+        flashRect.offsetMax = Vector2.zero;
+        flashRect.localRotation = Quaternion.Euler(0f, 180f, 0f);
+        GameObject triangleObject = new GameObject("Triangle", typeof(RectTransform), typeof(CanvasRenderer),
+            typeof(ParryWarningTriangle));
+        RectTransform triangleRect = triangleObject.GetComponent<RectTransform>();
+        triangleRect.SetParent(flashRect, false);
+        triangleRect.anchorMin = triangleRect.anchorMax = new Vector2(0.5f, 0.5f);
+        triangleRect.sizeDelta = new Vector2(48f, 44f);
+        ParryWarningTriangle triangle = triangleObject.GetComponent<ParryWarningTriangle>();
+        triangle.color = new Color(1f, 0.08f, 0.08f);
+        triangle.raycastTarget = false;
 
-        TextMeshProUGUI text = textObject.GetComponent<TextMeshProUGUI>();
-        text.font = font;
-        text.text = "格挡！";
-        text.fontSize = 42f;
-        text.fontStyle = FontStyles.Bold;
-        text.color = new Color(1f, 0.85f, 0.15f);
-        text.alignment = TextAlignmentOptions.Center;
-        text.raycastTarget = false;
-        Outline outline = textObject.AddComponent<Outline>();
-        outline.effectColor = new Color(0f, 0f, 0f, 0.9f);
-        outline.effectDistance = new Vector2(2f, -2f);
+        CreateFlashPart(flashRect, "Exclamation", new Vector2(5f, 14f), new Vector2(0f, -1f));
+        CreateFlashPart(flashRect, "Dot", new Vector2(5f, 5f), new Vector2(0f, -12f));
         return warning;
+    }
+
+    private static void CreateFlashPart(
+        RectTransform parent, string partName, Vector2 size, Vector2 position)
+    {
+        GameObject part = new GameObject(partName, typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
+        RectTransform rect = part.GetComponent<RectTransform>();
+        rect.SetParent(parent, false);
+        rect.anchorMin = rect.anchorMax = new Vector2(0.5f, 0.5f);
+        rect.sizeDelta = size;
+        rect.anchoredPosition = position;
+        Image image = part.GetComponent<Image>();
+        image.color = new Color(1f, 0.85f, 0.85f);
+        image.raycastTarget = false;
+    }
+
+    public sealed class ParryWarningTriangle : Graphic
+    {
+        protected override void OnPopulateMesh(VertexHelper vertexHelper)
+        {
+            vertexHelper.Clear();
+            Rect rect = GetPixelAdjustedRect();
+            UIVertex vertex = UIVertex.simpleVert;
+            vertex.color = color;
+            vertex.position = new Vector3(rect.xMin, rect.yMin);
+            vertexHelper.AddVert(vertex);
+            vertex.position = new Vector3(rect.center.x, rect.yMax);
+            vertexHelper.AddVert(vertex);
+            vertex.position = new Vector3(rect.xMax, rect.yMin);
+            vertexHelper.AddVert(vertex);
+            vertexHelper.AddTriangle(0, 1, 2);
+        }
+    }
+
+    private void OnEnable()
+    {
+        flashStartTime = Time.time;
     }
 
     private void LateUpdate()
     {
         UpdatePosition();
+        float pulse = 0.5f + 0.5f * Mathf.Cos((Time.time - flashStartTime) * FlashFrequency * 2f * Mathf.PI);
+        flashGroup.alpha = Mathf.Lerp(0.6f, 1f, pulse);
     }
 
     private void UpdatePosition()
