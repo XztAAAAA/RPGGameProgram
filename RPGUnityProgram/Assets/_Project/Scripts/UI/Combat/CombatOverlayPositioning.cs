@@ -101,22 +101,7 @@ public sealed class CombatOverlayPositioning
 
     private static void IncludeBounds(Bounds bounds, Camera camera, ref float top)
     {
-        Vector3 min = bounds.min;
-        Vector3 max = bounds.max;
-        for (int x = 0; x < 2; x++)
-        {
-            for (int y = 0; y < 2; y++)
-            {
-                for (int z = 0; z < 2; z++)
-                {
-                    Vector3 corner = new Vector3(
-                        x == 0 ? min.x : max.x,
-                        y == 0 ? min.y : max.y,
-                        z == 0 ? min.z : max.z
-                    );
-                    top = Mathf.Max(top, ProjectHeight(corner, camera));
-                }
-            }
-        }
+        Vector3 topCenter = new Vector3(bounds.center.x, bounds.max.y, bounds.center.z);
+        top = Mathf.Max(top, ProjectHeight(topCenter, camera));
     }
 }
