@@ -116,8 +116,16 @@ public class CombatPanel : MonoBehaviour
         if (roomManager == null || roomManager.State != RoomState.Cleared)
             return;
 
-        int currentLevel = LevelManager.Instance != null
-            ? LevelManager.Instance.CurrentLevelId
+        LevelManager levelManager = LevelManager.Instance;
+        if (levelManager != null && levelManager.IsLastLevel())
+        {
+            if (clearPanel != null)
+                clearPanel.SetActive(true);
+            return;
+        }
+
+        int currentLevel = levelManager != null
+            ? levelManager.CurrentLevelId
             : 0;
         if (!PlayerUpgradeSystem.TryRollOffers(
                 currentLevel,

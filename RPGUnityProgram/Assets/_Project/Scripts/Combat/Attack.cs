@@ -803,7 +803,7 @@ public class Attack : MonoBehaviour
         Vector3 attackCenter = GetAttackCenter(attackOffset);
 
         if (showRange && !suppressDamage)
-            ShowAttackRange(attackCenter, attackRadius, displayDuration);
+            //ShowAttackRange(attackCenter, attackRadius, displayDuration);
 
         if (ownerFaction.Faction == CombatFaction.Player)
             SkillProjectile.BlockInRange(attackCenter, attackRadius, ownerFaction.Faction);

@@ -19,21 +19,21 @@
     "id": 3,
     "spawn_group_id": 1002,
     "enemy_key": "BasicEnemy2",
-    "count": 5,
+    "count": 3,
     "spawn_radius": 8,
     "min_radius": 4
   },
   {
     "id": 4,
-    "spawn_group_id": 1003,
+    "spawn_group_id": 1001,
     "enemy_key": "BasicEnemy1",
-    "count": 8,
+    "count": 5,
     "spawn_radius": 5,
     "min_radius": 3
   },
   {
     "id": 5,
-    "spawn_group_id": 1001,
+    "spawn_group_id": 1003,
     "enemy_key": "BasicEnemy3",
     "count": 1,
     "spawn_radius": 8,
