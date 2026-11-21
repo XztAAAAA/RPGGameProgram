@@ -691,6 +691,10 @@ PrefabInstance:
       propertyPath: targetHealth
       value: 
       objectReference: {fileID: -892380222198881406}
+    - target: {fileID: 6548916907248489088, guid: e2ce24430419ef140a5028ef4a5a74e3, type: 3}
+      propertyPath: m_Value
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8059432849741973549, guid: e2ce24430419ef140a5028ef4a5a74e3, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
