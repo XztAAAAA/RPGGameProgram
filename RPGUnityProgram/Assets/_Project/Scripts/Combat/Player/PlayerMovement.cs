@@ -11,6 +11,8 @@ using UnityEngine.InputSystem;
 [RequireComponent(typeof(CharacterController))]
 public class PlayerMovement : MonoBehaviour
 {
+    private const float GroundedVerticalSpeed = -2f;
+
     [Header("移动设置")]
     [SerializeField] private float moveSpeed = 4f;
     [SerializeField] private float rotationSpeed = 720f;
@@ -36,6 +38,7 @@ public class PlayerMovement : MonoBehaviour
     private float dodgeElapsed;
     private Vector3 dodgeDirection;
     private bool dodgeConfigured;
+    private float verticalSpeed;
 
     public event Action MobileAttackRequested;
     public event Action DodgeStarted;
@@ -156,6 +159,7 @@ public class PlayerMovement : MonoBehaviour
         IsDodging = false;
         MovementAmount = 0f;
         MovementSpeed = 0f;
+        verticalSpeed = 0f;
     }
 
     private void Update()
@@ -193,6 +197,7 @@ public class PlayerMovement : MonoBehaviour
         if (attack != null && attack.isActiveAndEnabled && attack.IsAttacking)
         {
             MovementAmount = 0f;
+            MoveWithGravity(Vector3.zero);
             return;
         }
 
@@ -245,7 +250,7 @@ public class PlayerMovement : MonoBehaviour
             float stepTime = Mathf.Min(Time.deltaTime, dodgeDuration - dodgeElapsed);
             float stepDistance = dodgeDistance * stepTime / dodgeDuration;
             Vector3 startPosition = transform.position;
-            CollisionFlags flags = controller.Move(dodgeDirection * stepDistance);
+            CollisionFlags flags = MoveWithGravity(dodgeDirection * stepDistance);
             dodgeElapsed += stepTime;
 
             float actualDistance = Vector3.Dot(transform.position - startPosition, dodgeDirection);
@@ -272,13 +277,27 @@ public class PlayerMovement : MonoBehaviour
 
         // 执行移动
         Vector3 positionBeforeMove = transform.position;
-        controller.Move(move * moveSpeed * Time.deltaTime);
+        MoveWithGravity(move * moveSpeed * Time.deltaTime);
         Vector3 displacement = transform.position - positionBeforeMove;
         displacement.y = 0f;
         MovementSpeed = Time.deltaTime > 0f ? displacement.magnitude / Time.deltaTime : 0f;
         MovementAmount = moveSpeed > 0f && Time.deltaTime > 0f
             ? Mathf.Clamp01(MovementSpeed / moveSpeed)
             : 0f;
+    }
+
+    private CollisionFlags MoveWithGravity(Vector3 horizontalMotion)
+    {
+        if (controller.isGrounded && verticalSpeed < 0f)
+            verticalSpeed = GroundedVerticalSpeed;
+
+        verticalSpeed += Physics.gravity.y * Time.deltaTime;
+        horizontalMotion.y = verticalSpeed * Time.deltaTime;
+        CollisionFlags flags = controller.Move(horizontalMotion);
+        if ((flags & CollisionFlags.Below) != 0 && verticalSpeed < 0f)
+            verticalSpeed = GroundedVerticalSpeed;
+
+        return flags;
     }
 
     private void OnDestroy()
