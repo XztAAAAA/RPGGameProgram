@@ -248,7 +248,12 @@ public class PlayerMovement : MonoBehaviour
         {
             MovementAmount = 0f;
             float stepTime = Mathf.Min(Time.deltaTime, dodgeDuration - dodgeElapsed);
-            float stepDistance = dodgeDistance * stepTime / dodgeDuration;
+            float startProgress = dodgeElapsed / dodgeDuration;
+            float endProgress = (dodgeElapsed + stepTime) / dodgeDuration;
+            float startRemaining = 1f - startProgress;
+            float endRemaining = 1f - endProgress;
+            float stepDistance = dodgeDistance *
+                (startRemaining * startRemaining - endRemaining * endRemaining);
             Vector3 startPosition = transform.position;
             CollisionFlags flags = MoveWithGravity(dodgeDirection * stepDistance);
             dodgeElapsed += stepTime;
