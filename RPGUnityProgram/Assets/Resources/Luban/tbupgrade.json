@@ -7,10 +7,10 @@
     "category": 1,
     "effect_type": 1,
     "effect_value": 0.15,
-    "rarity": 1,
+    "rarity": 3,
     "max_stack": 3,
-    "weight": 100,
-    "unlock_level": 1
+    "weight": 200,
+    "unlock_level": 2
   },
   {
     "id": 1002,
@@ -20,9 +20,9 @@
     "category": 1,
     "effect_type": 2,
     "effect_value": 0.1,
-    "rarity": 1,
+    "rarity": 2,
     "max_stack": 3,
-    "weight": 100,
+    "weight": 150,
     "unlock_level": 1
   },
   {
@@ -33,10 +33,10 @@
     "category": 1,
     "effect_type": 3,
     "effect_value": 0.1,
-    "rarity": 1,
+    "rarity": 3,
     "max_stack": 3,
-    "weight": 100,
-    "unlock_level": 1
+    "weight": 200,
+    "unlock_level": 2
   },
   {
     "id": 1004,
@@ -85,9 +85,9 @@
     "category": 3,
     "effect_type": 7,
     "effect_value": 0.15,
-    "rarity": 1,
+    "rarity": 2,
     "max_stack": 3,
-    "weight": 100,
+    "weight": 150,
     "unlock_level": 1
   },
   {
@@ -98,9 +98,9 @@
     "category": 3,
     "effect_type": 8,
     "effect_value": 0.1,
-    "rarity": 1,
+    "rarity": 2,
     "max_stack": 3,
-    "weight": 100,
+    "weight": 150,
     "unlock_level": 1
   }
 ]
