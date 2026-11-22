@@ -34,12 +34,12 @@
     "enemy_id": 1003,
     "enemy_name": "BasicEnemy3",
     "prefab_key": "BasicEnemy3",
-    "max_health": 200,
+    "max_health": 400,
     "move_speed": 6.5,
     "rotation_speed": 720,
     "skill_ids": [
-      10001,
-      10002,
+      10004,
+      10005,
       10003
     ],
     "detect_range": 50,
