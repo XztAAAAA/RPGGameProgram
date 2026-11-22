@@ -3,7 +3,7 @@
     "role_id": 1,
     "role_name": "Player",
     "prefab_key": "Player_Default",
-    "max_health": 1000,
+    "max_health": 300,
     "move_speed": 6,
     "rotation_speed": 720,
     "basic_attack_skill_id": 20001,

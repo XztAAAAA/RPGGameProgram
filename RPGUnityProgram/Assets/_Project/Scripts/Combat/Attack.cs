@@ -96,11 +96,8 @@ public class Attack : MonoBehaviour
         }
 
         float elapsed = Time.time - specialSkillStartTime;
-        float windowStart = Mathf.Max(
-            0f,
-            executingSpecialSkill.StartupTime -
-                executingSpecialSkill.TelegraphTime
-        );
+        // TelegraphTime is the warning's start offset; zero disables the warning.
+        float windowStart = executingSpecialSkill.TelegraphTime;
         return executingSpecialSkill.TelegraphTime > 0f &&
             elapsed >= windowStart &&
             elapsed < executingSpecialSkill.StartupTime +
@@ -374,7 +371,7 @@ public class Attack : MonoBehaviour
             float.IsNaN(skill.StaggerTime) || float.IsInfinity(skill.StaggerTime) ||
             skill.StartupTime < 0f || skill.TelegraphTime < 0f || skill.StaggerTime < 0f)
         {
-            Debug.LogError($"Attack：特殊技能 {skill.SkillId} 的前摇、格挡窗口和硬直时间必须是非负有限数值。", this);
+            Debug.LogError($"Attack：特殊技能 {skill.SkillId} 的前摇、预警开始时间和硬直时间必须是非负有限数值。", this);
             return;
         }
 
@@ -659,13 +656,14 @@ public class Attack : MonoBehaviour
     private bool TryGetMovementLockDuration(cfg.Skill skill, out float duration)
     {
         duration = skill != null
-            ? skill.StartupTime + (skill.SkillKind == 2 ? skill.TelegraphTime : 0f) +
-                skill.ActiveTime + skill.RecoveryTime
+            ? skill.StartupTime + skill.ActiveTime + skill.RecoveryTime
             : cooldown;
 
         if (float.IsNaN(duration) || float.IsInfinity(duration) || duration < 0f ||
             (skill != null && (skill.StartupTime < 0f || skill.ActiveTime < 0f ||
-                skill.RecoveryTime < 0f || (skill.SkillKind == 2 && skill.TelegraphTime < 0f))))
+                skill.RecoveryTime < 0f || (skill.SkillKind == 2 &&
+                    (float.IsNaN(skill.TelegraphTime) || float.IsInfinity(skill.TelegraphTime) ||
+                        skill.TelegraphTime < 0f)))))
         {
             Debug.LogError("Attack：攻击阶段的时长必须是非负有限数值。", this);
             return false;
